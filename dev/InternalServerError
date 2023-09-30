@@ -1,0 +1,74 @@
+Internal Server Error
+
+
+[I 2022-11-28 21:04:55.205 JupyterHub app:3156] JupyterHub is now running at https://202.26.150.53:8000
+[W 221128 21:04:55 cull_idle_servers:376] Could not load pycurl: No module named 'pycurl'
+    pycurl is recommended if you have a large number of users.
+[I 2022-11-28 21:04:55.272 JupyterHub log:189] 200 GET /hub/api/users (idle-culler@202.26.150.53) 14.72ms
+[I 2022-11-28 21:05:04.093 JupyterHub base:816] User logged in: iseki
+[I 2022-11-28 21:05:04.093 JupyterHub log:189] 302 POST /hub/lti/launch -> /hub/home (iseki@202.26.150.53) 12.75ms
+[W 2022-11-28 21:05:04.109 JupyterHub configurable:200] Config option `remove` not recognized by `LTIPodmanSpawner`.
+[W 2022-11-28 21:05:04.109 JupyterHub configurable:200] Config option `extra_create_kwargs` not recognized by `LTIPodmanSpawner`.
+[I 2022-11-28 21:05:04.124 JupyterHub log:189] 200 GET /hub/home (iseki@202.26.150.53) 17.57ms
+[I 2022-11-28 21:05:07.567 JupyterHub roles:482] Adding role server to token: <APIToken('f550...', user='iseki', client_id='jupyterhub')>
+[I 2022-11-28 21:05:07.571 JupyterHub provider:607] Creating oauth client jupyterhub-user-iseki
+[I 2022-11-28 21:05:07.597 JupyterHub jupyterhub_podman_config:1075] Spawning via Podman command: podman run -d --privileged --name jupyterhub-iseki-219-76-el.mml.tuis.ac.jp --net host --memory=314572800 --rm -v /home/teacher/iseki:/home/teacher/iseki -v lms_vol_rsa_219_el.mml.tuis.ac.jp:/home/teacher/iseki/jupyter/works/.volumes/lms_vol_rsa_219_el.mml.tuis.ac.jp --env JUPYTERHUB_API_TOKEN=f550cbec59b44f9f9d94e140d9dce3b0 --env JPY_API_TOKEN=f550cbec59b44f9f9d94e140d9dce3b0 --env JUPYTERHUB_CLIENT_ID=jupyterhub-user-iseki --env JUPYTERHUB_HOST= --env JUPYTERHUB_OAUTH_CALLBACK_URL=/user/iseki/oauth_callback --env JUPYTERHUB_USER=iseki --env JUPYTERHUB_SERVER_NAME= --env JUPYTERHUB_API_URL=http://202.26.150.53:8081/hub/api --env JUPYTERHUB_ACTIVITY_URL=http://202.26.150.53:8081/hub/api/users/iseki/activity --env JUPYTERHUB_BASE_URL=/ --env JUPYTERHUB_SERVICE_PREFIX=/user/iseki/ --env JUPYTERHUB_SERVICE_URL=http://127.0.0.1:0/user/iseki/ --env MEM_LIMIT=314572800 --env JUPYTERHUB_ROOT_DIR=/home/teacher/iseki --env JUPYTERHUB_DEFAULT_URL=/lab --env GRANT_SUDO=no --env PRJCT_DIR=jupyter --env WORK_DIR=works --env VOLUME_DIR=.volumes --env NB_UMASK=0033 --env CONDA_DIR=/opt/conda --env TZ=JST-9 --env CHOWN_HOME=yes --env CHOWN_HOME_OPTS=-R --env NB_UID=10015 --env NB_USER=iseki --env NB_GID=10001 --env NB_GROUP=teacher --env NB_DIR=/home/teacher/iseki --env NB_THRGID=7000 --env NB_THRGROUP=TEACHER --env NB_OPTION= --env NB_HOSTNAME=el.mml.tuis.ac.jp --env NB_TEACHER=iseki --env NB_VOLUMES=.volumes/lms_vol_rsa_219_el.mml.tuis.ac.jp:-RSA課題用 --env NB_SUBMITS= --env NB_PRSNALS=.volumes/lms_prs_rsa_219_el.mml.tuis.ac.jp:RSA課題用 localhost/jupyterhub-ltictr/jupyter-singleuser:20220721 start-notebook.sh --NotebookApp.port=45049 --SingleUserNotebookApp.default_url=/lab
+[E 2022-11-28 21:05:07.641 JupyterHub jupyterhub_podman_config:1112] LTIPodmanSpawner.podman_start error: code = 125 : b'Error: error creating container storage: the container name "jupyterhub-iseki-219-76-el.mml.tuis.ac.jp" is already in use by "477adee39d133aba03bfba65fa2e5b16f5872067cd19fbf0d6d3f1d229f4fc64". You have to remove that container to be able to reuse that name.: that name is already in use\n'
+[E 2022-11-28 21:05:07.641 JupyterHub user:815] Unhandled error starting iseki's server: b'Error: error creating container storage: the container name "jupyterhub-iseki-219-76-el.mml.tuis.ac.jp" is already in use by "477adee39d133aba03bfba65fa2e5b16f5872067cd19fbf0d6d3f1d229f4fc64". You have to remove that container to be able to reuse that name.: that name is already in use\n'
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.9/site-packages/jupyterhub/user.py", line 732, in spawn
+        url = await gen.with_timeout(timedelta(seconds=spawner.start_timeout), f)
+      File "/usr/local/etc/jupyterhub_podman_config.py", line 996, in start
+        return self.podman_start()
+      File "/usr/local/etc/jupyterhub_podman_config.py", line 1113, in podman_start
+        raise RuntimeError(err)
+    RuntimeError: b'Error: error creating container storage: the container name "jupyterhub-iseki-219-76-el.mml.tuis.ac.jp" is already in use by "477adee39d133aba03bfba65fa2e5b16f5872067cd19fbf0d6d3f1d229f4fc64". You have to remove that container to be able to reuse that name.: that name is already in use\n'
+
+[E 2022-11-28 21:05:07.670 JupyterHub jupyterhub_podman_config:1128] LTIPodmanSpawner.poll error: code = 125 : b'Error: inspecting object: no such container None\n'
+[E 2022-11-28 21:05:07.676 JupyterHub user:825] Failed to cleanup iseki's server that failed to start
+    Traceback (most recent call last):
+      File "/usr/local/lib/python3.9/site-packages/jupyterhub/user.py", line 823, in spawn
+        await self.stop(spawner.name)
+      File "/usr/local/lib/python3.9/site-packages/jupyterhub/user.py", line 917, in stop
+        status = await spawner.poll()
+      File "/usr/local/etc/jupyterhub_podman_config.py", line 1129, in poll
+        raise RuntimeError(err)
+    RuntimeError: b'Error: inspecting object: no such container None\n'
+
+[E 2022-11-28 21:05:07.677 JupyterHub pages:317] Error starting server iseki: b'Error: error creating container storage: the container name "jupyterhub-iseki-219-76-el.mml.tuis.ac.jp" is already in use by "477adee39d133aba03bfba65fa2e5b16f5872067cd19fbf0d6d3f1d229f4fc64". You have to remove that container to be able to reuse that name.: that name is already in use\n'
+    Traceback (most recent call last):
+    None: None
+
+[W 2022-11-28 21:05:07.677 JupyterHub web:1787] 500 GET /hub/spawn/iseki (202.26.150.53): Unhandled error starting server iseki
+[E 2022-11-28 21:05:07.689 JupyterHub log:181] {
+      "X-Forwarded-Host": "antares.nsl.tuis.ac.jp",
+      "X-Forwarded-Proto": "https",
+      "X-Forwarded-Port": "443",
+      "X-Forwarded-For": "202.26.150.53",
+      "Sec-Fetch-User": "?1",
+      "Sec-Fetch-Site": "same-origin",
+      "Sec-Fetch-Mode": "navigate",
+      "Sec-Fetch-Dest": "document",
+      "Upgrade-Insecure-Requests": "1",
+      "Cookie": "jupyterhub-hub-login=[secret]; __utma=[secret]; _ts_yjad=[secret]; __utmz=[secret]; _ga=[secret]; logged_out_marketing_header_id=[secret]; _ga_3CKFLLTXYQ=[secret]; ios_specific_templates_id=[secret]; _gcl_au=[secret]; _gid=[secret]; __utmc=[secret]; lms_sessioninfo=[secret]; lms_serverurl=[secret]; lms_serverpath=[secret]; lms_rpctoken=[secret]; jupyterhub-session-id=[secret]",
+      "Referer": "https://antares.nsl.tuis.ac.jp/hub/home",
+      "Connection": "close",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0",
+      "Host": "antares.nsl.tuis.ac.jp"
+    }
+[E 2022-11-28 21:05:07.689 JupyterHub log:189] 500 GET /hub/spawn/iseki (iseki@202.26.150.53) 126.79ms
+[I 2022-11-28 21:05:14.236 JupyterHub log:189] 302 GET /user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824?1669637111578 -> /hub/user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824?1669637111578 (@202.26.150.53) 0.67ms
+[W 2022-11-28 21:05:14.264 JupyterHub configurable:200] Config option `remove` not recognized by `LTIPodmanSpawner`.
+[W 2022-11-28 21:05:14.264 JupyterHub configurable:200] Config option `extra_create_kwargs` not recognized by `LTIPodmanSpawner`.
+[W 2022-11-28 21:05:14.264 JupyterHub base:1409] Failing suspected API request to not-running server: /hub/user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824
+[W 2022-11-28 21:05:14.264 JupyterHub log:189] 424 GET /hub/user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824?1669637111578 (j19159at@202.26.150.53) 3.65ms
+[I 2022-11-28 21:05:15.244 JupyterHub log:189] 302 GET /user/j19159at/api/kernels/d437565c-6b5c-4c71-9ae4-3e970babd15c?1669637112583 -> /hub/user/j19159at/api/kernels/d437565c-6b5c-4c71-9ae4-3e970babd15c?1669637112583 (@202.26.150.53) 0.63ms
+[W 2022-11-28 21:05:15.272 JupyterHub base:1409] Failing suspected API request to not-running server: /hub/user/j19159at/api/kernels/d437565c-6b5c-4c71-9ae4-3e970babd15c
+[W 2022-11-28 21:05:15.272 JupyterHub log:189] 424 GET /hub/user/j19159at/api/kernels/d437565c-6b5c-4c71-9ae4-3e970babd15c?1669637112583 (j19159at@202.26.150.53) 1.80ms
+[I 2022-11-28 21:05:17.240 JupyterHub log:189] 302 GET /user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824?1669637114580 -> /hub/user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824?1669637114580 (@202.26.150.53) 0.57ms
+[W 2022-11-28 21:05:17.270 JupyterHub base:1409] Failing suspected API request to not-running server: /hub/user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824
+[W 2022-11-28 21:05:17.270 JupyterHub log:189] 424 GET /hub/user/j19159at/api/kernels/55b5ca61-3365-45b9-b1fc-6e10b1246824?1669637114580 (j19159at@202.26.150.53) 2.74ms
+

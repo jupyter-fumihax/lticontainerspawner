@@ -1,0 +1,47 @@
+# 
+# Under Constracting!
+#
+
+FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltids/jupyter-base
+
+USER root
+
+RUN /opt/conda/bin/conda update  -n base conda \
+ && /opt/conda/bin/conda update  --prefix /opt/conda -c conda-forge jupyterhub -y \
+ && /opt/conda/bin/conda update  --prefix /opt/conda -c conda-forge jupyterlab -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab_widgets -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab-language-pack-ja-jp -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterhub-singleuser -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge nbgrader -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pip -y \
+# && /opt/conda/bin/conda update  --prefix /opt/conda --all -y \
+ && /opt/conda/bin/conda clean   --all -y \
+ && /opt/conda/bin/jupyter nbextension install --sys-prefix --py nbgrader --overwrite \
+ && /opt/conda/bin/jupyter nbextension enable  --sys-prefix --py nbgrader \
+ && /opt/conda/bin/jupyter serverextension enable --sys-prefix --py nbgrader \
+ && /opt/conda/bin/pip   install --prefix /opt/conda ipynb_path \
+ && true
+
+#
+#RUN apt-get update \
+# && apt-get install -y --no-install-recommends \
+#    git \
+# && apt-get -y clean \
+# && rm -rf /var/lib/apt/lists/* \
+# && true
+
+#
+#RUN git clone -b lab-common https://github.com/LibreTexts/nbgrader-to-jupyterlab.git \
+# && cd nbgrader-to-jupyterlab \
+# && /opt/conda/bin/python setup.py build \
+# && /opt/conda/bin/python setup.py install \
+# && cd nbgrader/labextensions/course_list \
+# && /opt/conda/bin/pip install . \
+# && /opt/conda/bin/jupyter lab build \
+# && /opt/conda/bin/jupyter serverextension enable --py course_list \
+# && cd ../validate_assignment \
+# && /opt/conda/bin/pip install . \
+# && /opt/conda/bin/jupyter lab build \
+# && /opt/conda/bin/jupyter serverextension enable --py validate_assignment \
+# && true
+

@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+
+#
+if [ $# -lt 1 ]; then
+    echo "usage ... "$0" dest_dir [num_fac]"
+    exit 1
+fi
+
+D_DIR="$1"
+N_FAC="$2"
+
+FLS=`ls -l . 2>/dev/null |grep ^- | awk -F" " '{print $9}'`
+
+IFS=$'\n'
+if [ "$FLS" != "" ]; then
+    if [ -e $D_DIR ]; then
+        for FL in $FLS ; do
+            EXN=`echo $FL | sed -e 's/^.*\.\([^\.]*\)$/\1/'`
+            FNM=`echo $FL | sed -e 's/\.[^\.]*$//'`
+            #
+            if [ "$EXN" == "ipynb" ]; then
+                echo "deploying ... "$FL $D_DIR/${FNM}.$EXN
+                /usr/local/bin/ipynb_conv  $FL $D_DIR/${FNM}.$EXN $N_FAC
+            else
+                echo "deploying ... "$FL $D_DIR/${FNM}.$EXN
+                /usr/bin/cp          $FL $D_DIR/${FNM}.$EXN
+            fi
+            /usr/bin/chmod a+r   $D_DIR/${FNM}.$EXN
+        done
+    else
+        echo "$D_DIR is not exist."
+    fi
+fi
+

@@ -1,0 +1,103 @@
+FROM docker.io/jupyterhub/singleuser
+
+USER root
+
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && apt-get install -y --no-install-recommends \
+    default-jre \
+    default-jdk \
+    apt-utils \
+    binutils \
+#    tini \
+    make \
+    g++ \
+#    vim \
+    git \
+    language-pack-ja-base \
+    language-pack-ja \
+ && apt-get -y clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && true
+
+
+RUN /opt/conda/bin/conda update  -n base conda \
+ && /opt/conda/bin/conda update  --prefix /opt/conda -c conda-forge jupyterhub -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab_widgets -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab-language-pack-ja-jp -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterhub-singleuser -y \
+# && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pip -y \
+# && /opt/conda/bin/conda update  --prefix /opt/conda --all -y \
+# && /opt/conda/bin/conda clean   --all -y \
+# && /opt/conda/bin/pip   install --prefix /opt/conda ipynb_path \
+# && /opt/conda/bin/pip   install --prefix /opt/conda jupyter-dash \
+ && true
+
+#
+# install ijava
+RUN git clone https://github.com/SpencerPark/IJava.git ijava \
+ && (cd ijava; chmod a+rx gradlew; ./gradlew installKernel --prefix /opt/conda ) \
+ && /opt/conda/bin/jupyter kernelspec list \
+ && rm -rf ijava \
+ && rm -rf /root/.gradle /root/.local \
+ && true
+
+#
+# install plotly
+RUN /opt/conda/bin/conda install --prefix /opt/conda -c plotly plotly -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pandas -y \
+# && /opt/conda/bin/jupyter labextension install @jupyterlab/rendermime-interfaces jupyterlab-plotly \
+# && /opt/conda/bin/jupyter labextension install @jupyterlab/application plotlywidget \
+# && /opt/conda/bin/jupyter labextension install @jupyterlab/rendermime-interfaces plotlywidget \
+ && /opt/conda/bin/conda clean   --all -y \
+ && true
+
+#
+# install ijavascript
+RUN /opt/conda/bin/npm install -g ijavascript \
+ && /opt/conda/bin/ijsinstall --install=global \
+ && /opt/conda/bin/jupyter kernelspec list \
+ && true
+
+
+# LTIContainer
+ADD \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    /usr/local/bin/
+
+ADD \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+ADD \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+ADD \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+RUN chmod a+rx /usr/local/bin/* \
+ && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+

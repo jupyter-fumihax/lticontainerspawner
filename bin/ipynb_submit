@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+
+#
+if [ $# -lt 2 ]; then
+    echo "usage ... "$0" filename submit_dir"
+    exit 1
+fi
+
+FL="$1"
+D_DIR="$2"
+USR=`whoami`
+
+
+if [ -e $D_DIR ]; then
+    EXN=`echo $FL | sed -e 's/^.*\.\([^\.]*\)$/\1/'`
+    FNM=`echo $FL | sed -e 's/\.[^\.]*$//'`
+    #
+    if [ "$EXN" == "ipynb" ]; then
+        echo "copying ... "$FL $D_DIR/${USR}_${FNM}.$EXN 
+        cp                 $FL $D_DIR/${USR}_${FNM}.$EXN 
+    fi
+else
+    echo "$D_DIR is not exist."
+fi
+

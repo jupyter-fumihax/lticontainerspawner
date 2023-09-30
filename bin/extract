@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+
+COM_EXTRACT=/usr/local/bin/ipynb_extract
+
+if [ $# -lt 2 ]; then
+    echo "usage ... "$0" base_filename codenum [codenum] [codenum] ..."
+    exit 1
+fi
+
+#
+SRC=`echo $NB_SUBMITS | awk -F" " '{print $1}' | awk -F":" '{print $1}'`
+if [ "$SRC" != "" ] ; then
+    SRC=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${SRC}
+else
+    SRC=.
+fi
+#
+DST=`echo $NB_PRSNALS | awk -F" " '{print $1}' | awk -F":" '{print $1}'`
+if [ "$DST" != "" ] ; then
+    DST=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${DST}
+    cd $DST
+fi
+
+BSEFL=$1
+OUTFL=`printf "%03d" ${@:$#:1}`"-"$BSEFL
+rm -f $OUTFL
+
+shift
+$COM_EXTRACT $SRC $BSEFL $* n
+

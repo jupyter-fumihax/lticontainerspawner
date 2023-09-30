@@ -1,0 +1,22 @@
+# /usr/lib/systemd/system/ltictr_proxy.service
+
+[Unit]
+Description = LTICTR_PROXY
+After = network-online.target
+
+[Service]
+Environment = SVRPORT=443
+Environment = APIPORT=8001
+#Environment = HOSTURL=https://202.26.150.117:8000  # for Simple Proxy
+#
+User = root
+PIDFile = /var/run/ltictr_proxy.pid
+ExecStart = /usr/local/bin/ltictr_proxy_server -a ${APIPORT} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf
+#ExecStart = /usr/local/bin/ltictr_proxy_server -h ${HOSTURL} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf -n  # Simple Proxy
+#
+ExecStartPost = /bin/systemctl restart jupyterhub
+WorkingDirectory = /tmp
+Restart = always
+
+[Install]
+WantedBy = multi-user.target

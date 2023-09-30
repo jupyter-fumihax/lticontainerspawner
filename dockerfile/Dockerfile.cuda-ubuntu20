@@ -1,0 +1,130 @@
+#
+# Usage
+# 1. cahge FROM line
+# 2. execute docker build command
+# ex.) cd .. 
+#      docker build . -t jupyterhub-ltids/jupyter-tensorflow-gpu:4.0.3 --format=docker -f dockerfile/Dockerfile.gpu
+#
+
+# https://hub.docker.com/r/nvidia/cuda/tags
+FROM docker.io/nvidia/cuda:12.2.0-base-ubuntu20.04
+
+USER root
+
+#
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    wget \
+    sudo \
+    language-pack-ja-base \
+    language-pack-ja \
+    gcc-8 \
+    g++-8 \
+    nvidia-cuda-dev \
+ && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
+# && update-alternatives --config gcc \
+ && apt-get -y clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && true
+
+
+ENV CONDA_HOME=/opt/conda
+ENV PATH=$CONDA_HOME/bin:$PATH
+
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+ && bash Miniconda3-latest-Linux-x86_64.sh -b -p $CONDA_HOME \
+ && rm Miniconda3-latest-Linux-x86_64.sh 
+
+## python 3.10
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.2-0-Linux-x86_64.sh \
+# && bash Miniconda3-py310_23.5.2-0-Linux-x86_64.sh -b -p $CONDA_HOME \
+# && rm   Miniconda3-py310_23.5.2-0-Linux-x86_64.sh 
+
+# python 3.9
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py39_23.5.2-0-Linux-x86_64.sh \
+# && bash Miniconda3-py39_23.5.2-0-Linux-x86_64.sh -b -p $CONDA_HOME \
+# && rm   Miniconda3-py39_23.5.2-0-Linux-x86_64.sh 
+
+
+RUN $CONDA_HOME/bin/conda update  -n base  conda -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME libarchive -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME libmamba -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab_widgets -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub-singleuser -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pillow -y \ 
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c nvidia cuda-nvcc cuda-nvcc -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME matplotlib -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME pip -y \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME ipynb_path \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME PyCUDA \
+ && true
+
+
+#################################
+#  Scipy
+RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scipy -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scikit-learn-intelex -y \
+ && true
+
+
+#################################
+# Tensorflow-GPU
+RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=*=gpu_* -y \
+ && mkdir -p $CONDA_HOME/lib/nvvm/libdevice \
+ && cp $CONDA_HOME/lib/libdevice.10.bc  $CONDA_HOME/lib/nvvm/libdevice/ \
+ && true
+
+ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=$CONDA_HOME/lib/
+
+
+#
+RUN $CONDA_HOME/bin/conda clean   --all -y 
+
+
+# LTIContainer
+ADD \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    /usr/local/bin/
+
+ADD \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+ADD \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+ADD \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+RUN chmod a+rx /usr/local/bin/* \
+ && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+
+
+CMD ["start-notebook.sh"]

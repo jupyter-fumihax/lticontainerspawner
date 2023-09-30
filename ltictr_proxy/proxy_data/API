@@ -1,0 +1,115 @@
+
+C=>S: [170]
+GET /api/routes HTTP/1.1
+Host: localhost:8001
+User-Agent: Mozilla/5.0 (compatible; pycurl)
+Accept: */*
+Accept-Encoding: gzip,deflate
+Authorization: token ABCDEFG
+
+
+
+S=>C:
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Fri, 04 Feb 2022 01:27:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+57
+{"/":{"target":"http://202.26.150.55:8099","last_activity":"2022-02-04T01:26:42.602Z"}}
+0
+
+
+
+C=>S: [170]
+GET /api/routes HTTP/1.1
+Host: localhost:8001
+User-Agent: Mozilla/5.0 (compatible; pycurl)
+Accept: */*
+Accept-Encoding: gzip,deflate
+Authorization: token ABCDEFG
+
+
+
+S=>C:
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Fri, 04 Feb 2022 01:27:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+57
+{"/":{"target":"http://202.26.150.55:8099","last_activity":"2022-02-04T01:26:42.602Z"}}
+0
+
+
+
+C=>S: [241]
+POST /api/routes/ HTTP/1.1
+Host: localhost:8001
+User-Agent: Mozilla/5.0 (compatible; pycurl)
+Accept: */*
+Accept-Encoding: gzip,deflate
+Authorization: token ABCDEFG
+Content-Length: 72
+Content-Type: application/x-www-form-urlencoded
+
+
+
+C=>S: [72]
+{"hub": true, "target": "http://202.26.150.55:8099", "jupyterhub": true}
+
+S=>C:
+HTTP/1.1 201 Created
+Date: Fri, 04 Feb 2022 01:27:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+0
+
+
+
+C=>S: [343]
+POST /api/routes/user/iseki HTTP/1.1
+Host: localhost:8001
+User-Agent: Mozilla/5.0 (compatible; pycurl)
+Accept: */*
+Accept-Encoding: gzip,deflate
+Authorization: token ABCDEFG
+Content-Length: 92
+Content-Type: application/x-www-form-urlencoded
+
+{"user": "iseki", "server_name": "", "target": "http://127.0.0.1:49375", "jupyterhub": true}
+
+S=>C:
+HTTP/1.1 201 Created
+Date: Fri, 04 Feb 2022 01:27:46 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+0
+
+
+
+C=>S: [184]
+DELETE /api/routes/user/iseki HTTP/1.1
+Host: localhost:8001
+User-Agent: Mozilla/5.0 (compatible; pycurl)
+Accept: */*
+Accept-Encoding: gzip,deflate
+Authorization: token ABCDEFG
+
+
+
+S=>C:
+HTTP/1.1 204 No Content
+Date: Fri, 04 Feb 2022 01:28:07 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+

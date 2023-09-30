@@ -1,0 +1,1119 @@
+diff -Nur jupyterlab-blockly-/packages/blockly/src/dialog.ts jupyterlab-blockly/packages/blockly/src/dialog.ts
+--- jupyterlab-blockly-/packages/blockly/src/dialog.ts	1970-01-01 09:00:00.000000000 +0900
++++ jupyterlab-blockly/packages/blockly/src/dialog.ts	2023-09-23 19:33:28.587705438 +0900
+@@ -0,0 +1,35 @@
++import { Dialog } from '@jupyterlab/apputils';
++import { BlocklyEditor } from './widget';
++
++function _closeDialog(widget: BlocklyEditor): Dialog<unknown> {
++  const path = widget.context.path;
++  const n = path.lastIndexOf('/');
++  const fileName = path.substring(n + 1);
++  const trans = widget.trans;
++
++  const dialog = new Dialog({
++    title: trans.__('Save your work'),
++    body: trans.__('Save changes in "%1" before closing?', fileName),
++    buttons: [
++      Dialog.cancelButton({ label: trans.__('Cancel') }),
++      Dialog.warnButton({ label: trans.__('Discard') }),
++      Dialog.okButton({ label: trans.__('Save') })
++    ]
++  });
++  return dialog;
++}
++
++export async function closeDialog(widget: BlocklyEditor): Promise<boolean> {
++  const dialog = _closeDialog(widget);
++  const result = await dialog.launch();
++  dialog.dispose();
++
++  if (result.button.label === widget.trans.__('Cancel') || result.button.label === 'Cancel') {
++    return Promise.resolve(false);
++  }
++  // on Save, save the file
++  if (result.button.label === widget.trans.__('Save') || result.button.label === 'Save') {
++    await widget.save(true);
++  }
++  return Promise.resolve(true);
++}
+diff -Nur jupyterlab-blockly-/packages/blockly/src/factory.ts jupyterlab-blockly/packages/blockly/src/factory.ts
+--- jupyterlab-blockly-/packages/blockly/src/factory.ts	2023-09-11 18:39:43.970269042 +0900
++++ jupyterlab-blockly/packages/blockly/src/factory.ts	2023-09-24 00:55:31.608723720 +0900
+@@ -10,6 +10,14 @@
+ import { BlocklyRegistry } from './registry';
+ import { BlocklyManager } from './manager';
+ 
++import { JupyterFrontEnd } from '@jupyterlab/application';
++import { TranslationBundle, nullTranslator } from '@jupyterlab/translation';
++
++namespace CommandIDs {
++  export const copyToClipboard = 'jupyterlab-blockly:copy-to-clipboard';
++}
++
++
+ /**
+  * A widget factory to create new instances of BlocklyEditor.
+  */
+@@ -20,23 +28,44 @@
+   private _registry: BlocklyRegistry;
+   private _rendermime: IRenderMimeRegistry;
+   private _mimetypeService: IEditorMimeTypeService;
++  private _manager: BlocklyManager;
++  private _trans: TranslationBundle;
++  private _app: JupyterFrontEnd;
+ 
+   /**
+    * Constructor of BlocklyEditorFactory.
+    *
+    * @param options Constructor options
+    */
+-  constructor(options: BlocklyEditorFactory.IOptions) {
++  constructor(app: JupyterFrontEnd, options: BlocklyEditorFactory.IOptions) {
+     super(options);
++    this._app = app;
+     this._registry = new BlocklyRegistry();
+     this._rendermime = options.rendermime;
+     this._mimetypeService = options.mimetypeService;
++    this._trans = (options.translator || nullTranslator).load('jupyterlab');
++
++    app.commands.addCommand(CommandIDs.copyToClipboard, {
++      label: this._trans.__('ZZZZ Copy Output to Clipboard'),
++      execute: args => { alert("SSSS") }
++    });
++
++    app.contextMenu.addItem({
++      command: CommandIDs.copyToClipboard,
++      selector: '.jp-OutputArea-child',
++      rank: 0
++    });
++
+   }
+ 
+   get registry(): BlocklyRegistry {
+     return this._registry;
+   }
+ 
++  get manager(): BlocklyManager {
++    return this._manager;
++  }
++
+   /**
+    * Create a new widget given a context.
+    *
+@@ -47,12 +76,14 @@
+     context: DocumentRegistry.IContext<DocumentModel>
+   ): BlocklyEditor {
+     const manager = new BlocklyManager(
++      this._app,
+       this._registry,
+       context.sessionContext,
+       this._mimetypeService
+     );
++    this._manager = manager;
+     const content = new BlocklyPanel(context, manager, this._rendermime);
+-    return new BlocklyEditor({ context, content, manager });
++    return new BlocklyEditor(this._app, { context, content, manager });
+   }
+ }
+ 
+diff -Nur jupyterlab-blockly-/packages/blockly/src/layout.ts jupyterlab-blockly/packages/blockly/src/layout.ts
+--- jupyterlab-blockly-/packages/blockly/src/layout.ts	2023-09-11 18:39:43.970269042 +0900
++++ jupyterlab-blockly/packages/blockly/src/layout.ts	2023-09-23 19:33:28.587705438 +0900
+@@ -5,6 +5,7 @@
+ import { Message } from '@lumino/messaging';
+ import { PartialJSONValue } from '@lumino/coreutils';
+ import { SplitLayout, SplitPanel, Widget } from '@lumino/widgets';
++import { DockPanel } from '@lumino/widgets';
+ import { IIterator, ArrayIterator } from '@lumino/algorithm';
+ import { Signal } from '@lumino/signaling';
+ 
+@@ -13,6 +14,11 @@
+ import { BlocklyManager } from './manager';
+ import { THEME } from './utils';
+ 
++import {
++  codeIcon,
++  circleIcon,
++} from '@jupyterlab/ui-components';
++
+ /**
+  * A blockly layout to host the Blockly editor.
+  */
+@@ -22,6 +28,8 @@
+   private _workspace: Blockly.WorkspaceSvg;
+   private _sessionContext: ISessionContext;
+   private _cell: CodeCell;
++  private _finishedLoading = false;
++  private _dock;
+ 
+   /**
+    * Construct a `BlocklyLayout`.
+@@ -32,13 +40,14 @@
+     sessionContext: ISessionContext,
+     rendermime: IRenderMimeRegistry
+   ) {
+-    super({ renderer: SplitPanel.defaultRenderer, orientation: 'vertical' });
++    super({ renderer: SplitPanel.defaultRenderer, orientation: 'horizontal' });
+     this._manager = manager;
+     this._sessionContext = sessionContext;
+ 
+     // Creating the container for the Blockly editor
+     // and the output area to render the execution replies.
+     this._host = new Widget();
++    this._dock = new DockPanel();
+ 
+     // Creating a CodeCell widget to render the code and
+     // outputs from the execution reply.
+@@ -54,10 +63,20 @@
+     // adding the style to the element as a quick fix
+     // we should make it work with the css class
+     this._cell.node.style.overflow = 'scroll';
+-
++    this._cell.title.icon = codeIcon;
++    this._cell.title.label = 'Code View';
++    //
++    this._cell.outputArea.node.style.overflow = 'scroll';
++    this._cell.outputArea.title.icon = circleIcon;
++    this._cell.outputArea.title.label = 'Output View';
++    //
+     this._manager.changed.connect(this._onManagerChanged, this);
+   }
+ 
++  get activeCell(): CodeCell {
++    return this._cell;
++  }
++
+   get workspace(): PartialJSONValue {
+     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+     // @ts-ignore
+@@ -86,9 +105,7 @@
+    */
+   init(): void {
+     super.init();
+-    // Add the blockly container into the DOM
+-    this.addWidget(this._host);
+-    this.addWidget(this._cell);
++    this.insertWidget(0, this._host);
+   }
+ 
+   /**
+@@ -158,12 +175,50 @@
+         `
+       );
+     } else {
++      this._dock.activateWidget(this._cell.outputArea);
++      //
+       CodeCell.execute(this._cell, this._sessionContext)
+         .then(() => this._resizeWorkspace())
+         .catch(e => console.error(e));
+     }
+   }
+ 
++  interrupt(): void {
++    if (!this._sessionContext.hasNoKernel) {
++      const kernel = this._sessionContext.session.kernel;
++      kernel.interrupt();
++    }
++  }
++
++  clearOutputArea(): void {
++    this._dock.activateWidget(this._cell.outputArea);
++    this._cell.outputArea.model.clear();
++  }
++
++  refreshWidget(): void {
++/*
++    this._dock = new DockPanel();
++    this._dock.addWidget(this._cell.outputArea);
++    this._dock.addWidget(this._cell);
++    this.removeWidgetAt(1);
++    this.removeWidgetAt(0);
++    this.insertWidget(0, this._host);
++    this.insertWidget(1, this._dock);
++*/
++  }
++
++  setupDockView(): void {
++    if (!this._host.isVisible) { 
++      this.insertWidget(0, this._host);
++    }
++    if (this._cell.outputArea!=null && !this._cell.outputArea.isVisible) { 
++      this._dock.addWidget(this._cell.outputArea);
++      this._dock.addWidget(this._cell);
++      this.removeWidgetAt(1);
++      this.insertWidget(1, this._dock);
++    }
++  }
++
+   /**
+    * Handle `update-request` messages sent to the widget.
+    */
+@@ -199,13 +254,25 @@
+       theme: THEME
+     });
+ 
+-    this._workspace.addChangeListener(() => {
++    this._workspace.addChangeListener((event) => {
+       // Get extra code from the blocks in the workspace.
+       const extra_init = this.getBlocksToplevelInit();
+       // Serializing our workspace into the chosen language generator.
+       const code =
+         extra_init + this._manager.generator.workspaceToCode(this._workspace);
+       this._cell.model.sharedModel.setSource(code);
++      //
++      if (event.type == Blockly.Events.FINISHED_LOADING) {
++        this._finishedLoading = true;
++      }
++      else if (this._finishedLoading && (
++          event.type == Blockly.Events.BLOCK_CHANGE ||
++          event.type == Blockly.Events.BLOCK_CREATE ||
++          event.type == Blockly.Events.BLOCK_DELETE ||
++          event.type == Blockly.Events.BLOCK_MOVE)) {
++        // dirty workspace
++        this._manager.dirty(true);
++      }
+     });
+   }
+ 
+@@ -227,7 +294,7 @@
+       this._cell.model.sharedModel.setSource(code);
+       this._cell.model.mimeType = this._manager.mimeType;
+     }
+-    if (change === 'toolbox') {
++    else if (change === 'toolbox') {
+       this._workspace.updateToolbox(this._manager.toolbox as any);
+     }
+   }
+diff -Nur jupyterlab-blockly-/packages/blockly/src/manager.ts jupyterlab-blockly/packages/blockly/src/manager.ts
+--- jupyterlab-blockly-/packages/blockly/src/manager.ts	2023-09-11 18:39:43.970269042 +0900
++++ jupyterlab-blockly/packages/blockly/src/manager.ts	2023-09-23 19:33:28.587705438 +0900
+@@ -9,6 +9,8 @@
+ import * as Blockly from 'blockly';
+ 
+ import { BlocklyRegistry } from './registry';
++import { JupyterFrontEnd } from '@jupyterlab/application';
++import { ILabShell } from '@jupyterlab/application';
+ 
+ /**
+  * BlocklyManager the manager for each document
+@@ -23,15 +25,20 @@
+   private _sessionContext: ISessionContext;
+   private _mimetypeService: IEditorMimeTypeService;
+   private _changed: Signal<this, BlocklyManager.Change>;
++  private _language: string;
++  private _app: JupyterFrontEnd;
++  private _shell: ILabShell;
+ 
+   /**
+    * Constructor of BlocklyManager.
+    */
+   constructor(
++    app: JupyterFrontEnd,
+     registry: BlocklyRegistry,
+     sessionContext: ISessionContext,
+-    mimetypeService: IEditorMimeTypeService
++    mimetypeService: IEditorMimeTypeService,
+   ) {
++    this._app = app;
+     this._registry = registry;
+     this._sessionContext = sessionContext;
+     this._mimetypeService = mimetypeService;
+@@ -41,6 +48,24 @@
+ 
+     this._changed = new Signal<this, BlocklyManager.Change>(this);
+     this._sessionContext.kernelChanged.connect(this._onKernelChanged, this);
++
++    this._language = this._registry.language;
++    if (this._language != 'En') {
++      import(`./msg/${this._language}.js`)
++        .then( (module) => {
++          new module.setToolboxTitle(this.toolbox);
++          this._changed.emit('toolbox');
++        });
++    }
++
++    this._shell = this._app.shell as ILabShell;
++    this._shell.currentChanged.connect((_, change) => {
++      this._changed.emit('focus');
++    });
++  }
++
++  get shell(): ILabShell {
++    return this._shell;
+   }
+ 
+   /**
+@@ -74,6 +99,13 @@
+   }
+ 
+   /**
++   *
++   */
++  get kernelspec(): KernelSpec.ISpecModel {
++    return this._selectedKernel;
++  }
++
++  /**
+    * Returns the selected generator.
+    */
+   get generator(): Blockly.Generator {
+@@ -88,6 +120,15 @@
+   }
+ 
+   /**
++   * Send a 'block' signal to BlocklyEditor
++   */
++  dirty(dirty: boolean): void {
++    if (dirty) {
++      this._changed.emit('dirty');
++    }
++  }
++
++  /**
+    * Dispose.
+    */
+   dispose(): void {
+@@ -178,5 +219,5 @@
+   /**
+    * The argument of the signal manager changed.
+    */
+-  export type Change = 'toolbox' | 'kernel';
++  export type Change = 'toolbox' | 'kernel' | 'focus' | 'dirty';
+ }
+diff -Nur jupyterlab-blockly-/packages/blockly/src/msg/Jp.js jupyterlab-blockly/packages/blockly/src/msg/Jp.js
+--- jupyterlab-blockly-/packages/blockly/src/msg/Jp.js	1970-01-01 09:00:00.000000000 +0900
++++ jupyterlab-blockly/packages/blockly/src/msg/Jp.js	2023-09-16 14:55:03.020718694 +0900
+@@ -0,0 +1,27 @@
++
++//
++export class setToolboxTitle {
++  constructor(toolbox) {
++    for (let i = 0; i < toolbox.contents.length; i++) {
++      if (toolbox.contents[i].hasOwnProperty('name')) {
++        let toolboxName = toolbox.contents[i].name;
++        if (ToolboxTitle.hasOwnProperty(toolboxName)) {
++          toolbox.contents[i].name = ToolboxTitle[toolboxName];
++        }
++      }
++    }
++  }
++}
++
++//
++const ToolboxTitle = {
++  Logic: '論理', 
++  Loops: '繰返し', 
++  Math:  '数学', 
++  Text:  'テキスト', 
++  Lists: 'リスト', 
++  Color: '色', 
++  Variables: '変数', 
++  Functions: '関数',
++}
++
+diff -Nur jupyterlab-blockly-/packages/blockly/src/registry.ts jupyterlab-blockly/packages/blockly/src/registry.ts
+--- jupyterlab-blockly-/packages/blockly/src/registry.ts	2023-09-11 18:39:43.970269042 +0900
++++ jupyterlab-blockly/packages/blockly/src/registry.ts	2023-09-23 19:33:28.587705438 +0900
+@@ -20,6 +20,7 @@
+ export class BlocklyRegistry implements IBlocklyRegistry {
+   private _toolboxes: Map<string, JSONObject>;
+   private _generators: Map<string, Blockly.Generator>;
++  private _language = "En";
+ 
+   /**
+    * Constructor of BlocklyRegistry.
+@@ -49,6 +50,13 @@
+   }
+ 
+   /**
++   * Returns language (2 charactors).
++   */
++  get language(): string {
++    return this._language;
++  }
++
++  /**
+    * Register a toolbox for the editor.
+    *
+    * @argument name Name of the toolbox.
+@@ -86,6 +94,7 @@
+   }
+ 
+   setlanguage(language: string): void {
++    this._language = language;
+     Private.importLanguageModule(language);
+   }
+ }
+diff -Nur jupyterlab-blockly-/packages/blockly/src/widget.ts jupyterlab-blockly/packages/blockly/src/widget.ts
+--- jupyterlab-blockly-/packages/blockly/src/widget.ts	2023-09-11 18:39:43.970269042 +0900
++++ jupyterlab-blockly/packages/blockly/src/widget.ts	2023-09-24 00:53:45.174347628 +0900
+@@ -3,8 +3,15 @@
+   DocumentWidget,
+   DocumentModel
+ } from '@jupyterlab/docregistry';
++
+ import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
+-import { runIcon } from '@jupyterlab/ui-components';
++import { 
++  runIcon,
++  stopIcon,
++  saveIcon,
++  circleEmptyIcon,
++  refreshIcon,
++} from '@jupyterlab/ui-components';
+ 
+ import { SplitPanel } from '@lumino/widgets';
+ import { Signal } from '@lumino/signaling';
+@@ -18,26 +25,103 @@
+   Spacer
+ } from './toolbar';
+ 
++import { TranslationBundle, nullTranslator } from '@jupyterlab/translation';
++import { sessionContextDialogs } from '@jupyterlab/apputils';
++import { closeDialog } from './dialog';
++import { JupyterFrontEnd } from '@jupyterlab/application';
++
++/*
++import { Message } from '@lumino/messaging';
++import {
++  Cell,
++//  CodeCell,
++//  ICellModel,
++//  ICodeCellModel,
++//  IMarkdownCellModel,
++//  IRawCellModel,
++//  MarkdownCell,
++//  RawCell
++} from '@jupyterlab/cells';
++import { PanelLayout } from '@lumino/widgets';
++import { ArrayExt } from '@lumino/algorithm';
++const NB_CELL_CLASS = 'jp-Notebook-cell';
++/**/
++
++const DIRTY_CLASS = 'jp-mod-dirty';
++
++
+ /**
+  * DocumentWidget: widget that represents the view or editor for a file type.
+  */
+ export class BlocklyEditor extends DocumentWidget<BlocklyPanel, DocumentModel> {
+-  constructor(options: BlocklyEditor.IOptions) {
++
++  private _context: DocumentRegistry.IContext<DocumentModel>;
++  private _trans: TranslationBundle;
++  private _manager: BlocklyManager;
++  private _blayout: BlocklyLayout;
++  private _dirty = false;
++//  private _app;
++
++  constructor(app: JupyterFrontEnd, options: BlocklyEditor.IOptions) {
+     super(options);
+ 
++    this._context = options.context;
++    this._manager = options.manager;
++//    this._app = app;
++
++    //const { commands } = app;
++
+     // Loading the ITranslator
+-    // const trans = this.translator.load('jupyterlab');
++    this._trans = ((this._context as any).translator || nullTranslator).load('jupyterlab');
+ 
++    // this.content is BlocklyPanel
++    this._blayout = this.content.layout as BlocklyLayout;
+     // Create and add a button to the toolbar to execute
+     // the code.
+-    const button = new BlocklyButton({
++    const button_save = new BlocklyButton({
++      label: '',
++      icon: saveIcon,
++      className: 'jp-blockly-saveFile',
++      onClick: () => this.save(true),
++      tooltip: 'Save File'
++    });
++
++    const button_run = new BlocklyButton({
+       label: '',
+       icon: runIcon,
+       className: 'jp-blockly-runButton',
+-      onClick: () => (this.content.layout as BlocklyLayout).run(),
++      onClick: () => this._blayout.run(),
+       tooltip: 'Run Code'
+     });
+-    this.toolbar.addItem('run', button);
++
++    const button_stop = new BlocklyButton({
++      label: '',
++      icon: stopIcon,
++      className: 'jp-blockly-stopButton',
++      onClick: () => this._blayout.interrupt(),
++      tooltip: 'Stop Code'
++    });
++
++    const button_clear = new BlocklyButton({
++      label: '',
++      icon: circleEmptyIcon,
++      className: 'jp-blockly-clearButton',
++      onClick: () => this._blayout.clearOutputArea(),
++      tooltip: 'Clear Output'
++    });
++
++    const button_refresh = new BlocklyButton({
++      label: '',
++      icon: refreshIcon,
++      className: 'jp-blockly-refreshButton',
++      onClick: () => this._blayout.refreshWidget(),
++      tooltip: 'Refresh Widget'
++    });
++
++    this.toolbar.addItem('save', button_save);
++    this.toolbar.addItem('run', button_run);
++    this.toolbar.addItem('stop', button_stop);
++    this.toolbar.addItem('clear', button_clear);
+     this.toolbar.addItem('spacer', new Spacer());
+     this.toolbar.addItem(
+       'toolbox',
+@@ -55,17 +139,176 @@
+         manager: options.manager
+       })
+     );
++    this.toolbar.addItem('refresh', button_refresh);
++    //
++    this._manager.changed.connect(this._onBlockChanged, this);
++  } /* End of constructor */
++
++  // for dialog.ts
++  get trans(): TranslationBundle {
++    return this._trans;
++  }
++
++ /**
++  * Sets the dirty boolean while also toggling the DIRTY_CLASS
++  */
++  private dirty(dirty: boolean): void {
++    this._dirty = dirty;
++    //
++    if (this._dirty && !this.title.className.includes(DIRTY_CLASS)) {
++      this.title.className += ' ' + DIRTY_CLASS;
++    } else if (!this._dirty) {
++      this.title.className = this.title.className.replace(DIRTY_CLASS, '');
++    }
++    this.title.className = this.title.className.replace('  ', ' ');
++  }
++
++  // 
++  async save(exiting = false): Promise<void> {
++    exiting ? await this._context.save() : this._context.save();
++    this.dirty(false);
+   }
+ 
+   /**
+    * Dispose of the resources held by the widget.
+    */
+-  dispose(): void {
++  async dispose(): Promise<void> {
++    if (!this.isDisposed && this._dirty) {
++      const isclose = await closeDialog(this);
++      if (!isclose) return;
++    }
+     this.content.dispose();
+     super.dispose();
+   }
++
++ //
++  private _onBlockChanged(
++    sender: BlocklyManager,
++    change: BlocklyManager.Change
++  ) {
++
++    if (change === 'dirty') {
++      this.dirty(true);
++    }
++    else if (change === 'focus') {
++      this._blayout.setupDockView();
++    }
++  }
++
++/************************************************************/
++/*
++  handleEvent(event: Event): void {
++    switch (event.type) {
++      case 'contextmenu':
++        if (event.eventPhase === Event.CAPTURING_PHASE) {
++          this._evtContextMenuCapture(event as PointerEvent);
++        }
++        break;
++      default:
++        break;
++    }
++  }
++
++  /**
++   * Handle `after-attach` messages sent to the widget.
++   */
++/*
++  protected onAfterAttach(msg: Message): void {
++    super.onAfterAttach(msg);
++    this.node.addEventListener('contextmenu', this, true);
++    this.node.addEventListener('focusin', this);
++  }
++
++  protected onBeforeDetach(msg: Message): void {
++    this.node.removeEventListener('contextmenu', this, true);
++    this.node.removeEventListener('focusin', this);
++    super.onBeforeDetach(msg);
++  }
++
++  /**
++   * Handle `contextmenu` event.
++   */
++/*
++  private _evtContextMenuCapture(event: PointerEvent): void {
++    // Allow the event to propagate un-modified if the user
++    // is holding the shift-key (and probably requesting
++    // the native context menu).
++    if (event.shiftKey) {
++      return;
++    }
++
++    const [target, index] = this._findEventTargetAndCell(event);
++    const widget = this.widgets[index];
++
++    if (widget && widget.editorWidget.node.contains(target)) {
++      // Prevent CodeMirror from focusing the editor.
++      // TODO: find an editor-agnostic solution.
++      event.preventDefault();
++    }
++  }
++
++  /**
++   * A read-only sequence of the widgets in the notebook.
++   */
++/*
++  get widgets(): ReadonlyArray<Cell> {
++    return (this.layout as PanelLayout).widgets as ReadonlyArray<Cell>;
++  }
++
++  /**
++   * Find the target of html mouse event and cell index containing this target.
++   *
++   * #### Notes
++   * Returned index is -1 if the cell is not found.
++   */
++/*
++  private _findEventTargetAndCell(event: MouseEvent): [HTMLElement, number] {
++    let target = event.target as HTMLElement;
++    let index = this._findCell(target);
++    if (index === -1) {
++      // `event.target` sometimes gives an orphaned node in Firefox 57, which
++      // can have `null` anywhere in its parent line. If we fail to find a cell
++      // using `event.target`, try again using a target reconstructed from the
++      // position of the click event.
++      target = document.elementFromPoint(
++        event.clientX,
++        event.clientY
++      ) as HTMLElement;
++      index = this._findCell(target);
++    }
++    return [target, index];
++  }
++
++  /**
++   * Find the cell index containing the target html element.
++   *
++   * #### Notes
++   * Returns -1 if the cell is not found.
++   */
++/*
++  private _findCell(node: HTMLElement): number {
++    // Trace up the DOM hierarchy to find the root cell node.
++    // Then find the corresponding child and select it.
++    let n: HTMLElement | null = node;
++    while (n && n !== this.node) {
++      if (n.classList.contains(NB_CELL_CLASS)) {
++        const i = ArrayExt.findFirstIndex(
++          this.widgets,
++          widget => widget.node === n
++        );
++        if (i !== -1) {
++          return i;
++        }
++        break;
++      }
++      n = n.parentElement;
++    }
++    return -1;
++  }
++  /**/
+ }
+ 
++
+ export namespace BlocklyEditor {
+   export interface IOptions
+     extends DocumentWidget.IOptions<BlocklyPanel, DocumentModel> {
+@@ -78,6 +321,9 @@
+  */
+ export class BlocklyPanel extends SplitPanel {
+   private _context: DocumentRegistry.IContext<DocumentModel>;
++  private _content;
++  private _manager: BlocklyManager;
++  //private _playout: BlocklyLayout;
+ 
+   /**
+    * Construct a `ExamplePanel`.
+@@ -87,13 +333,14 @@
+   constructor(
+     context: DocumentRegistry.IContext<DocumentModel>,
+     manager: BlocklyManager,
+-    rendermime: IRenderMimeRegistry
++    rendermime: IRenderMimeRegistry,
+   ) {
+     super({
+       layout: new BlocklyLayout(manager, context.sessionContext, rendermime)
+     });
+     this.addClass('jp-BlocklyPanel');
+     this._context = context;
++    this._manager = manager;
+ 
+     // Load the content of the file when the context is ready
+     this._context.ready.then(() => this._load());
+@@ -101,6 +348,22 @@
+     this._context.saveState.connect(this._onSave, this);
+   }
+ 
++  get context() { 
++    return this._context;
++  }
++
++  get content() {
++    return this._content;
++  }
++
++  get manager(): BlocklyManager {
++    return this._manager;
++  }
++
++  get activeLayout(): BlocklyLayout {
++    return this.layout as BlocklyLayout;
++  }
++
+   /**
+    * Dispose of the resources held by the widget.
+    */
+@@ -113,9 +376,27 @@
+   }
+ 
+   private _load(): void {
++    console.log("Loading " + this._context.path);
+     // Loading the content of the document into the workspace
+-    const content = this._context.model.toJSON();
+-    (this.layout as BlocklyLayout).workspace = content;
++    let kernelname = '';
++    this._content = this._context.model.toJSON();
++    if (this._content != null) {
++      if (('metadata' in this._content) && 
++          ('kernelspec' in this._content['metadata']) &&
++          ('name' in this._content['metadata']['kernelspec'])) {
++        kernelname = this._content['metadata']['kernelspec']['name'];
++      }
++    }
++
++    if (kernelname === '') {
++      sessionContextDialogs.selectKernel(this._context.sessionContext, (this._context as any).translator);
++    }
++    else {
++      this._manager.selectKernel(kernelname);
++    }
++    (this.layout as BlocklyLayout).workspace = this._content;
++    // Set Block View, Output View and Code View to DockPanel
++    (this.layout as BlocklyLayout).setupDockView();
+   }
+ 
+   private _onSave(
+@@ -124,6 +405,16 @@
+   ): void {
+     if (state === 'started') {
+       const workspace = (this.layout as BlocklyLayout).workspace;
++      //
++      if (this._manager['kernelspec'] != undefined) {
++        workspace['metadata'] = {
++            'kernelspec': {
++            'display_name': this._manager.kernelspec.display_name,
++            'language': this._manager.kernelspec.language,
++            'name': this._manager.kernelspec.name
++            }
++        };
++      }
+       this._context.model.fromJSON(workspace);
+     }
+   }
+diff -Nur jupyterlab-blockly-/packages/blockly/tsconfig.json jupyterlab-blockly/packages/blockly/tsconfig.json
+--- jupyterlab-blockly-/packages/blockly/tsconfig.json	2023-09-11 18:39:32.839339132 +0900
++++ jupyterlab-blockly/packages/blockly/tsconfig.json	2023-09-11 18:34:04.173262916 +0900
+@@ -5,6 +5,6 @@
+     "outDir": "lib",
+     "rootDir": "src"
+   },
+-  "include": ["src/**/*.ts", "src/**/*.tsx"],
++  "include": ["src/**/*.ts", "src/**/*.tsx", "src/msg/*.js"],
+   "exclude": ["node_modules"]
+ }
+diff -Nur jupyterlab-blockly-/packages/blockly-extension/src/index.ts jupyterlab-blockly/packages/blockly-extension/src/index.ts
+--- jupyterlab-blockly-/packages/blockly-extension/src/index.ts	2023-09-11 18:39:43.970269042 +0900
++++ jupyterlab-blockly/packages/blockly-extension/src/index.ts	2023-09-23 19:33:39.075644212 +0900
+@@ -12,10 +12,14 @@
+ import { ITranslator } from '@jupyterlab/translation';
+ import { ISettingRegistry } from '@jupyterlab/settingregistry';
+ import { IKernelMenu, IMainMenu } from '@jupyterlab/mainmenu';
++import { sessionContextDialogs } from '@jupyterlab/apputils';
+ 
+ import { BlocklyEditorFactory } from 'jupyterlab-blockly';
+ import { IBlocklyRegistry } from 'jupyterlab-blockly';
+ import { BlocklyEditor } from 'jupyterlab-blockly';
++//import { BlocklyPanel } from 'jupyterlab-blockly';
++//import { BlocklyLayout } from 'jupyterlab-blockly';
++//import { CodeCell } from '@jupyterlab/cells';
+ 
+ import { blockly_icon } from './icons';
+ 
+@@ -28,6 +32,7 @@
+ 
+ namespace CommandIDs {
+   export const createNew = 'blockly:create-new-blockly-file';
++//  export const copyToClipboard = 'blockly:copy-to-clipboard';
+ }
+ 
+ /**
+@@ -36,10 +41,10 @@
+ const PLUGIN_ID = '@jupyterlab/translation-extension:plugin';
+ 
+ /**
+- * Initialization data for the jupyterlab-blocky extension.
++ * Initialization data for the jupyterlab-blockly extension.
+  */
+ const plugin: JupyterFrontEndPlugin<IBlocklyRegistry> = {
+-  id: 'jupyterlab-blocky:plugin',
++  id: 'jupyterlab-blockly:plugin',
+   autoStart: true,
+   requires: [
+     ILayoutRestorer,
+@@ -63,10 +68,10 @@
+     palette: ICommandPalette | null,
+     mainMenu: IMainMenu | null
+   ): IBlocklyRegistry => {
+-    console.log('JupyterLab extension jupyterlab-blocky is activated!');
++    console.log('JupyterLab extension jupyterlab-blockly is activated!');
+ 
+     // Namespace for the tracker
+-    const namespace = 'jupyterlab-blocky';
++    const namespace = 'jupyterlab-blockly';
+ 
+     // Creating the tracker for the document
+     const tracker = new WidgetTracker<BlocklyEditor>({ namespace });
+@@ -81,11 +86,12 @@
+       });
+     }
+ 
++    const trans = translator.load('jupyterlab');
+     const { commands } = app;
+ 
+     // Creating the widget factory to register it so the document manager knows about
+     // our new DocumentWidget
+-    const widgetFactory = new BlocklyEditorFactory({
++    const widgetFactory = new BlocklyEditorFactory(app, {
+       name: FACTORY,
+       modelName: 'text',
+       fileTypes: ['blockly'],
+@@ -96,7 +102,7 @@
+       // that reason, we tell the widget factory to start a kernel session
+       // when opening the editor, and close the session when closing the editor.
+       canStartKernel: true,
+-      preferKernel: true,
++      preferKernel: false,
+       shutdownOnClose: true,
+ 
+       // The rendermime instance, necessary to render the outputs
+@@ -190,7 +196,7 @@
+     if (launcher) {
+       launcher.add({
+         command: CommandIDs.createNew,
+-        category: 'Other',
++        category: trans.__('Other'),
+         rank: 1
+       });
+     }
+@@ -223,18 +229,167 @@
+           return Promise.resolve(void 0);
+         },
+         restartKernel: current => {
+-          const kernel = current.context.sessionContext.session?.kernel;
+-          if (kernel) {
+-            return kernel.restart();
+-          }
++          sessionContextDialogs.restart(current.context.sessionContext, translator);
+           return Promise.resolve(void 0);
+         },
+         shutdownKernel: current => current.context.sessionContext.shutdown()
+       } as IKernelMenu.IKernelUser<BlocklyEditor>);
+     }
+-
++    //
++    app.contextMenu.dispose();
++    //
+     return widgetFactory.registry;
+   }
+ };
+ 
+-export default plugin;
++
++/*
++const copyOutputPlugin: JupyterFrontEndPlugin<void> = {
++  id: 'jupyterlab-blockly:copy-output',
++  activate: activateCopyOutput,
++  requires: [ITranslator, IFileBrowserFactory],
++  autoStart: true
++};
++
++
++/**
++ * Activate the output copying extension
++ */
++/*
++function activateCopyOutput(
++  app: JupyterFrontEnd,
++  translator: ITranslator,
++//  tracker: INotebookTracker
++): void {
++  const trans = translator.load('jupyterlab');
++
++  const { commands } = app;
++
++  /**
++   * Copy the contents of an HTMLElement to the system clipboard
++   */
++/*
++  function copyElement(e: HTMLElement): void {
++    const sel = window.getSelection();
++
++    if (sel == null) {
++      return;
++    }
++
++    // Save the current selection.
++    const savedRanges: Range[] = [];
++    for (let i = 0; i < sel.rangeCount; ++i) {
++      savedRanges[i] = sel.getRangeAt(i).cloneRange();
++    }
++
++    const range = document.createRange();
++    range.selectNodeContents(e);
++    sel.removeAllRanges();
++    sel.addRange(range);
++
++    document.execCommand('copy');
++
++    // Restore the saved selection.
++    sel.removeAllRanges();
++    savedRanges.forEach(r => sel.addRange(r));
++  }
++*/
++
++/*
++  commands.addCommand(CommandIDs.copyToClipboard, {
++    label: trans.__('XXXX Copy Output to Clipboard'),
++    execute: args => { 
++      const cell = tracker.currentWidget?.content.activeCell as CodeCell;
++
++      if (cell == null) {
++        return;
++      }
++
++      const output = cell.outputArea.outputTracker.currentWidget;
++
++      if (output == null) {
++        return;
++      }
++
++      const outputAreaAreas = output.node.getElementsByClassName(
++        'jp-OutputArea-output'
++      );
++      if (outputAreaAreas.length > 0) {
++        const area = outputAreaAreas[0];
++        copyElement(area as HTMLElement);
++      }
++    }
++  });
++
++  /**
++   * A method invoked on a document `'contextmenu'` event.
++   */
++
++/*
++  protected evtContextMenu(event: MouseEvent): void {
++    this._contextMenuEvent = event;
++    if (
++      event.shiftKey ||
++      Private.suppressContextMenu(event.target as HTMLElement)
++    ) {
++      return;
++    }
++    const opened = this.contextMenu.open(event);
++    if (opened) {
++      const items = this.contextMenu.menu.items;
++      // If only the context menu information will be shown,
++      // with no real commands, close the context menu and
++      // allow the native one to open.
++      if (
++        items.length === 1 &&
++        items[0].command === JupyterFrontEndContextMenu.contextMenu
++      ) {
++        this.contextMenu.menu.close();
++        return;
++      }
++      // Stop propagation and allow the application context menu to show.
++      event.preventDefault();
++      event.stopPropagation();
++    }
++  }
++*/
++
++/*
++  commands.addCommand(CommandIDs.copyToClipboardx, {
++    label: trans.__('ZZZZ Copy Output to Clipboard'),
++    execute: args => { }
++  });
++
++
++//  app.contextMenu.menu.dispose();
++//  app.contextMenu.menu(_contextMenuEvent);
++
++  app.contextMenu.addItem({
++    command: CommandIDs.copyToClipboard,
++    selector: '.jp-OutputArea-child',
++    rank: 0
++  });
++
++  app.contextMenu.addItem({
++    command: CommandIDs.copyToClipboardx,
++    selector: '.jp-OutputArea-child',
++    rank: 0
++  });
++
++console.log("========================================= ");
++let obj = app.contextMenu.menu;
++for (const key in obj) {
++  console.log(String(key) + " -> " + obj[key]);
++}
++console.log("========================================= ");
++
++}
++*/
++
++
++//
++const plugins: JupyterFrontEndPlugin<any>[] = [
++  plugin,
++//  copyOutputPlugin,
++];
++export default plugins;

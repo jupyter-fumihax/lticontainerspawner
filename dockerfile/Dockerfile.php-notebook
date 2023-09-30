@@ -1,0 +1,145 @@
+FROM docker.io/jupyterhub/singleuser
+#FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltids/php
+
+USER root
+
+#
+RUN apt-get update \
+# && apt-get upgrade -y \
+  && apt-get install -y --no-install-recommends \
+#    curl \
+    zip unzip \
+    libgmp-dev \
+    libmagic-dev \
+    libtinfo-dev \
+    libzmq3-dev \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libblas-dev \
+    liblapack-dev \
+    php php-cli php-dev php-pear php-zmq php-zip \
+#    python3-pip l\
+#    binutils \
+#    apt-utils \
+#    mlocate \
+    wget \
+#    pkg-config \
+    git \
+#    make \
+    g++ \
+#    language-pack-ja-base \
+#    language-pack-ja \
+  && apt-get -y clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && true
+
+
+#
+RUN  /opt/conda/bin/conda update  -n base conda \
+  && /opt/conda/bin/conda update  --prefix /opt/conda -c conda-forge jupyterhub -y \
+  && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab -y \
+  && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab_widgets -y \
+  && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab-language-pack-ja-jp -y \
+  && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterhub-singleuser -y \
+#  && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pip -y \
+#  && /opt/conda/bin/conda update  --prefix /opt/conda --all -y \
+  && /opt/conda/bin/conda clean   --all -y \
+  && true
+
+
+# install composer
+RUN wget https://getcomposer.org/installer -O composer-setup.php \
+  && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+  && COMPOSER_ALLOW_SUPERUSER=1 composer global require rabrennie/jupyter-php-kernel \
+  && true
+
+#
+# install php for system
+ADD dockerfile/php/Installer.php /home/jovyan/.composer/vendor/rabrennie/jupyter-php-kernel/src/Installer
+RUN cp -Rpd /home/jovyan/.composer/vendor  /usr/local \
+  && ln -s /usr/local/vendor/bin/* /usr/local/bin \
+  && jupyter-php-kernel --install \
+  && true
+
+#
+# install ijavascript
+RUN  /opt/conda/bin/npm install -g ijavascript \
+  && /opt/conda/bin/ijsinstall --install=global \
+  && /opt/conda/bin/jupyter kernelspec list \
+  && true
+
+
+#
+# install zeromq and zmq php extension
+#RUN wget https://github.com/zeromq/zeromq4-1/releases/download/v4.1.5/zeromq-4.1.5.tar.gz \
+#  && tar -xvf zeromq-4.1.5.tar.gz \
+#  && cd zeromq-4.1.5 \
+#  && ./configure && make && make install \
+#  && cd .. \
+#  && rm -r zeromq-4.1.5 zeromq-4.1.5.tar.gz \
+#  && true
+
+#
+#RUN git clone https://github.com/zeromq/php-zmq.git \
+#  && cd php-zmq \
+#  && phpize && ./configure \
+#  && make \
+#  && make install \
+#  && cd .. \
+#  && rm -r php-zmq \
+#  && echo "extension=zmq.so" > /etc/php/8.1/cli/conf.d/zmq.ini \
+#  && true
+
+# install PHP composer
+#RUN cd .. \
+#  && wget https://getcomposer.org/installer -O composer-setup.php \
+#  && wget https://litipk.github.io/Jupyter-PHP-Installer/dist/jupyter-php-installer.phar \
+#  && php composer-setup.php \
+#  && php composer.phar self-update 1.9.3 \
+#  && php ./jupyter-php-installer.phar -vvv install \
+#  && mv composer.phar /usr/local/bin/composer \
+#  && rm -rf zeromq-* jupyter-php* \
+#  && rm composer-setup.php \
+#  && true
+
+
+# for LTIContainer
+ADD \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    /usr/local/bin/
+
+ADD \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+ADD \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+ADD \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+RUN  chmod a+rx /usr/local/bin/* \
+  && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+  && true
+

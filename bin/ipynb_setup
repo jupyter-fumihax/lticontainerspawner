@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+
+#
+if [ $# -lt 1 ]; then
+    echo "usage ... "$0" task_vol [num_fac]"
+    exit 1
+fi
+if [ ! -x "/usr/local/bin/ipynb_conv" ]; then
+    echo "error ... convert program (ipynb_conv) is not found."
+    exit 1
+fi
+
+T_DIR="$1"
+N_FAC="$2"
+
+if [ "$N_FAC" = "" ]; then
+    $N_FAC = 1
+fi
+
+VFS=`find $T_DIR -type f -name "*.ipynb" 2>/dev/null | grep -v "\/\."`
+
+IFS=$'\n'
+if [ "$VFS" != "" ]; then
+    for VF in $VFS ; do
+        FL=`echo $VF | sed -e "s/\/lms_vol_/\/lms_prs_/"`
+        #
+        echo "setup ... "$FL
+        /usr/local/bin/ipynb_conv $FL $FL $N_FAC
+        if [ -x "/usr/local/bin/ipynb_conv_alt" ]; then
+            /usr/local/bin/ipynb_conv_alt $FL || true
+        fi
+    done
+fi
+

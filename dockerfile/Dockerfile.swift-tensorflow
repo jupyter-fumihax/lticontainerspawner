@@ -1,0 +1,109 @@
+# Start from S4TF base image
+#FROM gcr.io/swift-tensorflow/base-deps-cuda10.2-cudnn7-ubuntu18.04
+#FROM gcr.io/swift-tensorflow/base-deps-cuda11.0-cudnn8-ubuntu18.04
+#FROM gcr.io/swift-tensorflow/base-deps-ubuntu18.04
+FROM gcr.io/swift-tensorflow/base-deps-ubuntu20.04
+
+USER root
+
+RUN apt-get update \
+# && apt-get upgrade -y \
+ && apt-get install -y --no-install-recommends \
+    sudo \
+    binutils \
+    apt-utils \
+    git \
+    libfreetype6-dev\
+    openssl \
+    libssl-dev \
+    clang \
+    libpython3-dev \
+    libblocksruntime-dev \
+    language-pack-ja-base \
+    language-pack-ja \
+ && apt-get -y clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && true
+
+#
+RUN pip3 install --upgrade pip \
+ && pip3 install jupyter \
+ && pip3 install jupyterhub \
+# && pip3 install jupyterlab==3.6.5 \
+ && pip3 install jupyterlab \
+ && pip3 install jupyterlab_widgets \
+ && pip3 install jupyterlab-language-pack-ja-JP \
+# && pip3 install ipynb_path \
+ && true
+
+#
+# Allow the caller to specify the toolchain to use
+#ARG swift_tf_url=https://storage.googleapis.com/swift-tensorflow-artifacts/nightlies/latest/swift-tensorflow-DEVELOPMENT-cuda10.2-cudnn7-ubuntu18.04.tar.gz
+#ARG swift_tf_url=https://storage.googleapis.com/swift-tensorflow-artifacts/nightlies/latest/swift-tensorflow-DEVELOPMENT-stock-ubuntu20.04.tar.gz
+#ARG swift_tf_url=https://storage.googleapis.com/swift-tensorflow-artifacts/releases/v0.13/swift-tensorflow-RELEASE-0.13-ubuntu18.04.tar.gz
+ARG swift_tf_url=https://storage.googleapis.com/swift-tensorflow-artifacts/releases/v0.13/swift-tensorflow-RELEASE-0.13-ubuntu20.04.tar.gz
+
+#
+# Download and extract S4TF
+WORKDIR /
+ADD $swift_tf_url swift.tar.gz
+RUN tar -xzf swift.tar.gz --directory=usr --strip-components=1 \
+ && rm swift.tar.gz \
+ && git clone https://github.com/google/swift-jupyter.git \
+ && update-locale LANG=ja_JP.UTF-8 \
+ && true
+
+#
+# Install some python libraries that are useful to call from swift
+WORKDIR /swift-jupyter
+RUN echo "pillow" >> docker/requirements_py_graphics.txt \
+ && python3 -m pip install --no-cache-dir -r docker/requirements.txt \
+ && python3 -m pip install --no-cache-dir -r docker/requirements_py_graphics.txt \
+ && python3 register.py --sys-prefix --swift-toolchain  / > /dev/null \
+ && chmod a+r * \
+ && true
+
+ENV PATH=$CONDA_HOME/bin:/usr/local/bin:$PATH
+
+
+# LTIContainer
+ADD \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    /usr/local/bin/
+
+ADD \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+ADD \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+ADD \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+RUN chmod a+rx /usr/local/bin/* \
+ && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+
+CMD ["start-notebook.sh"]

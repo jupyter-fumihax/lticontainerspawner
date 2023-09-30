@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# usage .... submit [file1] [file2] [ifile3] .....
+#
+
+SBT=`echo $NB_SUBMITS | awk -F" " '{print $1}'`
+DST=`echo $SBT | awk -F":" '{print $1}'`
+LNK=`echo $SBT | awk -F":" '{print $2}'`
+if [ "$DST" == "" ] ; then 
+    exit
+fi
+DST=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${DST}
+
+#
+PRS=`echo $NB_PRSNALS | awk -F" " '{print $1}' | awk -F":" '{print $1}'`
+if [ "$PRS" != "" ] ; then
+    PRS=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${PRS}
+    cd $PRS
+fi
+
+#
+if [ -d $DST ]; then
+    IFS=$'\n'
+    USR=`whoami`
+    #
+    if [ $# -gt 0 ]; then       # ファイル名を指定
+        for FLN in $*; do
+            if [ ! -d $FLN ]; then
+                FL=`echo $FLN | awk -F"/" '{print $NF}'`
+                echo "copying ...  \"$FLN\"  \"${LNK}/${USR}_${FL}\"" 1>&2
+                cp "$FLN" "${DST}/${USR}_${FL}"
+                chmod g+r,o-rwx "${DST}/${USR}_${FL}" 2> /dev/null
+            fi
+        done
+    else                        # ファイル名の指定なし
+        FLS=`ls | grep -e '\.ipynb$'`
+        for FLN in $FLS; do
+            if [ ! -d $FLN ]; then
+                echo "copying ...  \"$FLN\"  \"${LNK}/${USR}_${FLN}\"" 1>&2
+                cp "$FLN" "${DST}/${USR}_${FLN}"
+                chmod g+r,o-rwx "${DST}/${USR}_${FLN}" 2> /dev/null
+            fi
+        done
+    fi
+fi

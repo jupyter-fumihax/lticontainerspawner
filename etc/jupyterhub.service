@@ -1,0 +1,19 @@
+# /usr/lib/systemd/system/jupyterhub.service
+
+[Unit]
+Description = JupyterHub
+After = network-online.target 
+
+[Service]
+Environment = CONFIGF=/usr/local/etc/jupyterhub_lticontainer_config.py
+#Environment = PATH=/usr/local/anaconda/envs/jupyterhub/bin:/usr/local/anaconda/condabin:${PATH}
+#
+User = root
+PIDFile = /var/run/jupyterhub.pid
+#ExecStart = /usr/local/anaconda/envs/jupyterhub/bin/jupyterhub -f ${CONFIGF}
+ExecStart = /usr/local/bin/jupyterhub -f ${CONFIGF}
+WorkingDirectory = /var/lib/jupyterhub
+Restart = always
+
+[Install]
+WantedBy = multi-user.target

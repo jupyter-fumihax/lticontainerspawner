@@ -1,0 +1,70 @@
+FROM docker.io/jupyterhub/singleuser
+#FROM docker.io/jupyter/base-notebook
+
+USER root
+
+#
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    binutils \
+    apt-utils \
+    g++ \
+    language-pack-ja-base \
+    language-pack-ja \
+ && apt-get upgrade -y \
+ && apt-get -y clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && true
+
+#
+RUN /opt/conda/bin/conda update  -n base conda \
+ && /opt/conda/bin/conda update  --prefix /opt/conda -c conda-forge jupyterhub -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab_widgets -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab-language-pack-ja-jp -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterhub-singleuser -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge xeus-cling -y \
+ && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pip -y \
+# && /opt/conda/bin/conda update  --prefix /opt/conda --all -y \
+ && /opt/conda/bin/conda clean   --all -y \
+ && /opt/conda/bin/pip   install --prefix /opt/conda ipynb_path \
+ && /opt/conda/bin/pip   install --prefix /opt/conda jupyter_c_kernel \
+ && /opt/conda/bin/install_c_kernel --sys-prefix \
+ && true
+
+
+#
+ADD bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    /usr/local/bin/
+
+ADD etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+ADD etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+ADD etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+RUN chmod a+rx /usr/local/bin/* \
+  && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+  && true

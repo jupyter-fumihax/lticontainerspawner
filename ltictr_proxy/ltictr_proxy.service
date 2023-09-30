@@ -1,0 +1,17 @@
+# /usr/lib/systemd/system/ltictr_proxy.service
+
+[Unit]
+Description = LTICTR_PROXY
+After = network-online.target
+
+[Service]
+Environment = SVRPORT=8100
+Environment = APIPORT=8001
+#
+User=root
+PIDFile = /var/run/ltictr_proxy.pid
+ExecStart = /usr/local/bin/ltictr_proxy_server -a ${APIPORT} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf
+WorkingDirectory = /tmp
+
+[Install]
+WantedBy = multi-user.target

@@ -1,0 +1,674 @@
+{
+    "date": "2023-06-27T05:53:13.820Z",
+    "msg_id": "e7faef38-6cba-4431-b0ed-586221a5fe17",
+    "msg_type": "kernel_info_request",
+    "session": "2ec70ff5-487e-47e2-b12b-c21f618d1e06",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{}
+CCCCCCCCC
+{
+    "msg_id": "28396981-5295c358581b94da941d0ee6_214_11",
+    "msg_type": "kernel_info_reply",
+    "username": "iseki",
+    "session": "28396981-5295c358581b94da941d0ee6",
+    "date": "2023-06-27T05:53:14.590826Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:13.820000Z",
+    "msg_id": "e7faef38-6cba-4431-b0ed-586221a5fe17",
+    "msg_type": "kernel_info_request",
+    "session": "2ec70ff5-487e-47e2-b12b-c21f618d1e06",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "status": "ok",
+    "protocol_version": "5.3",
+    "implementation": "ipython",
+    "implementation_version": "8.14.0",
+    "language_info": {
+        "name": "python",
+        "version": "3.11.3",
+        "mimetype": "text/x-python",
+        "codemirror_mode": {
+            "name": "ipython",
+            "version": 3
+        },
+        "pygments_lexer": "ipython3",
+        "nbconvert_exporter": "python",
+        "file_extension": ".py"
+    },
+    "banner": "Python 3.11.3 | packaged by conda-forge | (main, Apr  6 2023, 08:57:19) [GCC 11.3.0]\nType 'copyright', 'credits' or 'license' for more information\nIPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.\n",
+    "help_links": [{"text": "Python Reference", "url": "https://docs.python.org/3.11"}, {"text": "IPython Reference", "url": "https://ipython.org/documentation.html"}, {"text": "NumPy Reference", "url": "https://docs.scipy.org/doc/numpy/reference/"}, {"text": "SciPy Reference", "url": "https://docs.scipy.org/doc/scipy/reference/"}, {"text": "Matplotlib Reference", "url": "https://matplotlib.org/contents.html"}, {"text": "SymPy Reference", "url": "http://docs.sympy.org/latest/index.html"}, {"text": "pandas Reference", "url": "https://pandas.pydata.org/pandas-docs/stable/"}]
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = kernel_info_reply
+{
+    "date": "2023-06-27T05:53:14.023Z",
+    "msg_id": "c216fc31-8f14-4a74-8995-cb60902630a9",
+    "msg_type": "kernel_info_request",
+    "session": "b0cc43ae-47bc-41e5-a3a3-1a4f434d19ec",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{}
+CCCCCCCCC
+{
+    "msg_id": "708255a0-4b146199802edf75d155d685_210_11",
+    "msg_type": "kernel_info_reply",
+    "username": "iseki",
+    "session": "708255a0-4b146199802edf75d155d685",
+    "date": "2023-06-27T05:53:14.796947Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:14.023000Z",
+    "msg_id": "c216fc31-8f14-4a74-8995-cb60902630a9",
+    "msg_type": "kernel_info_request",
+    "session": "b0cc43ae-47bc-41e5-a3a3-1a4f434d19ec",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "status": "ok",
+    "protocol_version": "5.3",
+    "implementation": "ipython",
+    "implementation_version": "8.14.0",
+    "language_info": {
+        "name": "python",
+        "version": "3.11.3",
+        "mimetype": "text/x-python",
+        "codemirror_mode": {
+            "name": "ipython",
+            "version": 3
+        },
+        "pygments_lexer": "ipython3",
+        "nbconvert_exporter": "python",
+        "file_extension": ".py"
+    },
+    "banner": "Python 3.11.3 | packaged by conda-forge | (main, Apr  6 2023, 08:57:19) [GCC 11.3.0]\nType 'copyright', 'credits' or 'license' for more information\nIPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.\n",
+    "help_links": [{"text": "Python Reference", "url": "https://docs.python.org/3.11"}, {"text": "IPython Reference", "url": "https://ipython.org/documentation.html"}, {"text": "NumPy Reference", "url": "https://docs.scipy.org/doc/numpy/reference/"}, {"text": "SciPy Reference", "url": "https://docs.scipy.org/doc/scipy/reference/"}, {"text": "Matplotlib Reference", "url": "https://matplotlib.org/contents.html"}, {"text": "SymPy Reference", "url": "http://docs.sympy.org/latest/index.html"}, {"text": "pandas Reference", "url": "https://pandas.pydata.org/pandas-docs/stable/"}]
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = kernel_info_reply
+{
+    "date": "2023-06-27T05:53:14.055Z",
+    "msg_id": "f5f6b257-1e71-47d8-90d5-9939864bfb2e",
+    "msg_type": "kernel_info_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{}
+CCCCCCCCC
+{
+    "msg_id": "71102d21-8512a4ca8a1d8139f251f5a2_213_11",
+    "msg_type": "kernel_info_reply",
+    "username": "iseki",
+    "session": "71102d21-8512a4ca8a1d8139f251f5a2",
+    "date": "2023-06-27T05:53:14.825702Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:14.055000Z",
+    "msg_id": "f5f6b257-1e71-47d8-90d5-9939864bfb2e",
+    "msg_type": "kernel_info_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "status": "ok",
+    "protocol_version": "5.3",
+    "implementation": "ipython",
+    "implementation_version": "8.14.0",
+    "language_info": {
+        "name": "python",
+        "version": "3.11.3",
+        "mimetype": "text/x-python",
+        "codemirror_mode": {
+            "name": "ipython",
+            "version": 3
+        },
+        "pygments_lexer": "ipython3",
+        "nbconvert_exporter": "python",
+        "file_extension": ".py"
+    },
+    "banner": "Python 3.11.3 | packaged by conda-forge | (main, Apr  6 2023, 08:57:19) [GCC 11.3.0]\nType 'copyright', 'credits' or 'license' for more information\nIPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.\n",
+    "help_links": [{"text": "Python Reference", "url": "https://docs.python.org/3.11"}, {"text": "IPython Reference", "url": "https://ipython.org/documentation.html"}, {"text": "NumPy Reference", "url": "https://docs.scipy.org/doc/numpy/reference/"}, {"text": "SciPy Reference", "url": "https://docs.scipy.org/doc/scipy/reference/"}, {"text": "Matplotlib Reference", "url": "https://matplotlib.org/contents.html"}, {"text": "SymPy Reference", "url": "http://docs.sympy.org/latest/index.html"}, {"text": "pandas Reference", "url": "https://pandas.pydata.org/pandas-docs/stable/"}]
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = kernel_info_reply
+{
+    "date": "2023-06-27T05:53:13.789Z",
+    "msg_id": "93516bb8-e34b-4550-b0b2-abd133447431",
+    "msg_type": "execute_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "RTL": {
+        "uuid": "1105b8ce-2a9f-b12a-86cf-4dc26d33e400",
+        "displayId": "1",
+        "displayName": "1",
+        "judge": {
+            "data": "",
+            "type": "execResult"
+        },
+        "targetCell": true
+    },
+    "tags": ["filename: 第10回演習.ipynb","codenum: 1"],
+    "trusted": true,
+    "deletedCells": [],
+    "recordTiming": false,
+    "cellId": "e7bf0d72"
+}
+{
+    "silent": false,
+    "store_history": true,
+    "user_expressions": {},
+    "allow_stdin": true,
+    "stop_on_error": true,
+    "code": "i=0 #回数を数える変数iを設定し，0に初期化\nwhile i<5:#iが5より小さい間繰り返し\n    print('こんにちは')\n    i+=1 #繰り返し情報更新．表示済み回数を1回増やす"
+}
+CCCCCCCCC
+CCC CellId e7bf0d72
+CCC Tags ["filename: 第10回演習.ipynb","codenum: 1"]
+CCC Session 5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3
+CCC message 93516bb8-e34b-4550-b0b2-abd133447431
+CCC date 2023-06-27T05:53:13.789Z
+CCC host client
+{
+    "date": "2023-06-27T05:53:14.055Z",
+    "msg_id": "d69c7e9c-ac6a-4f75-9a2c-011b32de63fa",
+    "msg_type": "comm_open",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "version": "1.0.0"
+}
+{
+    "comm_id": "0fe3eeae-8191-4817-af6c-6c844ddd0c18",
+    "target_name": "jupyter.widget.control",
+    "data": {}
+}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.055Z",
+    "msg_id": "439bd20c-525e-46fb-9e18-8cb2101fdab4",
+    "msg_type": "comm_msg",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{
+    "comm_id": "0fe3eeae-8191-4817-af6c-6c844ddd0c18",
+    "data": {
+        "method": "request_states"
+    }
+}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.023Z",
+    "msg_id": "dec655f6-ab0c-4db8-ae49-5873a2d6e2ed",
+    "msg_type": "comm_open",
+    "session": "b0cc43ae-47bc-41e5-a3a3-1a4f434d19ec",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "version": "1.0.0"
+}
+{
+    "comm_id": "52921ef4-cf96-4e29-ac2a-2b63cc517c68",
+    "target_name": "jupyter.widget.control",
+    "data": {}
+}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.023Z",
+    "msg_id": "7c08aebc-db81-4da5-bac4-14de04af9275",
+    "msg_type": "comm_msg",
+    "session": "b0cc43ae-47bc-41e5-a3a3-1a4f434d19ec",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{
+    "comm_id": "52921ef4-cf96-4e29-ac2a-2b63cc517c68",
+    "data": {
+        "method": "request_states"
+    }
+}
+CCCCCCCCC
+{
+    "msg_id": "71102d21-8512a4ca8a1d8139f251f5a2_213_22",
+    "msg_type": "execute_reply",
+    "username": "iseki",
+    "session": "71102d21-8512a4ca8a1d8139f251f5a2",
+    "date": "2023-06-27T05:53:14.841943Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:13.789000Z",
+    "msg_id": "93516bb8-e34b-4550-b0b2-abd133447431",
+    "msg_type": "execute_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{
+    "started": "2023-06-27T05:53:14.834528Z",
+    "dependencies_met": true,
+    "engine": "af605a25-cac7-4711-83b5-4502c191e086",
+    "status": "ok"
+}
+{
+    "status": "ok",
+    "execution_count": 1,
+    "user_expressions": {},
+    "payload": []
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = execute_reply
+SSSSSSSSS_ptype = execute_request
+SSS Session 5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3
+SSS message 93516bb8-e34b-4550-b0b2-abd133447431
+SSS status ok
+SSS username iseki
+SSS date 2023-06-27T05:53:14.841943Z
+SSS host server
+{
+    "date": "2023-06-27T05:53:14.094Z",
+    "msg_id": "239d2185-a618-4ca5-a44c-96deca7db0c9",
+    "msg_type": "comm_info_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{
+    "target_name": "jupyter.widget"
+}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.094Z",
+    "msg_id": "5d58a008-54ef-4cd3-8179-1870e8e1946f",
+    "msg_type": "kernel_info_request",
+    "session": "8ffd8a51-0e6d-4479-a88b-610271141166",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.095Z",
+    "msg_id": "3e3863fc-cebf-4610-96e7-81927b9c5073",
+    "msg_type": "comm_info_request",
+    "session": "b0cc43ae-47bc-41e5-a3a3-1a4f434d19ec",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{
+    "target_name": "jupyter.widget"
+}
+CCCCCCCCC
+{
+    "msg_id": "71102d21-8512a4ca8a1d8139f251f5a2_213_32",
+    "msg_type": "comm_info_reply",
+    "username": "iseki",
+    "session": "71102d21-8512a4ca8a1d8139f251f5a2",
+    "date": "2023-06-27T05:53:14.864115Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:14.094000Z",
+    "msg_id": "239d2185-a618-4ca5-a44c-96deca7db0c9",
+    "msg_type": "comm_info_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "comms": {},
+    "status": "ok"
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = comm_info_reply
+{
+    "msg_id": "708255a0-4b146199802edf75d155d685_210_24",
+    "msg_type": "comm_info_reply",
+    "username": "iseki",
+    "session": "708255a0-4b146199802edf75d155d685",
+    "date": "2023-06-27T05:53:14.867604Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:14.095000Z",
+    "msg_id": "3e3863fc-cebf-4610-96e7-81927b9c5073",
+    "msg_type": "comm_info_request",
+    "session": "b0cc43ae-47bc-41e5-a3a3-1a4f434d19ec",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "comms": {},
+    "status": "ok"
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = comm_info_reply
+{
+    "date": "2023-06-27T05:53:14.094Z",
+    "msg_id": "a4c54194-0e12-4aaf-bdd8-430b9749a570",
+    "msg_type": "comm_open",
+    "session": "8ffd8a51-0e6d-4479-a88b-610271141166",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "version": "1.0.0"
+}
+{
+    "comm_id": "9773daf6-82b8-41db-b1d1-cbba9d42fae5",
+    "target_name": "jupyter.widget.control",
+    "data": {}
+}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.095Z",
+    "msg_id": "1e06b631-3c59-4dc3-8084-9660e1c37405",
+    "msg_type": "comm_msg",
+    "session": "8ffd8a51-0e6d-4479-a88b-610271141166",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{
+    "comm_id": "9773daf6-82b8-41db-b1d1-cbba9d42fae5",
+    "data": {
+        "method": "request_states"
+    }
+}
+CCCCCCCCC
+{
+    "date": "2023-06-27T05:53:14.112Z",
+    "msg_id": "9ae22120-80a9-4640-a524-45384139e944",
+    "msg_type": "comm_info_request",
+    "session": "8ffd8a51-0e6d-4479-a88b-610271141166",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{
+    "target_name": "jupyter.widget"
+}
+CCCCCCCCC
+{
+    "msg_id": "28396981-5295c358581b94da941d0ee6_214_36",
+    "msg_type": "comm_info_reply",
+    "username": "iseki",
+    "session": "28396981-5295c358581b94da941d0ee6",
+    "date": "2023-06-27T05:53:14.900243Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:14.112000Z",
+    "msg_id": "9ae22120-80a9-4640-a524-45384139e944",
+    "msg_type": "comm_info_request",
+    "session": "8ffd8a51-0e6d-4479-a88b-610271141166",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "comms": {},
+    "status": "ok"
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = comm_info_reply
+{
+    "date": "2023-06-27T05:53:14.152Z",
+    "msg_id": "bd1e518a-465e-4af8-bf83-c8284a957c37",
+    "msg_type": "kernel_info_request",
+    "session": "cc530e89-7cf4-4935-bbe4-530749973cb2",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{}
+{}
+CCCCCCCCC
+{
+    "msg_id": "28396981-5295c358581b94da941d0ee6_214_39",
+    "msg_type": "kernel_info_reply",
+    "username": "iseki",
+    "session": "28396981-5295c358581b94da941d0ee6",
+    "date": "2023-06-27T05:53:14.922840Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:14.152000Z",
+    "msg_id": "bd1e518a-465e-4af8-bf83-c8284a957c37",
+    "msg_type": "kernel_info_request",
+    "session": "cc530e89-7cf4-4935-bbe4-530749973cb2",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "status": "ok",
+    "protocol_version": "5.3",
+    "implementation": "ipython",
+    "implementation_version": "8.14.0",
+    "language_info": {
+        "name": "python",
+        "version": "3.11.3",
+        "mimetype": "text/x-python",
+        "codemirror_mode": {
+            "name": "ipython",
+            "version": 3
+        },
+        "pygments_lexer": "ipython3",
+        "nbconvert_exporter": "python",
+        "file_extension": ".py"
+    },
+    "banner": "Python 3.11.3 | packaged by conda-forge | (main, Apr  6 2023, 08:57:19) [GCC 11.3.0]\nType 'copyright', 'credits' or 'license' for more information\nIPython 8.14.0 -- An enhanced Interactive Python. Type '?' for help.\n",
+    "help_links": [{"text": "Python Reference", "url": "https://docs.python.org/3.11"}, {"text": "IPython Reference", "url": "https://ipython.org/documentation.html"}, {"text": "NumPy Reference", "url": "https://docs.scipy.org/doc/numpy/reference/"}, {"text": "SciPy Reference", "url": "https://docs.scipy.org/doc/scipy/reference/"}, {"text": "Matplotlib Reference", "url": "https://matplotlib.org/contents.html"}, {"text": "SymPy Reference", "url": "http://docs.sympy.org/latest/index.html"}, {"text": "pandas Reference", "url": "https://pandas.pydata.org/pandas-docs/stable/"}]
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = kernel_info_reply
+{
+    "date": "2023-06-27T05:53:15.906Z",
+    "msg_id": "3b196653-32a7-4833-8450-02d75ba0ac32",
+    "msg_type": "execute_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "RTL": {
+        "uuid": "b3e3151b-26d2-7416-4b3d-55f9eea7a0cd",
+        "displayId": "2",
+        "displayName": "2",
+        "judge": {
+            "data": "",
+            "type": "execResult"
+        },
+        "targetCell": true
+    },
+    "tags": ["filename: 第10回演習.ipynb","codenum: 2"],
+    "trusted": true,
+    "deletedCells": [],
+    "recordTiming": false,
+    "cellId": "6577f65e"
+}
+{
+    "silent": false,
+    "store_history": true,
+    "user_expressions": {},
+    "allow_stdin": true,
+    "stop_on_error": true,
+    "code": "i=20 #表示する変数を設定，20に初期化\nwhile i>0:#iが0より大きい間繰り返し\n    print(i)\n    i-=5 #5ずつ減らす"
+}
+CCCCCCCCC
+CCC CellId 6577f65e
+CCC Tags ["filename: 第10回演習.ipynb","codenum: 2"]
+CCC Session 5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3
+CCC message 3b196653-32a7-4833-8450-02d75ba0ac32
+CCC date 2023-06-27T05:53:15.906Z
+CCC host client
+{
+    "msg_id": "71102d21-8512a4ca8a1d8139f251f5a2_213_43",
+    "msg_type": "execute_reply",
+    "username": "iseki",
+    "session": "71102d21-8512a4ca8a1d8139f251f5a2",
+    "date": "2023-06-27T05:53:16.682222Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:15.906000Z",
+    "msg_id": "3b196653-32a7-4833-8450-02d75ba0ac32",
+    "msg_type": "execute_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{
+    "started": "2023-06-27T05:53:16.677962Z",
+    "dependencies_met": true,
+    "engine": "af605a25-cac7-4711-83b5-4502c191e086",
+    "status": "ok"
+}
+{
+    "status": "ok",
+    "execution_count": 2,
+    "user_expressions": {},
+    "payload": []
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = execute_reply
+SSSSSSSSS_ptype = execute_request
+SSS Session 5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3
+SSS message 3b196653-32a7-4833-8450-02d75ba0ac32
+SSS status ok
+SSS username iseki
+SSS date 2023-06-27T05:53:16.682222Z
+SSS host server
+{
+    "date": "2023-06-27T05:53:18.196Z",
+    "msg_id": "2c234598-75b8-4ece-a0fe-2044b3a1a7cd",
+    "msg_type": "execute_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{}
+{
+    "RTL": {
+        "uuid": "fff12b24-9be3-ff04-b4ee-e43a37e92192",
+        "displayId": "3",
+        "displayName": "3",
+        "judge": {
+            "data": "",
+            "type": "execResult"
+        },
+        "targetCell": true
+    },
+    "tags": ["filename: 第10回演習.ipynb","codenum: 3"],
+    "trusted": true,
+    "deletedCells": [],
+    "recordTiming": false,
+    "cellId": "8e26b4c7"
+}
+{
+    "silent": false,
+    "store_history": true,
+    "user_expressions": {},
+    "allow_stdin": true,
+    "stop_on_error": true,
+    "code": "a=0\nb=0\nwhile a<5 and b<5:*\n    print(a+b)\n    a+=1\n    b+=2"
+}
+CCCCCCCCC
+CCC CellId 8e26b4c7
+CCC Tags ["filename: 第10回演習.ipynb","codenum: 3"]
+CCC Session 5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3
+CCC message 2c234598-75b8-4ece-a0fe-2044b3a1a7cd
+CCC date 2023-06-27T05:53:18.196Z
+CCC host client
+{
+    "msg_id": "71102d21-8512a4ca8a1d8139f251f5a2_213_48",
+    "msg_type": "execute_reply",
+    "username": "iseki",
+    "session": "71102d21-8512a4ca8a1d8139f251f5a2",
+    "date": "2023-06-27T05:53:18.971356Z",
+    "version": "5.3"
+}
+{
+    "date": "2023-06-27T05:53:18.196000Z",
+    "msg_id": "2c234598-75b8-4ece-a0fe-2044b3a1a7cd",
+    "msg_type": "execute_request",
+    "session": "5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3",
+    "username": "",
+    "version": "5.2"
+}
+{
+    "started": "2023-06-27T05:53:18.967172Z",
+    "dependencies_met": true,
+    "engine": "af605a25-cac7-4711-83b5-4502c191e086",
+    "status": "error"
+}
+{
+    "status": "error",
+    "traceback": ["\u001b[0;36m  Cell \u001b[0;32mIn[3], line 3\u001b[0;36m\u001b[0m\n\u001b[0;31m    while a<5 and b<5:*\u001b[0m\n\u001b[0m                       ^\u001b[0m\n\u001b[0;31mSyntaxError\u001b[0m\u001b[0;31m:\u001b[0m invalid syntax\n"],
+    "ename": "SyntaxError",
+    "evalue": "invalid syntax (1106458126.py, line 3)",
+    "engine_info": {
+        "engine_uuid": "af605a25-cac7-4711-83b5-4502c191e086",
+        "engine_id": -1,
+        "method": "execute"
+    },
+    "execution_count": 3,
+    "user_expressions": {},
+    "payload": []
+}
+SSSSSSSSS11111
+SSSSSSSSS_mtype = execute_reply
+SSSSSSSSS_ptype = execute_request
+SSS Session 5c5cf4e2-67ac-4e4a-9478-7a88ca00d3e3
+SSS message 2c234598-75b8-4ece-a0fe-2044b3a1a7cd
+SSS status error
+SSS username iseki
+SSS date 2023-06-27T05:53:18.971356Z
+SSS host server

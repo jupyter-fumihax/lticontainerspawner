@@ -1,0 +1,503 @@
+
+C=>S: [3442]
+POST /hub/lti/launch HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-site
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13
+referer: https://el.mml.tuis.ac.jp/
+connection: close
+origin: https://el.mml.tuis.ac.jp
+content-length: 2081
+content-type: application/x-www-form-urlencoded
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 302 Found
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:27:41 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Location: /hub/home
+Content-Length: 0
+Set-Cookie: jupyterhub-session-id=2832356511424741a92da22add4b7818; HttpOnly; Path=/; Secure
+Set-Cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; expires=Sun, 06 Mar 2022 01:27:41 GMT; HttpOnly; Path=/hub/; Secure
+Connection: close
+
+C=>S: [1485]
+GET /hub/home HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-site
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+referer: https://el.mml.tuis.ac.jp/
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:27:41 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Etag: "40e4816770f1ebc1bfe0ba1c21af9246b95924bc"
+Content-Length: 5009
+Connection: close
+
+C=>S: [1419]
+GET /hub/static/js/home.js?v=20220204102724 HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-origin
+sec-fetch-mode: no-cors
+sec-fetch-dest: script
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: application/javascript
+Date: Fri, 04 Feb 2022 01:27:41 GMT
+Accept-Ranges: bytes
+Last-Modified: Wed, 22 Dec 2021 19:14:55 GMT
+Expires: Mon, 02 Feb 2032 01:27:41 GMT
+Cache-Control: max-age=315360000
+Content-Length: 3293
+Connection: close
+
+C=>S: [1436]
+GET /hub/static/components/moment/moment.js?v=20220204102724 HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-origin
+sec-fetch-mode: no-cors
+sec-fetch-dest: script
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+C=>S: [1420]
+GET /hub/static/js/jhapi.js?v=20220204102724 HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-origin
+sec-fetch-mode: no-cors
+sec-fetch-dest: script
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: application/javascript
+Date: Fri, 04 Feb 2022 01:27:41 GMT
+Accept-Ranges: bytes
+Last-Modified: Wed, 22 Dec 2021 19:14:55 GMT
+Expires: Mon, 02 Feb 2032 01:27:41 GMT
+Cache-Control: max-age=315360000
+Content-Length: 173902
+Connection: close
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: application/javascript
+Date: Fri, 04 Feb 2022 01:27:41 GMT
+Accept-Ranges: bytes
+Last-Modified: Wed, 22 Dec 2021 19:14:55 GMT
+Expires: Mon, 02 Feb 2032 01:27:41 GMT
+Cache-Control: max-age=315360000
+Content-Length: 4446
+Connection: close
+
+C=>S: [1420]
+GET /hub/static/js/utils.js?v=20220204102724 HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-origin
+sec-fetch-mode: no-cors
+sec-fetch-dest: script
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: application/javascript
+Date: Fri, 04 Feb 2022 01:27:41 GMT
+Accept-Ranges: bytes
+Last-Modified: Wed, 22 Dec 2021 19:14:55 GMT
+Expires: Mon, 02 Feb 2032 01:27:41 GMT
+Cache-Control: max-age=315360000
+Content-Length: 4383
+Connection: close
+
+C=>S: [1531]
+GET /hub/spawn/iseki HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-user: ?1
+sec-fetch-site: same-origin
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 302 Found
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:27:44 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Location: /hub/spawn-pending/iseki
+Content-Length: 0
+Connection: close
+
+C=>S: [1539]
+GET /hub/spawn-pending/iseki HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-user: ?1
+sec-fetch-site: same-origin
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:27:46 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Etag: "48340a05c5728e0164d531d22a584860fc7f5072"
+Content-Length: 7132
+Connection: close
+
+C=>S: [1484]
+GET /hub/api/users/iseki/server/progress HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+cache-control: no-cache
+pragma: no-cache
+sec-fetch-site: same-origin
+sec-fetch-mode: cors
+sec-fetch-dest: empty
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/spawn-pending/iseki
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/event-stream
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: text/event-stream
+Date: Fri, 04 Feb 2022 01:27:46 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Cache-Control: no-cache
+Connection: close
+Transfer-Encoding: chunked
+
+C=>S: [1545]
+GET /hub/spawn-pending/iseki HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+cache-control: max-age=0
+sec-fetch-site: same-origin
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 302 Found
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:27:46 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Location: /user/iseki/
+Content-Length: 0
+Connection: close
+
+C=>S: [1726]
+GET /hub/api/oauth2/authorize?client_id=jupyterhub-user-iseki&redirect_uri=%2Fuser%2Fiseki%2Foauth_callback&response_type=code&state=eyJ1dWlkIjogImVjYTk3NGQ3OWNlYjQ5NDhiNGY5MmY2YjdkNzk1MjBlIiwgIm5leHRfdXJsIjogIi91c2VyL2lzZWtpL2xhYj8ifQ HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-origin
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/home
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 302 Found
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:27:46 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Location: /user/iseki/oauth_callback?code=SsSKblEYjoVFHfSyFx0MQhZ4CY5ZQS&state=eyJ1dWlkIjogImVjYTk3NGQ3OWNlYjQ5NDhiNGY5MmY2YjdkNzk1MjBlIiwgIm5leHRfdXJsIjogIi91c2VyL2lzZWtpL2xhYj8ifQ
+Content-Length: 0
+Connection: close
+
+C=>S: [1647]
+GET /hub/logout HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+if-none-match: "7b3780def373c48362cf10b8a3fb1a030f4cda42"
+sec-fetch-user: ?1
+sec-fetch-site: same-origin
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+upgrade-insecure-requests: 1
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+referer: https://gitlab.nsl.tuis.ac.jp:8100/user/iseki/lab/tree/jupyter/works/Python%E6%95%99%E6%9D%90/1/1-2.ipynb
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+C=>S: [1502]
+GET /user/iseki/api/terminals?1643938088024 HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+cache-control: no-cache
+pragma: no-cache
+sec-fetch-site: same-origin
+sec-fetch-mode: cors
+sec-fetch-dest: empty
+cookie: _xsrf=2|896b32dd|9a6a41f1f83e7c082527693c563220cf|1641537526; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+content-type: application/json
+x-xsrftoken: 2|896b32dd|9a6a41f1f83e7c082527693c563220cf|1641537526
+referer: https://gitlab.nsl.tuis.ac.jp:8100/user/iseki/lab/tree/jupyter/works/Python%E6%95%99%E6%9D%90/1/1-2.ipynb
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 302 Found
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:28:07 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Location: /hub/user/iseki/api/terminals?1643938088024
+Content-Length: 0
+Connection: close
+
+C=>S: [1625]
+GET /hub/user/iseki/api/terminals?1643938088024 HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+cache-control: no-cache
+pragma: no-cache
+sec-fetch-site: same-origin
+sec-fetch-mode: cors
+sec-fetch-dest: empty
+cookie: jupyterhub-hub-login="2|1:0|10:1643938061|20:jupyterhub-hub-login|44:NDBhODlhOWZhYWE4NGZiYzgyYzA2NTlmYjIxYTA5MjA=|2c13456325c707db19f826a808e1dad02fdcef63e50b5cdbdef2c943c3d6fa82"; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: close
+referer: https://gitlab.nsl.tuis.ac.jp:8100/user/iseki/lab/tree/jupyter/works/Python%E6%95%99%E6%9D%90/1/1-2.ipynb
+content-type: application/json
+x-xsrftoken: 2|896b32dd|9a6a41f1f83e7c082527693c563220cf|1641537526
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 424 Failed Dependency
+Server: TornadoServer/6.1
+Content-Type: application/json
+Date: Fri, 04 Feb 2022 01:28:07 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Content-Length: 153
+Connection: close
+
+C=>S: [1520]
+GET /user/iseki/api/kernels/c3c8414d-5192-4ac9-a7f7-a512df8b2692/channels?session_id=5416acbd-6b20-440f-aba3-ee7afd4177ff HTTP/1.1
+x-forwarded-proto: wss
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+upgrade: websocket
+cache-control: no-cache
+pragma: no-cache
+sec-fetch-site: same-origin
+sec-fetch-mode: websocket
+sec-fetch-dest: websocket
+cookie: _xsrf=2|896b32dd|9a6a41f1f83e7c082527693c563220cf|1641537526; __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13; jupyterhub-session-id=2832356511424741a92da22add4b7818
+connection: keep-alive, Upgrade
+sec-websocket-key: XS2ibY9/hFIlLN9F2FB3TQ==
+sec-websocket-extensions: permessage-deflate
+origin: https://gitlab.nsl.tuis.ac.jp:8100
+sec-websocket-version: 13
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: */*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+
+S=>C:
+HTTP/1.1 302 Found
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:28:07 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Location: /hub/user/iseki/api/kernels/c3c8414d-5192-4ac9-a7f7-a512df8b2692/channels?session_id=5416acbd-6b20-440f-aba3-ee7afd4177ff
+Content-Length: 0
+
+S=>C:
+HTTP/1.1 200 OK
+Server: TornadoServer/6.1
+Content-Type: text/html
+Date: Fri, 04 Feb 2022 01:28:07 GMT
+Content-Security-Policy: frame-ancestors 'self' https://*
+X-Jupyterhub-Version: 2.0.1
+Access-Control-Allow-Headers: accept, content-type, authorization
+Etag: "9adda9a84f6eaf45bf7916784cf0c03f6bead63f"
+Content-Length: 4110
+Set-Cookie: jupyterhub-session-id=""; expires=Thu, 04 Feb 2021 01:28:08 GMT; Path=/
+Set-Cookie: jupyterhub-hub-login=""; expires=Thu, 04 Feb 2021 01:28:08 GMT; Path=/hub/
+Set-Cookie: jupyterhub-services=""; expires=Thu, 04 Feb 2021 01:28:08 GMT; Path=/services
+Set-Cookie: _xsrf=""; expires=Thu, 04 Feb 2021 01:28:08 GMT; Path=/
+Connection: close
+
+C=>S: [1320]
+GET /hub/static/favicon.ico?v=fde5757cd3892b979919d3b1faa88a410f28829feb5ba22b6cf069f2c6c98675fceef90f932e49b510e74d65c681d5846b943e7f7cc1b41867422f0481085c1f HTTP/1.1
+x-forwarded-host: gitlab.nsl.tuis.ac.jp:8100
+x-forwarded-proto: https
+x-forwarded-port: 8100
+x-forwarded-for: 127.0.0.1
+sec-fetch-site: same-origin
+sec-fetch-mode: no-cors
+sec-fetch-dest: image
+cookie: __utma=113066753.406660475.1622603840.1643720538.1643780514.52; _ts_yjad=1622686111771; sidebar_collapsed=false; visitor_id=482d87c8-e4cc-48f0-9d2e-09885e29f44e; __utmz=113066753.1643780514.52.13.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); _gcl_au=1.1.30771783.1641881302; _ga=GA1.3.406660475.1622603840; known_sign_in=NGFiUFZUNFc1dGFnYm1SVGdJdk40a2FHUUZYSkxua1ZIRFowNE1DYkRaSXd5bHM4Smk5NUdzRnJkUnRJMmdYcUpmZlVBaXU5d0wxU1dqQU5lZXAxQjRIYUJ4N2lXNW9vditmWHY3NTdDdU00UnVBbk0xVHNKOUFGdVA2V3dwSHAtLXFYOEZnMlQzb0NFNG5wT0EycEhyU0E9PQ%3D%3D--2282785fb3c7dcea8a95c764d36ddfa21cb05faf; lms_sessioninfo=6%2C13
+referer: https://gitlab.nsl.tuis.ac.jp:8100/hub/logout
+connection: close
+accept-encoding: gzip, deflate, br
+accept-language: ja,en-US;q=0.7,en;q=0.3
+accept: image/avif,image/webp,*/*
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:96.0) Gecko/20100101 Firefox/96.0
+host: gitlab.nsl.tuis.ac.jp:8100
+

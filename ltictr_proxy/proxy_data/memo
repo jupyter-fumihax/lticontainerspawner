@@ -1,0 +1,26 @@
+
+* jupyterhub_config.py
+ c.JupyterHub.cleanup_proxy = False
+ c.ConfigurableHTTPProxy.should_start = False
+ c.ConfigurableHTTPProxy.api_url = 'http://localhost:8001'
+ c.ConfigurableHTTPProxy.auth_token = "ABCDEFG"
+
+
+* command
+ ./fesvr -h 127.0.0.1:8002 -p 8001 -m feplg_xxx.so
+ ./fesvr -h 202.26.150.55:8081 -p 8099 -m feplg_nop.so --config gitlab.conf
+ ./fesvr -h 127.0.0.1:8000 -p 8100 -c -s -m feplg_nop.so --config gitlab.conf
+ configurable-http-proxy --port 8000 --api-port 8002 --default-target=http://202.26.150.55:8099 --ssl-cert /etc/gitlab/ssl/gitlab.crt --ssl-key /etc/gitlab/ssl/gitlab.key
+ jupyterhub -f jupyterhub_config.py
+
+-------------------------------------------------------------------------
+
+ ./ltictr_api_server -a 8001 --conf ltictr.conf -d
+ ./ltictr_proxy_server -a 8001 -n -p 8100 -c --conf ltictr.conf 
+ jupyterhub -f jupyterhub_config.py
+
+-------------------------------------------------------------------------
+
+ ./ltictr_proxy_server -a 8001 -p 8100 -c --conf ltictr.conf 
+ jupyterhub -f jupyterhub_config.py
+

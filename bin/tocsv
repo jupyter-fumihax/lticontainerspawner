@@ -1,0 +1,24 @@
+#!/bin/bash
+#
+
+COM_TOCSV=/usr/local/bin/ipynb_tocsv
+
+if [ $# -lt 1 ]; then
+    echo "usage ... "$0" base_filename"
+    exit 1
+fi
+
+#
+DST=`echo $NB_PRSNALS | awk -F" " '{print $1}' | awk -F":" '{print $1}'`
+if [ "$DST" != "" ] ; then
+    DST=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${DST}
+    cd $DST
+fi
+
+BSEFL=$1
+FNM=`echo $BSEFL | sed -e 's/\.[^\.]*$//'`
+OUTFL=${FNM}".csv"
+rm -f $OUTFL
+
+$COM_TOCSV $BSEFL 
+
