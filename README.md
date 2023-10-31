@@ -16,10 +16,15 @@
 # systemctl enable ltictr_proxy.service
 # systemctl start  ltictr_proxy.service
 ```
+##### for LTIContainerSpawner
+```
+# vi /usr/local/etc/lticontainerspawner_config.py
+```
 
 ##### for JupyterHub 
 ``` 
-# vi /usr/local/etc/jupyter_XXX_config.py
+
+# vi /usr/local/etc/jupyterhub_lticontainer_config.py
 # vi /usr/lib/systemd/system/jupyterhub.service
 # systemctl enable jupyterhub.service
 # systemctl start  jupyterhub.service
