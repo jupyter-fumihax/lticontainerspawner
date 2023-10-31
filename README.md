@@ -31,8 +31,6 @@
 ```
 
 
-
-
 ### Wiki
 - English:  https://gitlab.nsl.tuis.ac.jp/iseki/lticontainerspawner/-/wikis/Moodle-+-JupyterHub
 - Japanese: https://gitlab.nsl.tuis.ac.jp/iseki/lticontainerspawner/-/wikis/Moodle-+-JupyterHub-(J)
