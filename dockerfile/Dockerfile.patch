@@ -1,0 +1,50 @@
+#FROM jupyterhub-ltids/jupyter-singleuser:3.6
+#FROM jupyterhub-ltids/jupyter-base-gpu:3.6.3-3.11
+#FROM jupyterhub-ltids/jupyter-scipy-gpu:3.6.3-3.11
+#FROM jupyterhub-ltids/jupyter-tensorflow-gpu:3.6.3-3.11
+#FROM jupyterhub-ltids/jupyter-base-gpu:4.0.3-3.11
+#FROM jupyterhub-ltids/jupyter-scipy-gpu:4.0.3-3.11
+FROM jupyterhub-ltids/jupyter-tensorflow-gpu:4.0.3-3.11
+
+USER root
+
+ADD \
+#    bin/start.sh \
+#    bin/start-notebook.sh \
+#    bin/start-singleuser.sh \
+#    bin/commit.sh \
+#    bin/ipynb_conv \
+#    bin/ipynb_conv_alt \
+#    bin/ipynb_conv_alt.py \
+#    bin/ipynb_deploy \
+#    bin/ipynb_setup \
+#    bin/ipynb_submit \
+#    bin/submit \
+#    bin/ipynb_extract \
+#    bin/extract \
+    bin/ipynb_tocsv \
+#    bin/tocsv \
+    /usr/local/bin/
+
+#ADD \
+#    etc/.bashrc \
+#    etc/.bash_profile \
+#    etc/.vimrc \
+#    /root/
+
+#ADD \
+#    etc/.bash_profile \
+#    etc/.bashrc \
+#    etc/.vimrc \
+#    /etc/skel/
+
+#ADD \
+#    etc/passwd.orig \
+#    etc/group.orig \
+#    /etc/
+
+#
+RUN chmod a+rx /usr/local/bin/* \
+ && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+
