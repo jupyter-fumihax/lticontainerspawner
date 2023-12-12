@@ -4,7 +4,7 @@
 
 ### Install
 ```
-# git clone https://gitlab.nsl.tuis.ac.jp/iseki/lticontainerspawner.git
+# git clone https://github.com/FumiHax/lticontainerspawner.git
 # cd lticontainerspawner
 # make install
 ```
