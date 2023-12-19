@@ -1,4 +1,4 @@
-/* vi: set tabstop=4 nocindent noautoindent: */
+﻿/* vi: set tabstop=4 nocindent noautoindent: */
 
 
 #include <signal.h>

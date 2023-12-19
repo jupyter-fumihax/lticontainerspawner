@@ -1,4 +1,4 @@
-/**
+﻿/**
     ipynb_extract.c : code cell 抽出: v1.0.0  by Fumi.Iseki BSD License.
         ipynb ファイルから，評価対象の code cell を抜き出す．
         ベース名として example.ipynb が指定された場合は，input_dir の *_example.ipynb が読み込まれる．

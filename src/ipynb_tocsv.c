@@ -1,4 +1,4 @@
-/**
+﻿/**
     ipynb_tocsv.c : CSV ファイル生成 v0.2.1 by Fumi.Iseki  BSD License.
         ipynb_extract が生成したファイル（複数）から ユーザ毎に集計された CSVファイルを生成する．
 

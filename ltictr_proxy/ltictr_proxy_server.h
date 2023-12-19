@@ -1,4 +1,4 @@
-/* vi: set tabstop=4 nocindent noautoindent: */
+﻿/* vi: set tabstop=4 nocindent noautoindent: */
 
 #ifndef _LTICTR_PROXY_SERVER_H
 #define _LTICTR_PROXY_SERVER_H
