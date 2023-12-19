@@ -19,6 +19,7 @@ CC   = gcc
 AR   = ar
 TH	 = touch
 SV   = svn
+GT   = git
 
 LIB_PATH = ..
 
@@ -38,7 +39,7 @@ ELIB = -L$(LIB_EXT_DIR) -lextend
 #
 #
 $(LIB_DIR)/config.sh :
-	(cd $(LIB_PATH) && $(SV) co http://www.nsl.tuis.ac.jp/svn/linux/JunkBox_Lib/trunk JunkBox_Lib)
+	(cd $(LIB_PATH) && $(GT) clone https://github.com/Junk-Box-Library/JunkBox_Lib.git)
 
 $(LIB_DIR)/configure: $(LIB_DIR)/config.sh
 	(cd $(LIB_DIR) && ./config.sh)
