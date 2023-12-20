@@ -2,6 +2,8 @@ JunkBox_Lib
 src/ipynb_conv
 src/json_file
 src/json2
+src/ipynb_extract
+src/ipynb_tocsv
 src/*.o
 ltictr_proxy/ltictr_proxy_server
 ltictr_proxy/ltictr_api_server
