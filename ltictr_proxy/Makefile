@@ -13,7 +13,7 @@ all: $(SUBJ)
 CC   = gcc
 AR   = ar
 TH   = touch
-SV   = svn
+GIT  = git
 
 LIB_PATH = ..
 
@@ -33,7 +33,7 @@ ELIB = -L$(LIB_EXT_DIR) -lextend
 #
 #
 $(LIB_DIR)/config.sh : 
-	(cd $(LIB_PATH) && $(SV) co http://www.nsl.tuis.ac.jp/svn/linux/JunkBox_Lib/trunk JunkBox_Lib)
+	(cd $(LIB_PATH) && $(GIT) clone https://github.com/JunkBox-Library/JunkBox_Lib.git)
 
 $(LIB_DIR)/configure: $(LIB_DIR)/config.sh
 	(cd $(LIB_DIR) && ./config.sh)
@@ -78,7 +78,7 @@ install: ltictr_proxy_server  ltictr_api_server
 	systemctl daemon-reload
 
 
-git: ltictr_proxy_server  ltictr_api_server
+rep: ltictr_proxy_server  ltictr_api_server
 	cp ltictr_proxy_server ../bin
 	cp ltictr_api_server ../bin
 

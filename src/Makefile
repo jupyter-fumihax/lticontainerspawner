@@ -10,7 +10,7 @@ CPU = Intel
 
 #
 #
-SUBJ = ipynb_tocsv ipynb_extract ipynb_conv json_file json2
+SUBJ = unlock_podman_containers ipynb_tocsv ipynb_extract ipynb_conv json_file json2
 #
 all: $(SUBJ)
 
@@ -70,6 +70,11 @@ clean:
 #
 #
 #
+unlock_podman_containers: $(LIB_BSC) unlock_podman_containers.o
+	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@   
+	strip $(@)
+	cp $(@) ../bin
+
 ipynb_conv: $(LIB_BSC) ipynb_conv.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@   
 	strip $(@)

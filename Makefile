@@ -11,14 +11,17 @@ install:
 	[ -f /usr/lib/systemd/system/jupyterhub.service ]       || install -m 0644 etc/jupyterhub.service                /usr/lib/systemd/system
 	[ -f /usr/lib/systemd/system/ltictr_proxy.service ]     || install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system
 	[ -f /usr/local/etc/ltictr_proxy.conf ]                 || install -m 0640 etc/ltictr_proxy.conf                 /usr/local/etc
-	install -m 0644 etc/podman.socket           /usr/lib/systemd/system
-	install -m 0755 etc/lticontainerspawner.py  /usr/local/etc
-	install -m 0755 bin/ltictr_proxy_server     /usr/local/bin
-	install -m 0755 bin/ltictr_api_server       /usr/local/bin
-	install -m 0755 sh/chgrppodman.sh           /usr/local/bin
-	install -m 0755 sh/dockerpull.sh            /usr/local/bin
-	install -m 0755 sh/dockerpush.sh            /usr/local/bin
-	install -m 0755 sh/dockerrmi.sh             /usr/local/bin
+	install -m 0644 etc/podman.socket            /usr/lib/systemd/system
+	install -m 0755 etc/lticontainerspawner.py   /usr/local/etc
+	install -m 0755 bin/ltictr_proxy_server      /usr/local/bin
+	install -m 0755 bin/ltictr_api_server   	 /usr/local/bin
+	install -m 0750 bin/unlock_podman_containers /usr/local/bin
+	chgrp podman /usr/local/bin/unlock_podman_containers
+	chmod u+s    /usr/local/bin/unlock_podman_containers
+	install -m 0755 sh/chgrppodman.sh            /usr/local/bin
+	install -m 0755 sh/dockerpull.sh             /usr/local/bin
+	install -m 0755 sh/dockerpush.sh             /usr/local/bin
+	install -m 0755 sh/dockerrmi.sh              /usr/local/bin
 	systemctl enable jupyterhub   || true
 	systemctl enable ltictr_proxy || true
 	systemctl daemon-reload
@@ -42,6 +45,7 @@ uninstall: clean
 	rm -f /usr/local/etc/ltictr_proxy.conf
 	rm -f /usr/local/bin/ltictr_proxy_server
 	rm -f /usr/local/bin/ltictr_api_server
+	rm -f /usr/local/bin/unlock_podman_containers
 	rm -f /usr/local/bin/chgrppodman.sh
 	rm -f /usr/local/bin/dockerpull.sh
 	rm -f /usr/local/bin/dockerpush.sh
