@@ -15,9 +15,6 @@ install:
 	install -m 0755 etc/lticontainerspawner.py   /usr/local/etc
 	install -m 0755 bin/ltictr_proxy_server      /usr/local/bin
 	install -m 0755 bin/ltictr_api_server   	 /usr/local/bin
-	install -m 0750 bin/unlock_podman_containers /usr/local/bin
-	chgrp podman /usr/local/bin/unlock_podman_containers
-	chmod u+s    /usr/local/bin/unlock_podman_containers
 	install -m 0755 sh/chgrppodman.sh            /usr/local/bin
 	install -m 0755 sh/dockerpull.sh             /usr/local/bin
 	install -m 0755 sh/dockerpush.sh             /usr/local/bin
@@ -25,6 +22,11 @@ install:
 	systemctl enable jupyterhub   || true
 	systemctl enable ltictr_proxy || true
 	systemctl daemon-reload
+	install -m 0750 bin/unlock_podman_containers /usr/local/bin
+	chgrp podman /usr/local/bin/unlock_podman_containers
+	chmod u+s    /usr/local/bin/unlock_podman_containers
+	chgrp podman /var/lib/containers/storage/overlay-containers
+	chmod g+rx   /var/lib/containers/storage/overlay-containers
 
 
 clean:

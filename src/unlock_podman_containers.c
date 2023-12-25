@@ -24,7 +24,9 @@ int main(int argc, char** argv)
     cat_s2Buffer(argv[2], &buf);
     tJson* lst = search_all_node_strval_json(json, "ARRAY_VALUE", buf.buf);
     tJson* tgt = lst;
+print_message("%s\n", buf.buf);
 
+    print_tTree(stdout, lst);
     int chngflg = OFF;
     while (tgt!=NULL && tgt->altp!=NULL) {
         if (tgt->altp->prev!=NULL) {
@@ -36,6 +38,7 @@ int main(int argc, char** argv)
         }
         tgt = tgt->next;
     }
+    print_json(stdout, json, JSON_INDENT_FORMAT);
 
     if (chngflg==ON) {
         FILE* fp = fopen(argv[1], "w");
