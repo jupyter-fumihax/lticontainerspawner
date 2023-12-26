@@ -54,9 +54,4 @@ uninstall: clean
 	rm -f /usr/local/bin/dockerpull.sh
 	rm -f /usr/local/bin/dockerpush.sh
 	rm -f /usr/local/bin/dockerrmi.sh
-	install -m 0755 bin/chgrppodman.sh          /usr/local/bin
-	install -m 0755 bin/dockerpull.sh           /usr/local/bin
-	install -m 0755 bin/dockerpush.sh           /usr/local/bin
-	install -m 0755 bin/dockerrmi.sh            /usr/local/bin
-	systemctl daemon-reload
 
