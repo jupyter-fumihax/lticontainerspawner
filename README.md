@@ -32,15 +32,12 @@
 
 
 ### Wiki
-- English:  https://gitlab.nsl.tuis.ac.jp/iseki/lticontainerspawner/-/wikis/Moodle-+-JupyterHub
-- Japanese: https://gitlab.nsl.tuis.ac.jp/iseki/lticontainerspawner/-/wikis/Moodle-+-JupyterHub-(J)
+- English:  https://github.com/jupyter-fumihax/lticontainerspawner/wiki/Moodle-&-JupyterHub
+- Japanese: https://github.com/jupyter-fumihax/lticontainerspawner/wiki/Moodle-&-JupyterHub-(J)
 
 ### Please see also bellow Wiki 
-- English:  https://gitlab.nsl.tuis.ac.jp/iseki/mod_lticontainer/-/wikis/mod_lticontainer
-- Japanese: https://gitlab.nsl.tuis.ac.jp/iseki/mod_lticontainer/-/wikis/mod_lticontainer-(J)
-
-
-
+- English:  https://github.com/moodle-fumihax/mod_lticontainer/wiki
+- Japanese: https://github.com/moodle-fumihax/mod_lticontainer/wiki/mod_lticontainer-(J)
 
 ### License
 
