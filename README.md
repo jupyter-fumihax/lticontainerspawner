@@ -35,7 +35,7 @@
 - English:  https://github.com/jupyter-fumihax/lticontainerspawner/wiki/Moodle-&-JupyterHub
 - Japanese: https://github.com/jupyter-fumihax/lticontainerspawner/wiki/Moodle-&-JupyterHub-(J)
 
-### Please see also bellow Wiki 
+### Please see also bellow Wiki (Moodle Module)
 - English:  https://github.com/moodle-fumihax/mod_lticontainer/wiki
 - Japanese: https://github.com/moodle-fumihax/mod_lticontainer/wiki/mod_lticontainer-(J)
 
