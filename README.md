@@ -8,11 +8,11 @@
 # cd lticontainerspawner
 # make install
 ```
-or
+or (case of lticontainerspawner-X.Y.Z)
 ```
-# wget https://github.com/jupyter-fumihax/lticontainerspawner/archive/refs/tags/v#.#.#.tar.gz
-# zcat v#.#.#.tar.gz | tar xfv -
-# cd lticontainerspawner-#.#.#
+# wget https://github.com/jupyter-fumihax/lticontainerspawner/archive/refs/tags/vX.Y.Z.tar.gz
+# zcat vX.Y.Z.tar.gz | tar xfv -
+# cd lticontainerspawner-X.Y.Z
 # make install
 ```
 
