@@ -9,6 +9,7 @@
 # make install
 ```
 
+### Setup
 ##### for Ltictr_Proxy (if you use Ltictr_Proxy)
 ```
 # vi /usr/local/etc/ltictr_proxy.conf
