@@ -10,9 +10,9 @@
 ```
 or
 ```
-# wget https://github.com/jupyter-fumihax/lticontainerspawner/archive/refs/tags/vX.Y.Z.tar.gz  # X, Y, Z is number
-# zcat vX.Y.Z.tar.gz
-# cd lticontainerspawner-X.Y.Z
+# wget https://github.com/jupyter-fumihax/lticontainerspawner/archive/refs/tags/v#.#.#.tar.gz
+# zcat v#.#.#.tar.gz | tar xfv -
+# cd lticontainerspawner-#.#.#
 # make install
 ```
 
