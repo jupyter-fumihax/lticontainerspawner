@@ -8,6 +8,13 @@
 # cd lticontainerspawner
 # make install
 ```
+or
+```
+# wget https://github.com/jupyter-fumihax/lticontainerspawner/archive/refs/tags/v#.#.#.tar.gz
+# zcat lticontainerspawner-X.Y.Z.tar.gz
+# cd lticontainerspawner
+# make install
+```
 
 ### Setup
 ##### for Ltictr_Proxy (if you use Ltictr_Proxy)
