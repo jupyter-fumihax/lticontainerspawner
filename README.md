@@ -12,7 +12,7 @@ or
 ```
 # wget https://github.com/jupyter-fumihax/lticontainerspawner/archive/refs/tags/vX.Y.Z.tar.gz  # X, Y, Z is number
 # zcat vX.Y.Z.tar.gz
-# cd lticontainerspawner
+# cd lticontainerspawner-X.Y.Z
 # make install
 ```
 
