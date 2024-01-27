@@ -42,7 +42,8 @@ ENV PATH=$CONDA_HOME/bin:$PATH
 # Basic Function
 RUN $CONDA_HOME/bin/conda update  -n base conda -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab==3.6.* -y \
+# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab==3.6.* -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab_widgets -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub-singleuser -y \
@@ -51,7 +52,6 @@ RUN $CONDA_HOME/bin/conda update  -n base conda -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME pip -y \
 # && $CONDA_HOME/bin/conda update  --prefix $CONDA_HOME --all -y \
  && $CONDA_HOME/bin/conda clean   --all -y \
-# && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-blockly==0.3.0a4 \
  && true
 
 
@@ -89,10 +89,10 @@ RUN $CONDA_HOME/bin/npm install -g npm \
 
 
 ## JupyterLab-Broccoli
-RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.3.6 \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-blocks==0.2.0 \
+RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.4.5 \
+ && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-blocks==0.4.5 \
  && $CONDA_HOME/bin/pip   install --prefix /opt/conda jbturtle \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-turtle==0.2.0 \
+ && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-turtle==0.4.5 \
  && true
 
 

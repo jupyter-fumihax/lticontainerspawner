@@ -3,7 +3,7 @@
 # 1. cahge FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . -t jupyterhub-ltids/jupyter-tensorflow-gpu:4.0.3 --format=docker -f dockerfile/Dockerfile.gpu
+#      docker build . -t jupyterhub-ltictr/jupyter-tensorflow-gpu:4.0.3 --format=docker -f dockerfile/Dockerfile.gpu
 #
 
 # https://hub.docker.com/r/nvidia/cuda/tags
@@ -47,37 +47,37 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 
 
 RUN $CONDA_HOME/bin/conda update  -n base  conda -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME libarchive -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME libmamba -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libarchive --force-reinstall -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libmamba --force-reinstall -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab_widgets -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub-singleuser -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pillow -y \ 
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pillow -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c nvidia cuda-nvcc cuda-nvcc -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME matplotlib -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME pip -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pip -c main -y \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME ipynb_path \
- && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME PyCUDA \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME PyCUDA  \
  && true
 
 
 #################################
 #  Scipy
-RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scipy -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scikit-learn-intelex -y \
- && true
+#RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scipy -y \
+# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scikit-learn-intelex -y \
+# && true
 
 
 #################################
 # Tensorflow-GPU
-RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=*=gpu_* -y \
- && mkdir -p $CONDA_HOME/lib/nvvm/libdevice \
- && cp $CONDA_HOME/lib/libdevice.10.bc  $CONDA_HOME/lib/nvvm/libdevice/ \
- && true
+#RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=*=gpu_* -y \
+# && mkdir -p $CONDA_HOME/lib/nvvm/libdevice \
+# && cp $CONDA_HOME/lib/libdevice.10.bc  $CONDA_HOME/lib/nvvm/libdevice/ \
+# && true
 
 ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=$CONDA_HOME/lib/
 
