@@ -89,10 +89,10 @@ RUN $CONDA_HOME/bin/npm install -g npm \
 
 
 ## JupyterLab-Broccoli
-RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.4.5 \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-blocks==0.4.5 \
+RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.4.6 \
+ && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-blocks==0.4.6 \
  && $CONDA_HOME/bin/pip   install --prefix /opt/conda jbturtle \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-turtle==0.4.5 \
+ && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-turtle==0.4.6 \
  && true
 
 
