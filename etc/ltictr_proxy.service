@@ -11,6 +11,8 @@ Environment = APIPORT=8001
 #
 User = root
 PIDFile = /var/run/ltictr_proxy.pid
+#ExecStartPre = /usr/bin/chgrp -R podman /var/run/podman
+#ExecStartPre = /usr/bin/chmod -R g+rwx  /var/run/podman
 ExecStart = /usr/local/bin/ltictr_proxy_server -a ${APIPORT} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf
 #ExecStart = /usr/local/bin/ltictr_proxy_server -h ${HOSTURL} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf -n  # Simple Proxy
 #
