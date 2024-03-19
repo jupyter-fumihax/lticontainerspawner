@@ -3,7 +3,7 @@
 # 1. cahge FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . -t jupyterhub-ltictr/jupyter-tensorflow-gpu:4.0.3 --format=docker -f dockerfile/Dockerfile.gpu
+#      docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub-ltictr/base-notebook-gpu:20240319
 #
 
 # https://hub.docker.com/r/nvidia/cuda/tags
@@ -21,6 +21,9 @@ RUN apt-get update \
     gcc-8 \
     g++-8 \
     nvidia-cuda-dev \
+    fonts-takao* \
+    fonts-ipafont* \
+    fonts-noto-cjk* \
  && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
 # && update-alternatives --config gcc \
  && apt-get -y clean \
@@ -31,9 +34,15 @@ RUN apt-get update \
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
 
+## python 3.12 (2024/03/19)
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
  && bash Miniconda3-latest-Linux-x86_64.sh -b -p $CONDA_HOME \
  && rm Miniconda3-latest-Linux-x86_64.sh 
+
+## python 3.11
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.1.2-0-Linux-x86_64.sh \
+# && bash Miniconda3-py311_24.1.2-0-Linux-x86_64.sh -b -p $CONDA_HOME \
+# && rm   Miniconda3-py311_24.1.2-0-Linux-x86_64.sh 
 
 ## python 3.10
 #RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.2-0-Linux-x86_64.sh \
@@ -47,6 +56,9 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
 
 
 RUN $CONDA_HOME/bin/conda update  -n base  conda -y \
+# python 3.11用（2014/03/19）
+# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libarchive=3.6.2 --force-reinstall -y \
+# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libmamba=1.5.1 --force-reinstall -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libarchive --force-reinstall -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libmamba --force-reinstall -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub -y \
@@ -62,19 +74,21 @@ RUN $CONDA_HOME/bin/conda update  -n base  conda -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pip -c main -y \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME ipynb_path \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME PyCUDA  \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
  && true
 
 
 #################################
-#  Scipy
+#  scipy-notebook-gpu
 #RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scipy -y \
 # && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scikit-learn-intelex -y \
 # && true
 
 
 #################################
-# Tensorflow-GPU
+# tensorflow-notebook-gpu (python 3.12用はまだない 2024/03/19)
 #RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=*=gpu_* -y \
+##RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=2.12.0=gpu_py311h65739b5_0 -y \
 # && mkdir -p $CONDA_HOME/lib/nvvm/libdevice \
 # && cp $CONDA_HOME/lib/libdevice.10.bc  $CONDA_HOME/lib/nvvm/libdevice/ \
 # && true

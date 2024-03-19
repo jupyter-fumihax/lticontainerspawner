@@ -27,6 +27,9 @@ RUN apt-get update \
 #    git \
     language-pack-ja-base \
     language-pack-ja \
+    fonts-takao* \
+    fonts-ipafont* \
+    fonts-noto-cjk* \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && true
@@ -44,7 +47,7 @@ RUN $CONDA_HOME/bin/conda update  -n base conda -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab_widgets -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub-singleuser -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME pip -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME pip -y \
 # && $CONDA_HOME/bin/conda update  --prefix $CONDA_HOME --all -y \
  && $CONDA_HOME/bin/conda clean   --all -y \
  && true
@@ -61,6 +64,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge seaborn -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c plotly plotly -y \
  && $CONDA_HOME/bin/conda clean   --all -y \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
  && true
 
 

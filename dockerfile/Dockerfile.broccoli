@@ -29,6 +29,9 @@ RUN apt-get update \
 #    nodejs \
 #    npm \
 #    jupyter \
+    fonts-takao* \
+    fonts-ipafont* \
+    fonts-noto-cjk* \
     language-pack-ja-base \
     language-pack-ja \
  && apt-get -y clean \
