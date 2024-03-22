@@ -3,7 +3,7 @@
 # 1. cahge FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . --format=docker -f dockerfile/Dockerfile.blockly -t jupyterhub-ltictr/jupyter-blockly
+#      docker build . --format=docker -f dockerfile/Dockerfile.broccoli -t jupyterhub-ltictr/jupyterlab-broccoli:20240320
 #
 
 #FROM docker.io/jupyter/base-notebook
@@ -62,13 +62,14 @@ RUN $CONDA_HOME/bin/conda update  -n base conda -y \
 RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipycanvas -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge Pillow -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge matplotlib -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipympl -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge seaborn -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge matplotlib -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipympl -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge seaborn -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c plotly plotly -y \
  && $CONDA_HOME/bin/conda clean   --all -y \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
  && true
 
 
@@ -92,7 +93,7 @@ RUN $CONDA_HOME/bin/npm install -g npm \
 
 
 ## JupyterLab-Broccoli
-RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.4.6 \
+RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.4.7 \
  && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-blocks==0.4.6 \
  && $CONDA_HOME/bin/pip   install --prefix /opt/conda jbturtle \
  && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-turtle==0.4.6 \

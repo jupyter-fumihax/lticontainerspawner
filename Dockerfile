@@ -3,7 +3,7 @@
 # 1. cahge FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . --format=docker -t jupyterhub-ltids/jupyter-singleuser:4.0
+#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20240319
 #
 
 #FROM docker.io/jupyter/base-notebook
@@ -65,6 +65,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c plotly plotly -y \
  && $CONDA_HOME/bin/conda clean   --all -y \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME jbturtle \
  && true
 
 
