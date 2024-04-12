@@ -55,6 +55,8 @@ class LTIContainerSpawner(DockerSpawner):
     custom_prsnals_cmd  = 'lms_prs_'
     custom_iframe_cmd   = 'lms_iframe'
     custom_ssninfo_cmd  = 'lms_sessioninfo'
+    custom_srvrurl_cmd  = 'lms_serverurl'
+    custom_srvrpath_cmd = 'lms_serverpath'
     custom_course_cmd   = 'lms_course'
     custom_ltiname_cmd  = 'lms_ltiname'
     custom_options_cmd  = 'lms_options'
@@ -88,6 +90,8 @@ class LTIContainerSpawner(DockerSpawner):
     custom_iframe    = False
     custom_ltictr_id = 0
     custom_lti_id    = 0
+    custom_srvrurl   = ''
+    custom_srvrpath  = ''
     custom_course    = ''
     custom_ltiname   = ''
     custom_options   = ''
@@ -123,6 +127,8 @@ class LTIContainerSpawner(DockerSpawner):
         self.custom_iframe    = False
         self.custom_ltictr_id = 0
         self.custom_lti_id    = 0
+        self.custom_srvrurl   = ''
+        self.custom_srvrpath  = ''
         self.custom_course    = ''
         self.custom_ltiname   = ''
         self.custom_options   = ''
@@ -247,9 +253,10 @@ class LTIContainerSpawner(DockerSpawner):
 
             elif key == 'lis_outcome_service_url' :
                 parsed = urlparse(value)
-                self.host_name = parsed.netloc                      # Host Name
+                netloc = parsed.netloc
+                self.host_name = parsed.hostname                    # Host Name
                 scheme = parsed.scheme                              # HTTP Scheme
-                self.host_url = scheme + '://' + self.host_name     # Host URL
+                self.host_url = scheme + '://' + self.netloc        # Host URL
                 portnm = parsed.port
                 if portnm is None :
                     if   scheme == 'https' : portnm = 443
@@ -331,6 +338,18 @@ class LTIContainerSpawner(DockerSpawner):
                     self.custom_ltictr_id = value.split()[0]
                     self.custom_lti_id    = value.split()[1]
                 #
+                elif costom_cmd[0:len(self.custom_srvrurl_cmd)] == self.custom_srvrurl_cmd:     # serverurl Command
+                    value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
+                    self.custom_srvrurl = value
+                    if self.host_name == 'localhost' or self.host_name == '':
+                        self.host_url = value
+                        parsed = urlparse(value)
+                        self.host_name = parsed.hostname
+                #
+                elif costom_cmd[0:len(self.custom_srvrpath_cmd)] == self.custom_srvrpath_cmd:   # serverpath Command
+                    value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
+                    self.custom_srvrpath = value
+                #
                 elif costom_cmd[0:len(self.custom_course_cmd)] == self.custom_course_cmd:       # course name Command
                     value = re.sub('[\\\n\r]', '', value)
                     self.custom_course = value
@@ -368,7 +387,7 @@ class LTIContainerSpawner(DockerSpawner):
                     mnt = True
 
                 if mnt:
-                    dirname = key + '_' + self.course_id + '_' + self.host_name
+                    dirname = key + '_' + self.course_id + '_' + self.custom_lti_id + '_' + self.host_name
                     vols.append(self.volumes_dir + '/' + dirname + ':' + disp)
         #
         return vols
