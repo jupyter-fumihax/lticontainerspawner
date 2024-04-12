@@ -256,7 +256,7 @@ class LTIContainerSpawner(DockerSpawner):
                 netloc = parsed.netloc
                 self.host_name = parsed.hostname                    # Host Name
                 scheme = parsed.scheme                              # HTTP Scheme
-                self.host_url = scheme + '://' + self.netloc        # Host URL
+                self.host_url = scheme + '://' + netloc             # Host URL
                 portnm = parsed.port
                 if portnm is None :
                     if   scheme == 'https' : portnm = 443
