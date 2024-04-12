@@ -387,7 +387,7 @@ class LTIContainerSpawner(DockerSpawner):
                     mnt = True
 
                 if mnt:
-                    dirname = key + '_' + self.course_id + '_' + self.custom_lti_id + '_' + self.host_name
+                    dirname = key + '_' + self.course_id + '_' + self.custom_ltictr_id + '_' + self.custom_lti_id + '_' + self.host_name
                     vols.append(self.volumes_dir + '/' + dirname + ':' + disp)
         #
         return vols
