@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.2.0 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.2.1 for LTI by Fumi.Iseki
 #
 #                                      BSD License.
 #
