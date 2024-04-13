@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.2.1 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.2.2 for LTI by Fumi.Iseki
 #
 #                                      BSD License.
 #
@@ -344,7 +344,13 @@ class LTIContainerSpawner(DockerSpawner):
                     if self.host_name == 'localhost' or self.host_name == '':
                         self.host_url = value
                         parsed = urlparse(value)
+                        scheme = parsed.scheme                              # HTTP Scheme
+                        portnm = parsed.port
+                        if portnm is None :
+                            if   scheme == 'https' : portnm = 443
+                            elif scheme == 'http'  : portnm = 80
                         self.host_name = parsed.hostname
+                        self.host_port = portnm
                 #
                 elif costom_cmd[0:len(self.custom_srvrpath_cmd)] == self.custom_srvrpath_cmd:   # serverpath Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
@@ -387,7 +393,8 @@ class LTIContainerSpawner(DockerSpawner):
                     mnt = True
 
                 if mnt:
-                    dirname = key + '_' + self.course_id + '_' + self.custom_ltictr_id + '_' + self.custom_lti_id + '_' + self.host_name
+                    #dirname = key + '_' + self.course_id + '_' + self.custom_ltictr_id + '_' + self.custom_lti_id + '_' + self.host_name
+                    dirname = key + '_' + self.course_id + '_' + self.host_name
                     vols.append(self.volumes_dir + '/' + dirname + ':' + disp)
         #
         return vols
