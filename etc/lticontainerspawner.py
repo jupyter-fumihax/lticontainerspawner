@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.2.2 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.3.0 for LTI by Fumi.Iseki
 #
 #                                      BSD License.
 #
@@ -51,8 +51,9 @@ class LTIContainerSpawner(DockerSpawner):
     custom_users_cmd    = 'lms_users'
     custom_teachers_cmd = 'lms_teachers'
     custom_volumes_cmd  = 'lms_vol_'
-    custom_submits_cmd  = 'lms_sub_'
     custom_prsnals_cmd  = 'lms_prs_'
+    custom_submits_cmd  = 'lms_sub_'
+    custom_close_cmd    = '_close'
     custom_iframe_cmd   = 'lms_iframe'
     custom_ssninfo_cmd  = 'lms_sessioninfo'
     custom_srvrurl_cmd  = 'lms_serverurl'
@@ -85,8 +86,9 @@ class LTIContainerSpawner(DockerSpawner):
     custom_users     = []
     custom_teachers  = []
     custom_volumes   = {}
-    custom_submits   = {}
     custom_prsnals   = {}
+    custom_submits   = {}
+    custom_close     = {}
     custom_iframe    = False
     custom_ltictr_id = 0
     custom_lti_id    = 0
@@ -122,8 +124,9 @@ class LTIContainerSpawner(DockerSpawner):
         self.custom_users     = []
         self.custom_teachers  = []
         self.custom_volumes   = {}
-        self.custom_submits   = {}
         self.custom_prsnals   = {}
+        self.custom_submits   = {}
+        self.custom_close     = {}
         self.custom_iframe    = False
         self.custom_ltictr_id = 0
         self.custom_lti_id    = 0
@@ -279,66 +282,70 @@ class LTIContainerSpawner(DockerSpawner):
                     self.ext_grp_name = value
                 #
             elif key.startswith('custom_'):                         # Custom Command
-                costom_cmd = key.replace('custom_', '')
+                custom_cmd = key.replace('custom_', '')
                 #
-                if costom_cmd == self.custom_image_cmd:                                         # Container Image Command
+                if custom_cmd == self.custom_image_cmd:                                         # Container Image Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
                     self.custom_image = value
                 #
-                elif costom_cmd == self.custom_users_cmd:                                       # Users Command
+                elif custom_cmd == self.custom_users_cmd:                                       # Users Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~\/ ]', '', value)
                     self.custom_users = value.replace(',',' ').split()
                 #
-                elif costom_cmd[0:len(self.custom_teachers_cmd)] == self.custom_teachers_cmd:   # Teachers Command
+                elif custom_cmd[0:len(self.custom_teachers_cmd)] == self.custom_teachers_cmd:   # Teachers Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~\/ ]', '', value)
                     self.custom_teachers = value.replace(',',' ').split()
                 #
-                elif costom_cmd[0:len(self.custom_cpugrnt_cmd)] == self.custom_cpugrnt_cmd:     # CPU Limit Guarantee Command
+                elif custom_cmd[0:len(self.custom_cpugrnt_cmd)] == self.custom_cpugrnt_cmd:     # CPU Limit Guarantee Command
                     value = re.sub('[^0-9\.]', '', value)
                     self.custom_cpugrnt = value
                 #
-                elif costom_cmd[0:len(self.custom_memgrnt_cmd)] == self.custom_memgrnt_cmd:     # Memory Guarantee Command
+                elif custom_cmd[0:len(self.custom_memgrnt_cmd)] == self.custom_memgrnt_cmd:     # Memory Guarantee Command
                     value = re.sub('[^0-9]', '', value)
                     self.custom_memgrnt = value
                 #
-                elif costom_cmd[0:len(self.custom_cpulimit_cmd)] == self.custom_cpulimit_cmd:   # CPU Limit Command
+                elif custom_cmd[0:len(self.custom_cpulimit_cmd)] == self.custom_cpulimit_cmd:   # CPU Limit Command
                     value = re.sub('[^0-9\.]', '', value)
                     self.custom_cpulimit = value
                 #
-                elif costom_cmd[0:len(self.custom_memlimit_cmd)] == self.custom_memlimit_cmd:   # Memory Limit Command
+                elif custom_cmd[0:len(self.custom_memlimit_cmd)] == self.custom_memlimit_cmd:   # Memory Limit Command
                     value = re.sub('[^0-9]', '', value)
                     self.custom_memlimit = value
                 #
-                elif costom_cmd == self.custom_defurl_cmd:                                      # Default URL Command
+                elif custom_cmd == self.custom_defurl_cmd:                                      # Default URL Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
                     self.custom_defurl = value
                 #
-                elif costom_cmd[0:len(self.custom_options_cmd)] == self.custom_options_cmd:     # Option Command
+                elif custom_cmd[0:len(self.custom_options_cmd)] == self.custom_options_cmd:     # Option Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~\/ ]', '', value)
                     self.custom_options = value
                 #
-                elif costom_cmd[0:len(self.custom_volumes_cmd)] == self.custom_volumes_cmd:     # Volumes Command
+                elif custom_cmd[0:len(self.custom_volumes_cmd)] == self.custom_volumes_cmd:     # Volumes Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~\/ ]', '', value)
-                    self.custom_volumes[costom_cmd] = value
+                    self.custom_volumes[custom_cmd] = value
                 #
-                elif costom_cmd[0:len(self.custom_submits_cmd)] == self.custom_submits_cmd:     # Submits Volume Command
+                elif custom_cmd[0:len(self.custom_prsnals_cmd)] == self.custom_prsnals_cmd:     # Personals Volume Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~\/ ]', '', value)
-                    self.custom_submits[costom_cmd] = value
+                    self.custom_prsnals[custom_cmd] = value
                 #
-                elif costom_cmd[0:len(self.custom_prsnals_cmd)] == self.custom_prsnals_cmd:     # Personals Volume Command
+                elif custom_cmd[0:len(self.custom_submits_cmd)] == self.custom_submits_cmd:     # Submits Volume and Close Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~\/ ]', '', value)
-                    self.custom_prsnals[costom_cmd] = value
+                    if custom_cmd[-len(self.custom_close_cmd):] == self.custom_close_cmd:         # Submit Close Command
+                        submit_name = custom_cmd[0: -len(self.custom_close_cmd)]
+                        self.custom_close[submit_name]  = value
+                    else:                                                                           # Submit Volume Command
+                        self.custom_submits[custom_cmd] = value
                 #
-                elif costom_cmd[0:len(self.custom_iframe_cmd)] == self.custom_iframe_cmd:       # iframe Command
+                elif custom_cmd[0:len(self.custom_iframe_cmd)] == self.custom_iframe_cmd:       # iframe Command
                     if value == '1' :
                         self.custom_iframe = True
                 #
-                elif costom_cmd[0:len(self.custom_ssninfo_cmd)] == self.custom_ssninfo_cmd:     # sessioninfo Command
+                elif custom_cmd[0:len(self.custom_ssninfo_cmd)] == self.custom_ssninfo_cmd:     # sessioninfo Command
                     value = re.sub('[^0-9]', ' ', value)
                     self.custom_ltictr_id = value.split()[0]
                     self.custom_lti_id    = value.split()[1]
                 #
-                elif costom_cmd[0:len(self.custom_srvrurl_cmd)] == self.custom_srvrurl_cmd:     # serverurl Command
+                elif custom_cmd[0:len(self.custom_srvrurl_cmd)] == self.custom_srvrurl_cmd:     # serverurl Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
                     self.custom_srvrurl = value
                     if self.host_name == 'localhost' or self.host_name == '':
@@ -352,18 +359,31 @@ class LTIContainerSpawner(DockerSpawner):
                         self.host_name = parsed.hostname
                         self.host_port = portnm
                 #
-                elif costom_cmd[0:len(self.custom_srvrpath_cmd)] == self.custom_srvrpath_cmd:   # serverpath Command
+                elif custom_cmd[0:len(self.custom_srvrpath_cmd)] == self.custom_srvrpath_cmd:   # serverpath Command
                     value = re.sub('[;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~ ]', '', value)
                     self.custom_srvrpath = value
                 #
-                elif costom_cmd[0:len(self.custom_course_cmd)] == self.custom_course_cmd:       # course name Command
+                elif custom_cmd[0:len(self.custom_course_cmd)] == self.custom_course_cmd:       # course name Command
                     value = re.sub('[\\\n\r]', '', value)
                     self.custom_course = value
                 #
-                elif costom_cmd[0:len(self.custom_ltiname_cmd)] == self.custom_ltiname_cmd:     # LTI name Command
+                elif custom_cmd[0:len(self.custom_ltiname_cmd)] == self.custom_ltiname_cmd:     # LTI name Command
                     value = re.sub('[\\\n\r]', '', value)
                     self.custom_ltiname = value
                 #
+
+        # Closing Submit
+        #self.log.info(self.user.name)
+        #self.log.info(self.custom_teachers)
+        if not (self.user.name in self.custom_teachers) :
+            import time 
+            search_dic = self.custom_submits.copy()
+            for key, _ in search_dic.items():
+                if key in self.custom_close:
+                    if int(time.time()) > int(self.custom_close[key]) :
+                        self.log.info("delete " + key)
+                        del self.custom_submits[key]
+
         return
 
 
