@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     char  meta_title[]     = "{\"LTIContainer\": \"ipynb_conv\"}";
     char  format_course[]  = "{\"LTIContainerCourse\": \"%s\"}";
     char  format_ltiname[] = "{\"LTIContainerLtiName\": \"%s\"}";
-    char  format_teacher[] = "{\"LTICOntainerTeacher\": \"%s\"}";
+    char  format_teacher[] = "{\"LTIContainerTeacher\": \"%s\"}";
     char  format_user[]    = "{\"LTIContainerUser\": \"%s\"}";
 
     char* name_course      = NULL;
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     // 再処理の禁止
     tJson* mt = search_key_child_json(pp, (char*)"metadata", FALSE);
     tJson* lt = search_key_child_json(mt, (char*)"LTIContainer", FALSE);
-    if (lt!=NULL) return 0;
+    //if (lt!=NULL) return 0;
     //
     tJson* js = json_parse_prop(NULL, meta_title, 2);
     js->ldat.id = JSON_TEMP_NODE;       // 結合部分で { がダブるので
