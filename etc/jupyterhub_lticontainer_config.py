@@ -914,8 +914,9 @@ c.Exchange.timezone                 = time_zone
 c.Exchange.timestamp_format         = time_format
 
 #
-# Spawner Parameters
+# Spawner Default Parameters
 #
+c.Spawner.act_limit         = act_limit
 c.Spawner.cpu_limit         = cpu_limit
 c.Spawner.mem_limit         = mem_limit
 c.Spawner.default_url       = default_url

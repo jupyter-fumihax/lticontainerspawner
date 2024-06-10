@@ -20,7 +20,7 @@ from traitlets import (
 
 from urllib.parse import urlparse
 
-import pwd, grp, os, sys, re
+import pwd, grp, os, sys, re, random, string
 
 
 class LTIContainerSpawner(DockerSpawner):
@@ -35,6 +35,7 @@ class LTIContainerSpawner(DockerSpawner):
     teacher_gname  = Unicode('TEACHER', config = True)
     teacher_gid    = Int(7000,  config = True)
     base_id        = Int(30000, config = True)
+    act_limit      = Int(6000,  config = True)
 
     # extension command
     ext_user_id_cmd     = 'user_userid'
@@ -43,6 +44,7 @@ class LTIContainerSpawner(DockerSpawner):
 
     # custom command
     custom_image_cmd    = 'lms_image'
+    custom_actlimit_cmd = 'lms_actlimit'
     custom_cpulimit_cmd = 'lms_cpulimit'
     custom_memlimit_cmd = 'lms_memlimit'
     custom_cpugrnt_cmd  = 'lms_cpugrnt'
@@ -78,11 +80,12 @@ class LTIContainerSpawner(DockerSpawner):
     ext_grp_name     = ''
     #
     custom_image     = ''
-    custom_cpulimit  = '0.0'
-    custom_memlimit  = '0'
-    custom_cpugrnt   = '0.0'
-    custom_memgrnt   = '0'
-    custom_defurl    = '/lab'
+    custom_actlimit  = ''
+    custom_cpulimit  = ''
+    custom_memlimit  = ''
+    custom_cpugrnt   = ''
+    custom_memgrnt   = ''
+    custom_defurl    = ''
     custom_users     = []
     custom_teachers  = []
     custom_volumes   = {}
@@ -90,8 +93,8 @@ class LTIContainerSpawner(DockerSpawner):
     custom_submits   = {}
     custom_close     = {}
     custom_iframe    = False
-    custom_ltictr_id = 0
-    custom_lti_id    = 0
+    custom_ltictr_id = '0'
+    custom_lti_id    = '0'
     custom_srvrurl   = ''
     custom_srvrpath  = ''
     custom_course    = ''
@@ -116,11 +119,12 @@ class LTIContainerSpawner(DockerSpawner):
         self.ext_grp_name     = ''
         #
         self.custom_image     = ''
-        self.custom_cpulimit  = '0.0'
-        self.custom_memlimit  = '0'
-        self.custom_cpugrnt   = '0.0'
-        self.custom_memgrnt   = '0'
-        self.custom_defurl    = '/lab'
+        self.custom_actlimit  = ''
+        self.custom_cpulimit  = ''
+        self.custom_memlimit  = ''
+        self.custom_cpugrnt   = ''
+        self.custom_memgrnt   = ''
+        self.custom_defurl    = ''
         self.custom_users     = []
         self.custom_teachers  = []
         self.custom_volumes   = {}
@@ -128,8 +132,8 @@ class LTIContainerSpawner(DockerSpawner):
         self.custom_submits   = {}
         self.custom_close     = {}
         self.custom_iframe    = False
-        self.custom_ltictr_id = 0
-        self.custom_lti_id    = 0
+        self.custom_ltictr_id = '0'
+        self.custom_lti_id    = '0'
         self.custom_srvrurl   = ''
         self.custom_srvrpath  = ''
         self.custom_course    = ''
@@ -304,6 +308,10 @@ class LTIContainerSpawner(DockerSpawner):
                     value = re.sub('[^0-9]', '', value)
                     self.custom_memgrnt = value
                 #
+                elif custom_cmd[0:len(self.custom_actlimit_cmd)] == self.custom_actlimit_cmd:   # Activity Limit Command
+                    value = re.sub('[^0-9]', '', value)
+                    self.custom_actlimit = value
+                #
                 elif custom_cmd[0:len(self.custom_cpulimit_cmd)] == self.custom_cpulimit_cmd:   # CPU Limit Command
                     value = re.sub('[^0-9\.]', '', value)
                     self.custom_cpulimit = value
@@ -439,6 +447,7 @@ class LTIContainerSpawner(DockerSpawner):
         env.update(NB_GID       = groupid)
         env.update(NB_GROUP     = groupname)
         env.update(NB_DIR       = self.notebook_dir.format(username=username, groupname=groupname))
+        env.update(NB_ACTLIMIT  = self.act_limit)
 
         env.update(NB_THRGID    = self.teacher_gid)
         env.update(NB_THRGROUP  = self.teacher_gname)
@@ -484,7 +493,8 @@ class LTIContainerSpawner(DockerSpawner):
         course_id = self.course_id
         lti_id    = self.custom_lti_id
         host_name = self.host_name
-        self.object_name = f'jupyterhub-{username}-{course_id}-{lti_id}-{host_name}'
+        random_str= ''.join(random.choices(string.ascii_letters + string.digits, k = 8))
+        self.object_name = f'jupyterhub-{username}-{course_id}-{lti_id}-{host_name}-{random_str}'
 
         # cpu and memory
         if self.custom_cpugrnt != '':
@@ -492,6 +502,9 @@ class LTIContainerSpawner(DockerSpawner):
         #
         if self.custom_memgrnt != '':
             self.mem_guarantee = int(self.custom_memgrnt)
+        #
+        if self.custom_actlimit != '':
+            self.act_limit     = int(self.custom_actlimit)
         #
         if self.custom_cpulimit != '':
             self.cpu_limit     = float(self.custom_cpulimit)
@@ -557,6 +570,4 @@ class LTIContainerSpawner(DockerSpawner):
     #def docker(self, method, *args, **kwargs):
     #    #return self.executor.submit(self._docker, method, *args, **kwargs)
     #    return super(LTIContainerSpawner, self).docker(method, *args, **kwargs)
-
-
 

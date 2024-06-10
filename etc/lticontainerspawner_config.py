@@ -19,6 +19,7 @@ default_group     = 'others'                    # ホストに存在しないユ
 teacher_gid       = 7000                        # 1000以上で，システムで使用していない GID
 base_id           = 30000                       # ID 不明の場合に，基底となる ID番号．システムで使用されていない部分．
 
+act_limit         = 6000                        # 100m, Default Activity Limit Time (s)
 cpu_limit         = 1                           # Default CPU Limit
 mem_limit         = 524288000                   # Default Memory Limit: 500MiB
 default_url       = '/lab'
