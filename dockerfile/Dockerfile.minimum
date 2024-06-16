@@ -22,6 +22,7 @@ ADD \
     bin/extract \
     bin/ipynb_tocsv \
     bin/tocsv \
+    bin/actlimit_check.sh \
     /usr/local/bin/
 
 ADD \
