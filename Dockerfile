@@ -7,8 +7,8 @@
 #
 
 #FROM docker.io/jupyter/base-notebook
-FROM docker.io/jupyterhub/singleuser
-#FROM docker.io/jupyter/datascience-notebook
+#FROM docker.io/jupyterhub/singleuser
+FROM docker.io/jupyter/datascience-notebook
 #FROM docker.io/jupyter/tensorflow-notebook
 #FROM docker.io/jupyter/scipy-notebook
 
@@ -70,6 +70,9 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets
 
 
 # LTIContainer
+
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh || exit 1
+
 ADD \
     bin/start.sh \
     bin/start-notebook.sh \
@@ -86,6 +89,7 @@ ADD \
     bin/extract \
     bin/ipynb_tocsv \
     bin/tocsv \
+    bin/actlimit_check.sh \
     /usr/local/bin/
 
 ADD \
