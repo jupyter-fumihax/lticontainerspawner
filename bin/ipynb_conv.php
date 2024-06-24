@@ -35,7 +35,7 @@ else               $filename = basename($in_file);
 $env = getenv();
 if (array_key_exists('LTI_COURSE', $env)) $lti->course  = $env['LTI_COURSE'];
 if (array_key_exists('LTI_NAME',   $env)) $lti->name    = $env['LTI_NAME'];
-if (array_key_exists('NB_USER',    $env)) $u_name = $env['NB_USER'];
+if (array_key_exists('NB_USER',    $env)) $u_name       = $env['NB_USER'];
 if (array_key_exists('NB_TEACHER', $env)) $lti->teacher = $env['NB_TEACHER'];
 
 //
@@ -45,9 +45,11 @@ fclose($fp);
 
 $json = json_decode($contents, false);
 
+/*
 if (property_exists($json, "metadata")) {
     if (property_exists($json->metadata, "LTIContainer")) exit(0);
 }
+*/
 
 
 /**

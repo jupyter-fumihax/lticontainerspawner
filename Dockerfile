@@ -30,8 +30,8 @@ RUN apt-get update \
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
 
-
-# Ext Library
+# Language & Ext Library
+#RUN $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y
 RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pillow -y \
@@ -47,8 +47,9 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME jbturtle \
  && true
 
-
 # Lticontainer
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh || exit 1
+
 ADD \
     bin/start.sh \
     bin/start-notebook.sh \

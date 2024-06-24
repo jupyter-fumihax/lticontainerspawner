@@ -100,7 +100,7 @@ int main(int argc, char** argv)
                 dup_merge_json(tail, js);
                 //
                 tail = del_json_anchor_node(tail);
-                clear_tTree_ctrl(tail);
+                _clear_tTree_ctrl(tail);
             }
 
             char* fname = get_file_name(in_file);

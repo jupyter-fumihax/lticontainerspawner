@@ -2,6 +2,7 @@
     ipynb_conv.c : ipnb ファイル 変換 v1.2.0  by Fumi.Iseki BSD License.
         filename: と codenum: を metadata の tags の配列に追加 
 
+        1.3.0  2023/06/17  LTIContainer タグの廃止
         1.2.0  2023/05/22  LTIContainerUser 等の追加
         1.1.0  2023/05/08  再処理の禁止
         1.0.0  2022/07/29
@@ -22,11 +23,13 @@ int main(int argc, char** argv)
         exit(1);
     }
 
+/*
     char  meta_title[]     = "{\"LTIContainer\": \"ipynb_conv\"}";
     char  format_course[]  = "{\"LTIContainerCourse\": \"%s\"}";
     char  format_ltiname[] = "{\"LTIContainerLtiName\": \"%s\"}";
     char  format_teacher[] = "{\"LTIContainerTeacher\": \"%s\"}";
     char  format_user[]    = "{\"LTIContainerUser\": \"%s\"}";
+*/
 
     char* name_course      = NULL;
     char* name_ltiname     = NULL;
@@ -58,7 +61,8 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    // 停止：再処理の禁止
+/*
+    // 再処理の禁止
     tJson* mt = search_key_child_json(pp, (char*)"metadata", FALSE);
     tJson* lt = search_key_child_json(mt, (char*)"LTIContainer", FALSE);
     //if (lt!=NULL) return 0;
@@ -66,7 +70,9 @@ int main(int argc, char** argv)
     tJson* js = json_parse_prop(NULL, meta_title, 2);
     js->ldat.id = JSON_TEMP_NODE;       // 結合部分で { がダブるので
     join_json(mt, &js);
+*/
 
+/*
     // add infomations
     name_course = getenv("LTI_COURSE");
     if (name_course!=NULL) {
@@ -96,6 +102,7 @@ int main(int argc, char** argv)
         js->ldat.id = JSON_TEMP_NODE;
         join_json(mt, &js);
     }
+*/
 
     //
     tList* ls = search_all_node_strval_json(pp, (char*)"cell_type", (char*)"code");
