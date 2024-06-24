@@ -30,10 +30,21 @@ RUN apt-get update \
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
 
-# Language
-#RUN $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y \
+
+# Ext Library
 RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pillow -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipycanvas -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge matplotlib -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipympl -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge seaborn -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c plotly plotly -y \
  && $CONDA_HOME/bin/conda clean   --all -y \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME jbturtle \
  && true
 
 

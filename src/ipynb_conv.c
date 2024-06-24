@@ -58,7 +58,7 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    // 再処理の禁止
+    // 停止：再処理の禁止
     tJson* mt = search_key_child_json(pp, (char*)"metadata", FALSE);
     tJson* lt = search_key_child_json(mt, (char*)"LTIContainer", FALSE);
     //if (lt!=NULL) return 0;
