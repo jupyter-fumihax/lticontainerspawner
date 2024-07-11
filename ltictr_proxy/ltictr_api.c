@@ -156,7 +156,7 @@ int  api_get_user(char* uname, Buffer* buf, tList* lproxy)
                     snprintf(json_data, LDATA-1, json_user_fmt, user, user, url, port, date);
                 }
                 tJson* json = json_parse_prop(NULL, json_data, 2);
-                insert_json_nodes(res, json);
+                json_insert_child(res, json);
             }
             pp = pp->next;
         }
@@ -173,7 +173,7 @@ int  api_get_user(char* uname, Buffer* buf, tList* lproxy)
             //
             snprintf(json_data, LDATA-1, json_user_fmt, user, user, url, port, date);
             tJson* json = json_parse_prop(NULL, json_data, 2);
-            insert_json_nodes(res, json);
+            json_insert_child(res, json);
         }
     }
 
