@@ -6,7 +6,8 @@
 #      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20240319
 #
 
-FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltictr/singleuser
+#FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltictr/singleuser
+FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltictr/jupyterlab-broccoli
 
 USER root
 
