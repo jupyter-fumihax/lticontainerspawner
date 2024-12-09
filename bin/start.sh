@@ -111,10 +111,11 @@ if [ $(id -u) == 0 ] ; then
             chmod 0700 $HOME_DIR/$NB_USER/* || true 
         fi
 
-        if [ ! -f $HOME_DIR/$NB_USER/.bashrc ]; then
+        # comment out of "if" is for JupyterHub v5 temporary (2024/12/10)
+        #if [ ! -f $HOME_DIR/$NB_USER/.bashrc ]; then
             cp -f /etc/skel/.bashrc $HOME_DIR/$NB_USER || true
             chown $NB_UID:$NB_GID $HOME_DIR/$NB_USER/.bashrc || true
-        fi
+        #fi
         if [ ! -f $HOME_DIR/$NB_USER/.bash_profile ]; then
             cp -f /etc/skel/.bash_profile $HOME_DIR/$NB_USER || true
             chown $NB_UID:$NB_GID $HOME_DIR/$NB_USER/.bash_profile || true
@@ -230,23 +231,24 @@ if [ $(id -u) == 0 ] ; then
             if [[ "$DR" != "" && "$LK" != ""  && -d "$DR" ]]; then
                 DR_OWN=`ls -ld $DR | awk -F" " '{print $3}'`
                 if [[ "$DR_OWN" == "root" && "$NB_TEACHER" == "$NB_USER" ]]; then
-                    chown $NB_UID:$EGID $DR || true
+                    #chown $NB_UID:$EGID $DR || true
+                    chown $NB_UID:$NB_THRGID $DR || true
                     chmod 3777 $DR || true
                     # .ipynb_checkpoints
                     mkdir $DR/.ipynb_checkpoints || true
-                    chown $NB_UID:$EGID $DR/.ipynb_checkpoints || true
+                    #chown $NB_UID:$EGID $DR/.ipynb_checkpoints || true
+                    chown $NB_UID:$NB_THRGID $DR/.ipynb_checkpoints || true
                     chmod 3777 $DR/.ipynb_checkpoints || true
                 fi
+                chgrp $NB_THRGID $DR || true
                 #
                 if [[ ! -e "$LK" || "$LK" == "." ]]; then
                     if [ "${LK:0:1}" != "-" ]; then
                         ln -s $DR $LK || true
                         ln -s ../$DR $VOLUME_DIR/$LK || true
                     else
-                        if [ "$NB_TEACHER" == "$NB_USER" ]; then
-                            ln -s $DR "${LK:1}" || true
-                            ln -s ../$DR $VOLUME_DIR/"${LK:1}" || true
-                        fi
+                        ln -s $DR "${LK:1}" || true
+                        ln -s ../$DR $VOLUME_DIR/"${LK:1}" || true
                     fi
                 fi
             fi

@@ -1,10 +1,10 @@
 #!/bin/bash
 #
 #  docker login -u <username> -p <password>  <repository_host>
-#  ./dockerpush <tag_of_updated>  [tag_of_reposirory]
+#  ./dockerpush.sh <tag_of_updated>  [tag_of_reposirory]
 #
 #  ex.) docker login -u alice -p password_of_alice  www.nsl.tuis.ac.jp:5000
-#       ./dockerpush 20230503 latest
+#       ./dockerpush.sh 20230503 latest
 #
 
 DKRREP="www.nsl.tuis.ac.jp:5000"
@@ -14,6 +14,8 @@ if [ "$1" != "" ]; then
     TAG=$1
 else
     echo "usage... $0 <tag_of_updated>  [tag_of_repository]"
+    echo "    ex.) docker login -u alice -p password_of_alice  www.nsl.tuis.ac.jp:5000"
+    echo "         $0 20230503 latest"
     exit 1
 fi
 

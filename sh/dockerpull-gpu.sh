@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#  ./dockerpull-gpu <tag> [category_of_images] 
+#  ./dockerpull-gpu.sh <tag> [category_of_images] 
 #
-#  ex.) ./dockerpull-gpu latest jupyterhub-ltictr
+#  ex.) ./dockerpull-gpu.sh latest jupyterhub-ltictr
 #
 
 LST="base-notebook-gpu tensorflow-notebook-gpu scipy-notebook-gpu"
@@ -16,6 +16,7 @@ if [ "$1" != "" ]; then
     TAGSTR=$1
 else
     echo "usage... $0 <tag_of_pulled>  [category_of_images]"
+    echo "    ex.) $0 latest jupyterhub-ltictr"
     exit 1
 fi
 if [ "$2" != "" ]; then

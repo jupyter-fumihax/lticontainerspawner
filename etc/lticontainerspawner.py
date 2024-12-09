@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.3.0 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.3.1 for LTI by Fumi.Iseki
 #
 #                                      BSD License.
 #
@@ -100,6 +100,8 @@ class LTIContainerSpawner(DockerSpawner):
     custom_course    = ''
     custom_ltiname   = ''
     custom_options   = ''
+    #
+    prefix           = 'jupyterhub'
 
 
     def init_parameters(self):
@@ -139,6 +141,8 @@ class LTIContainerSpawner(DockerSpawner):
         self.custom_course    = ''
         self.custom_ltiname   = ''
         self.custom_options   = ''
+        #
+        self.prefix           = 'jupyterhub'
         #
         return
 
@@ -494,7 +498,9 @@ class LTIContainerSpawner(DockerSpawner):
         lti_id    = self.custom_lti_id
         host_name = self.host_name
         random_str= ''.join(random.choices(string.ascii_letters + string.digits, k = 8))
-        self.object_name = f'jupyterhub-{username}-{course_id}-{lti_id}-{host_name}-{random_str}'
+        self.prefix = f'jupyterhub-{course_id}-{lti_id}-{host_name}-{random_str}'
+        self.object_name = self.prefix + f'-{username}'
+        #self.object_name = f'jupyterhub-{username}-{course_id}-{lti_id}-{host_name}-{random_str}'
 
         # cpu and memory
         if self.custom_cpugrnt != '':

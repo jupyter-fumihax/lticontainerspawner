@@ -48,7 +48,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab
  && true
 
 # Lticontainer
-HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh || exit 1
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
 
 ADD \
     bin/start.sh \
