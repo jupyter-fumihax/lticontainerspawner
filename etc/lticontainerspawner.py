@@ -498,7 +498,7 @@ class LTIContainerSpawner(DockerSpawner):
         lti_id    = self.custom_lti_id
         host_name = self.host_name
         random_str= ''.join(random.choices(string.ascii_letters + string.digits, k = 8))
-        self.prefix = f'jupyterhub-{course_id}-{lti_id}-{host_name}-{random_str}'
+        self.prefix = f'jupyterhub-{course_id}-{lti_id}-{host_name}-{random_str}'           # for dockerspawner v13
         self.object_name = self.prefix + f'-{username}'
         #self.object_name = f'jupyterhub-{username}-{course_id}-{lti_id}-{host_name}-{random_str}'
 
