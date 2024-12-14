@@ -3,7 +3,7 @@
 #
 # My IP Address
 my_ip_addr = '202.26.150.53'
-#my_port_num = 443  # This setting is required if configurable-http-proxy is used.
+my_port_num = 443  # This setting is required if configurable-http-proxy is used.
 
 #
 # LTI Params
