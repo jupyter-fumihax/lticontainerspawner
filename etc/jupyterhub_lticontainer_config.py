@@ -3,6 +3,7 @@
 #
 # My IP Address
 my_ip_addr = '202.26.150.53'
+my_port_num = 443  # This setting is required if configurable-http-proxy is used.
 
 #
 # LTI Params
@@ -788,7 +789,7 @@ c.ConfigurableHTTPProxy.pid_file = '/var/run/jupyterhub-proxy.pid'
 #          .. deprecated: 0.9
 #              Use JupyterHub.bind_url
 #  Default: 8000
-# c.JupyterHub.port = 8000
+c.JupyterHub.port = my_port_num
 
 ## DEPRECATED since version 0.8 : Use ConfigurableHTTPProxy.api_url
 #  Default: ''
@@ -1606,6 +1607,65 @@ c.Spawner.start_timeout = 120
 # c.Authenticator.admin_users = set()
 c.Authenticator.admin_users = {'admin'}
 
+## Allow every user who can successfully authenticate to access JupyterHub.
+#
+#  False by default, which means for most Authenticators, _some_ allow-related
+#  configuration is required to allow users to log in.
+#
+#  Authenticator subclasses may override the default with e.g.::
+#
+#      @default("allow_all")
+#      def _default_allow_all(self):
+#          # if _any_ auth config (depends on the Authenticator)
+#          if self.allowed_users or self.allowed_groups or self.allow_existing_users:
+#              return False
+#          else:
+#              return True
+#
+#  .. versionadded:: 5.0
+#
+#  .. versionchanged:: 5.0
+#      Prior to 5.0, `allow_all` wasn't defined on its own,
+#      and was instead implicitly True when no allow config was provided,
+#      i.e. `allowed_users` unspecified or empty on the base Authenticator class.
+#
+#      To preserve pre-5.0 behavior,
+#      set `allow_all = True` if you have no other allow configuration.
+#  Default: False
+# c.Authenticator.allow_all = False
+c.Authenticator.allow_all = True
+
+## Allow existing users to login.
+#
+#  Defaults to True if `allowed_users` is set for historical reasons, and False
+#  otherwise.
+#
+#  With this enabled, all users present in the JupyterHub database are allowed to
+#  login. This has the effect of any user who has _previously_ been allowed to
+#  login via any means will continue to be allowed until the user is deleted via
+#  the /hub/admin page or REST API.
+#
+#  .. warning::
+#
+#     Before enabling this you should review the existing users in the
+#     JupyterHub admin panel at `/hub/admin`. You may find users existing
+#     there because they have previously been declared in config such as
+#     `allowed_users` or allowed to sign in.
+#
+#  .. warning::
+#
+#     When this is enabled and you wish to remove access for one or more
+#     users previously allowed, you must make sure that they
+#     are removed from the jupyterhub database. This can be tricky to do
+#     if you stop allowing an externally managed group of users for example.
+#
+#  With this enabled, JupyterHub admin users can visit `/hub/admin` or use
+#  JupyterHub's REST API to add and remove users to manage who can login.
+#
+#  .. versionadded:: 5.0
+#  Default: False
+# c.Authenticator.allow_existing_users = False
+
 ## Set of usernames that are allowed to log in.
 #  
 #  Use this with supported authenticators to restrict which users can log in.
@@ -1619,6 +1679,22 @@ c.Authenticator.admin_users = {'admin'}
 #      `Authenticator.whitelist` renamed to `allowed_users`
 #  Default: set()
 # c.Authenticator.allowed_users = set()
+
+## Is there any allow config?
+#
+#          Used to show a warning if it looks like nobody can access the Hub,
+#          which can happen when upgrading to JupyterHub 5,
+#          now that `allow_all` defaults to False.
+#
+#          Deployments can set this explicitly to True to suppress
+#          the "No allow config found" warning.
+#
+#          Will be True if any config tagged with `.tag(allow_config=True)`
+#          or starts with `allow` is truthy.
+#
+#          .. versionadded:: 5.0
+#  Default: False
+# c.Authenticator.any_allow_config = False
 
 ## The max age (in seconds) of authentication info
 #          before forcing a refresh of user auth info.

@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-#  ./dockerpull <tag> [category_of_images] 
+#  ./dockerpull.sh <tag> [category_of_images] 
 #
-#  ex.) ./dockerpull latest jupyterhub-ltictr
+#  ex.) ./dockerpull.sh latest jupyterhub-ltictr
 #
 
 LST="base-notebook singleuser datascience-notebook tensorflow-notebook scipy-notebook vhtec-notebook \
@@ -17,6 +17,7 @@ if [ "$1" != "" ]; then
     TAGSTR=$1
 else
     echo "usage... $0 <tag_of_pulled>  [category_of_images]"
+    echo "    ex.) $0 latest jupyterhub-ltictr"
     exit 1
 fi
 if [ "$2" != "" ]; then
