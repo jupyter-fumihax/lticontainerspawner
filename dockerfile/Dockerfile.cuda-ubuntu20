@@ -1,6 +1,6 @@
 #
 # Usage
-# 1. cahge FROM line
+# 1. chage FROM line
 # 2. execute docker build command
 # ex.) cd .. 
 #      docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub-ltictr/base-notebook-gpu:20240319
@@ -100,7 +100,9 @@ ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=$CONDA_HOME/lib/
 RUN $CONDA_HOME/bin/conda clean   --all -y 
 
 
-# LTIContainer
+# Lticontainer
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
+
 ADD \
     bin/start.sh \
     bin/start-notebook.sh \
@@ -117,6 +119,7 @@ ADD \
     bin/extract \
     bin/ipynb_tocsv \
     bin/tocsv \
+    bin/actlimit_check.sh \
     /usr/local/bin/
 
 ADD \

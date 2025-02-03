@@ -1,3 +1,7 @@
+#
+# docker build . --format=docker -f dockerfile/Dockerfile.patch -t jupyterhub-ltictr/xxxxxx:xxxxxx
+#
+
 #FROM jupyterhub-ltids/jupyter-singleuser:3.6
 #FROM jupyterhub-ltids/jupyter-base-gpu:3.6.3-3.11
 #FROM jupyterhub-ltids/jupyter-scipy-gpu:3.6.3-3.11
@@ -7,6 +11,9 @@
 FROM jupyterhub-ltids/jupyter-tensorflow-gpu:4.0.3-3.11
 
 USER root
+
+#
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
 
 ADD \
 #    bin/start.sh \
@@ -22,8 +29,9 @@ ADD \
 #    bin/submit \
 #    bin/ipynb_extract \
 #    bin/extract \
-    bin/ipynb_tocsv \
+#    bin/ipynb_tocsv \
 #    bin/tocsv \
+    bin/actlimit_check.sh \
     /usr/local/bin/
 
 #ADD \

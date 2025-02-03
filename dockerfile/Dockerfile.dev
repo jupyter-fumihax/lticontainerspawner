@@ -1,3 +1,7 @@
+#
+# docker build . --format=docker -f Dockerfile.dev -t jupyterhub-ltictr/dev-notebook:xxx
+#
+
 FROM docker.io/jupyterhub/singleuser
 
 USER root
@@ -37,48 +41,6 @@ RUN $CONDA_HOME/bin/conda update  -n base conda \
  && $CONDA_HOME/bin/pip   install --upgrade jupyterhub-ltiauthenticator \
  && true
 
-
-# LTIContainer
-ADD \
-    bin/start.sh \
-    bin/start-notebook.sh \
-    bin/start-singleuser.sh \
-    bin/commit.sh \
-    bin/ipynb_conv \
-    bin/ipynb_conv_alt \
-    bin/ipynb_conv_alt.py \
-    bin/ipynb_deploy \
-    bin/ipynb_setup \
-    bin/ipynb_submit \
-    bin/submit \
-    bin/ipynb_extract \
-    bin/extract \
-    bin/ipynb_tocsv \
-    bin/tocsv \
-    /usr/local/bin/
-
-ADD \
-    etc/.bashrc \
-    etc/.bash_profile \
-    etc/.vimrc \
-    /root/
-
-ADD \
-    etc/.bash_profile \
-    etc/.bashrc \
-    etc/.vimrc \
-    /etc/skel/
-
-ADD \
-    etc/passwd.orig \
-    etc/group.orig \
-    /etc/
- 
-RUN chmod a+rx /usr/local/bin/* \
- && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
- && true
-
-
 #
 RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge -y jupytext 
 RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge -y jupyterlab-lsp 'python-lsp-server[all]' 
@@ -113,3 +75,51 @@ RUN true \
 
 #
 RUN $CONDA_HOME/bin/conda clean   --all -y
+
+
+####################################################################################
+
+#
+# Lticontainer
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
+
+ADD \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    bin/actlimit_check.sh \
+    /usr/local/bin/
+
+ADD \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+ADD \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+ADD \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+ 
+RUN chmod a+rx /usr/local/bin/* \
+ && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+

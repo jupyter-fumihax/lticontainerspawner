@@ -4,6 +4,7 @@
 #
 # /usr/local/bin/start.sh   
 #    This is modified by Fumi.Iseki for LTIDockerSpawner/LTIPodmanSpawner
+#       v1.0.7  2024 12/09
 #       v1.0.6  2023 05/09
 #       v1.0.5  2023 05/09
 #       v1.0.4  2022 07/06

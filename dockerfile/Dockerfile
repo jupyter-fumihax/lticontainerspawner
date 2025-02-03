@@ -3,7 +3,8 @@
 # 1. cahge FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20240319
+#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:xxx
+#      docker build . --format=docker -f dockerfile/Dockerfile -t jupyterhub-ltictr/singleuser:xxx
 #
 
 #FROM docker.io/jupyter/base-notebook
@@ -69,8 +70,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets
 
 
 # LTIContainer
-
-HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh || exit 1
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
 
 ADD \
     bin/start.sh \
@@ -114,3 +114,4 @@ RUN chmod a+rx /usr/local/bin/* \
 
 
 #CMD ["start-notebook.sh"]
+

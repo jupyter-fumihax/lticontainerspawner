@@ -26,7 +26,7 @@ RUN apt-get update \
     libblas-dev \
     liblapack-dev \
     php php-cli php-dev php-pear php-zmq php-zip \
-#    python3-pip l\
+#    python3-pip \
 #    binutils \
     apt-utils \
     mlocate \
@@ -106,8 +106,10 @@ RUN apt-get install -yq --no-install-recommends nodejs npm libzmq3-dev \
 #    ./cpt.py --check-requirements && ./cpt.py --create-dev-env Debug --with-workdir=./cling/
 
 RUN cd .. \
- && wget https://root.cern.ch/download/cling/cling_2020-10-14_ROOT-ubuntu2004.tar.bz2 \
- && tar -xvjf cling_2020-10-14_ROOT-ubuntu2004.tar.bz2 \
+# && wget https://root.cern.ch/download/cling/cling_2020-10-14_ROOT-ubuntu2004.tar.bz2 \
+# && tar -xvjf cling_2020-10-14_ROOT-ubuntu2004.tar.bz2 \
+ && wget https://root.cern.ch/download/cling/cling_2020-11-05_ROOT-ubuntu2004.tar.bz2 \
+ && tar -xvjf cling_2020-11-05_ROOT-ubuntu2004.tar.bz2 \
  && rm cling_*.tar.bz2 \
  && mv cling_* cling \
  && true

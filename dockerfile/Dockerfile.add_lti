@@ -17,7 +17,7 @@ ENV PATH=$CONDA_HOME/bin:$PATH
 
 # LTIContainer
 
-HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh || exit 1
+HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
 
 ADD \
 #    bin/start.sh \
