@@ -1,13 +1,14 @@
 #
 # Usage
-# 1. cahge FROM line
+# 1. change FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20240319
+#      docker build . --format=docker -f dockerfile/Dockerfile.add_lti -t jupyterhub-ltictr/singleuser:20240319
 #
 
 #FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltictr/singleuser
-FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltictr/jupyterlab-broccoli
+#FROM www.nsl.tuis.ac.jp:5000/jupyterhub-ltictr/jupyterlab-broccoli
+FROM localhost/jupyterhub-ltictr/tensorflow-notebook-gpu:20240320
 
 USER root
 

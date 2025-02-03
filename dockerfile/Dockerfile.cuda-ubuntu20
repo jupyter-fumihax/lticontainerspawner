@@ -1,6 +1,6 @@
 #
 # Usage
-# 1. chage FROM line
+# 1. change FROM line
 # 2. execute docker build command
 # ex.) cd .. 
 #      docker build . --format=docker -f dockerfile/Dockerfile.cuda-ubuntu20 -t jupyterhub-ltictr/base-notebook-gpu:20240319

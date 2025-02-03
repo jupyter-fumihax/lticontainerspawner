@@ -1,6 +1,6 @@
 #
 # Usage
-# 1. cahge FROM line
+# 1. change FROM line
 # 2. execute docker build command
 # ex.) cd .. 
 #      docker build . --format=docker -f dockerfile/Dockerfile.broccoli -t jupyterhub-ltictr/jupyterlab-broccoli:20240320
