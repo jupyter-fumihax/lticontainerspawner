@@ -3,7 +3,7 @@
 # 1. chage FROM line
 # 2. execute docker build command
 # ex.) cd .. 
-#      docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub-ltictr/base-notebook-gpu:20240319
+#      docker build . --format=docker -f dockerfile/Dockerfile.cuda-ubuntu20 -t jupyterhub-ltictr/base-notebook-gpu:20240319
 #
 
 # https://hub.docker.com/r/nvidia/cuda/tags
