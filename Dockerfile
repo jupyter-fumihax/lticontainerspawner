@@ -45,6 +45,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab
  && $CONDA_HOME/bin/conda clean   --all -y \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME jbturtle \
+ && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME nbgrader \
  && true
 
 # Lticontainer
