@@ -229,7 +229,13 @@ if [ $(id -u) == 0 ] ; then
             DR=`echo $SUBMIT | cut -d ':' -f 1`
             LK=`echo $SUBMIT | cut -d ':' -f 2`
             #
-            if [[ "$DR" != "" && "$LK" != ""  && -d "$DR" ]]; then
+            if [[ "$DR" != "" && "$LK" != "" ]]; then
+                if [ ! -d "$DR" ]; then
+                    mkdir -p $DR || true
+                fi
+                # rwxrwxrwt
+                chmod 1777 $DR || true
+
                 DR_OWN=`ls -ld $DR | awk -F" " '{print $3}'`
                 if [[ "$DR_OWN" == "root" && "$NB_TEACHER" == "$NB_USER" ]]; then
                     #chown $NB_UID:$EGID $DR || true
@@ -241,6 +247,7 @@ if [ $(id -u) == 0 ] ; then
                     chown $NB_UID:$NB_THRGID $DR/.ipynb_checkpoints || true
                     chmod 3777 $DR/.ipynb_checkpoints || true
                 fi
+
                 chgrp $NB_THRGID $DR || true
                 #
                 if [[ ! -e "$LK" || "$LK" == "." ]]; then
