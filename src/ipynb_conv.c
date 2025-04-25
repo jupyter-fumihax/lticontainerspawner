@@ -1,7 +1,8 @@
 ﻿/**
-    ipynb_conv.c : ipnb ファイル 変換 v1.2.0  by Fumi.Iseki BSD License.
+    ipynb_conv.c : ipnb ファイル 変換 v1.3.1  by Fumi.Iseki BSD License.
         filename: と codenum: を metadata の tags の配列に追加 
 
+        1.3.1  2025/04/25  metadata 処理のバグ
         1.3.0  2023/06/17  LTIContainer タグの廃止
         1.2.0  2023/05/22  LTIContainerUser 等の追加
         1.1.0  2023/05/08  再処理の禁止
@@ -136,16 +137,20 @@ int main(int argc, char** argv)
                     // tags ノードが存在しない．
                     memset(buf, 0, LBUF);
                     snprintf(buf, LBUF-1, "{ \"tags\": [ \"filename:%s\", \"codenum:%d\" ] }", filename, num);
-                    tJson* js = json_parse_prop(NULL, buf, 2);
+                    tJson* anck = json_parse_prop(NULL, buf, 2);    // アンカー
+                    tJson* js   = anck->next;
+                    del_json_node(&anck);
                     js->ldat.id = JSON_TEMP_NODE;       // 結合部分で { がダブるので
-                    join_json(meta, &js);
+                    join_json(meta, &js->next);
                 }
             }
             else {
                 // metadata ノードが存在しない．
                 memset(buf, 0, LBUF);
                 snprintf(buf, LBUF-1, "{ \"metadata\": { \"tags\": [ \"filename:%s\", \"codenum:%d\" ] } }", filename, num);
-                tJson* js = json_parse_prop(NULL, buf, 2);
+                tJson* anck = json_parse_prop(NULL, buf, 2);        // アンカー
+                tJson* js   = anck->next;
+                del_json_node(&anck);
                 js->ldat.id = JSON_TEMP_NODE;       // 結合部分で { がダブるので
                 join_json(ls->altp->prev, &js);    
             }
