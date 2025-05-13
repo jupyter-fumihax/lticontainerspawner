@@ -299,7 +299,7 @@ c.LTI11Authenticator.username_key = 'ext_user_username'             # for Moodle
 #          Sets protocol, ip, base_url
 #  Default: 'http://:8000'
 # c.JupyterHub.bind_url = 'http://:8000'
-c.JupyterHub.bind_url = 'http://'+my_ip_addr+':8000'
+c.JupyterHub.bind_url = 'https://'+my_ip_addr+':'+str(my_port_num)
 
 ## Whether to shutdown the proxy when the Hub shuts down.
 #  
