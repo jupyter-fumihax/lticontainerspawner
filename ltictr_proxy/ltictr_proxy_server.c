@@ -45,7 +45,8 @@ tList*   PIDList        = NULL;
 
 char**   PTR_argv       = NULL;
 
-int      NoSigchld      = OFF;
+//int      NoSigchld      = OFF;
+int      LockPIDList    = OFF;
 int      PendingSigchld = 0;
 
 //int      Logtype        = LOG_ERR;
@@ -270,12 +271,15 @@ int main(int argc, char** argv)
         close(Sofd);    // don't use socket_close() !
         Sofd = 0;
 
-        NoSigchld = ON;
+        //NoSigchld = ON;
+        LockPIDList = ON;
         tList* lp = find_tList_end(PIDList);
         add_tList_node_int(lp, (int)pid, 0);
-        NoSigchld = OFF;
+        //NoSigchld = OFF;
+        LockPIDList = OFF;
         if (PendingSigchld>0) {
-            sig_child(PendingSigchld);
+            //sig_child(PendingSigchld);
+            raise(SIGCHLD);
             PendingSigchld = 0;
         }
 
@@ -395,10 +399,12 @@ void  sig_term(int signal)
 void  sig_child(int signal)
 {
     //print_message("[LTICTR_PROXY_SERVER] SIGCHILD: Start sig_child\n");
+    /*
     if (NoSigchld==ON) {
         PendingSigchld = signal;
         return;
     }
+    */
 
     pid_t pid = 0;
 
@@ -406,8 +412,10 @@ void  sig_child(int signal)
     pid = waitpid(-1, &ret, WNOHANG);
     while(pid>0) {
         //print_message("[LTICTR_PROXY_SERVER] SIGCHILD: Exited child is %d\n", pid);
-        tList* lst = search_id_tList(PIDList, pid, 1);
-        if (lst!=NULL) del_tList_node(&lst);
+        if (LockPIDList==OFF) { // ちょっと不正確だが，ゾンビを生むよりまし．弊害：存在しないPIDにKillシグナルを送信．
+            tList* lst = search_id_tList(PIDList, pid, 1);
+            if (lst!=NULL) del_tList_node(&lst);
+        }
         if (pid==APIChildPID) {
             //print_message("[LTICTR_PROXY_SERVER] SIGCHILD: API Server is down!!\n");
             sig_term(signal);
