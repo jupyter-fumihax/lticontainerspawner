@@ -9,20 +9,31 @@
 LOG=".submits.log"
 DTM=`date +%Y-%m-%d" "%T`
 
-output_log() {
+copy_and_log() {
     echo "---------------------" >> $LOG
-    echo $DTM >> $LOG
-    ls -l "$1" >> $LOG
-    if [ -f "$2" ]; then
-        ls -l "$2" >> $LOG
+    echo "$DTM" >> $LOG
+    ls -l --time-style=+'%Y-%m-%d %T' "$1" >> $LOG
+    DFF=""
+    if [ "$2" != "" -a -f "$2" ]; then
+        ls -l --time-style=+'%Y-%m-%d %T' "$2" >> $LOG
+        DFF=`diff "$1" "$2" | head -100`
+    fi
+    #
+    cp "$1" "$2" 2>> $LOG
+    chmod g+r,o-rwx "$2" 2>> $LOG
+    #
+    echo "++ result ++" >> $LOG
+    ls -l --time-style=+'%Y-%m-%d %T' "$2" >> $LOG
+    #
+    if [ "$DFF" != "" ]; then
         echo "+++ diff +++" >> $LOG
-        diff "$1" "$2" | head -20 >> $LOG
+        echo "$DFF" >> $LOG
     fi
 }
 
 output_error_log() {
     echo "---------------------" >> $LOG
-    echo $DTM >> $LOG
+    echo "$DTM" >> $LOG
     echo "$1" >> $LOG
     echo "$1"
 }
@@ -58,10 +69,8 @@ if [ -d $DST ]; then
         for FLN in $*; do
             if [ ! -d $FLN ]; then
                 FL=`echo $FLN | awk -F"/" '{print $NF}'`
-                output_log "$FLN" "${DST}/${USR}_${FL}"
                 echo "copying ...  \"$FLN\"  \"${LNK}/${USR}_${FL}\"" 1>&2
-                cp "$FLN" "${DST}/${USR}_${FL}" 2>> $LOG
-                chmod g+r,o-rwx "${DST}/${USR}_${FL}" 2>> $LOG
+                copy_and_log "$FLN" "${DST}/${USR}_${FL}"
             fi
         done
     else                        # ファイル名の指定なし
@@ -69,9 +78,7 @@ if [ -d $DST ]; then
         for FLN in $FLS; do
             if [ ! -d $FLN ]; then
                 echo "copying ...  \"$FLN\"  \"${LNK}/${USR}_${FLN}\"" 1>&2
-                output_log "$FLN" "${DST}/${USR}_${FL}"
-                cp "$FLN" "${DST}/${USR}_${FLN}" 2>> $LOG
-                chmod g+r,o-rwx "${DST}/${USR}_${FLN}" 2>> $LOG
+                copy_and_log "$FLN" "${DST}/${USR}_${FLN}"
             fi
         done
     fi

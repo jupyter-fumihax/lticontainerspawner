@@ -6,7 +6,7 @@
 #
 
 LST="base-notebook singleuser datascience-notebook tensorflow-notebook scipy-notebook vhtec-notebook \
-     xeus-cling java-notebook php-notebook swift-tensorflow jupyterlab-broccoli"
+     xeus-cling java-notebook php-notebook swift-tensorflow jupyterlab-broccoli jupyterlab-broccoli-tensorflow"
 
 #
 TAGSTR="latest"
