@@ -2,22 +2,53 @@
 #
 # usage .... submit [file1] [file2] [ifile3] .....
 #
+#  v1.1.0  2025/06/03   add log file
+#
 
-SBT=`echo $NB_SUBMITS | awk -F" " '{print $1}'`
-DST=`echo $SBT | awk -F":" '{print $1}'`
-LNK=`echo $SBT | awk -F":" '{print $2}'`
-if [ "$DST" == "" ] ; then 
-    exit
-fi
-DST=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${DST}
+# for log file
+LOG=".submits.log"
+DTM=`date +%Y-%m-%d" "%T`
 
+output_log() {
+    echo "---------------------" >> $LOG
+    echo $DTM >> $LOG
+    ls -l "$1" >> $LOG
+    if [ -f "$2" ]; then
+        ls -l "$2" >> $LOG
+        echo "+++ diff +++" >> $LOG
+        diff "$1" "$2" | head -20 >> $LOG
+    fi
+}
+
+output_error_log() {
+    echo "---------------------" >> $LOG
+    echo $DTM >> $LOG
+    echo "$1" >> $LOG
+    echo "$1"
+}
+
+#
 #
 PRS=`echo $NB_PRSNALS | awk -F" " '{print $1}' | awk -F":" '{print $1}'`
 if [ "$PRS" != "" ] ; then
     PRS=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${PRS}
     cd $PRS
 fi
+if [ ! -f $LOG ]; then
+    touch $LOG
+fi
 
+#
+SBT=`echo $NB_SUBMITS | awk -F" " '{print $1}'`
+DST=`echo $SBT | awk -F":" '{print $1}'`
+LNK=`echo $SBT | awk -F":" '{print $2}'`
+if [ "$DST" == "" ] ; then 
+    output_error_log "ERROR: the NB_SUBMITS environment variable is wrong! ("$NB_SUBMITS")"
+    exit 1
+fi
+DST=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${DST}
+
+#
 #
 if [ -d $DST ]; then
     IFS=$'\n'
@@ -27,9 +58,10 @@ if [ -d $DST ]; then
         for FLN in $*; do
             if [ ! -d $FLN ]; then
                 FL=`echo $FLN | awk -F"/" '{print $NF}'`
+                output_log "$FLN" "${DST}/${USR}_${FL}"
                 echo "copying ...  \"$FLN\"  \"${LNK}/${USR}_${FL}\"" 1>&2
-                cp "$FLN" "${DST}/${USR}_${FL}"
-                chmod g+r,o-rwx "${DST}/${USR}_${FL}" 2> /dev/null
+                cp "$FLN" "${DST}/${USR}_${FL}" 2>> $LOG
+                chmod g+r,o-rwx "${DST}/${USR}_${FL}" 2>> $LOG
             fi
         done
     else                        # ファイル名の指定なし
@@ -37,9 +69,16 @@ if [ -d $DST ]; then
         for FLN in $FLS; do
             if [ ! -d $FLN ]; then
                 echo "copying ...  \"$FLN\"  \"${LNK}/${USR}_${FLN}\"" 1>&2
-                cp "$FLN" "${DST}/${USR}_${FLN}"
-                chmod g+r,o-rwx "${DST}/${USR}_${FLN}" 2> /dev/null
+                output_log "$FLN" "${DST}/${USR}_${FL}"
+                cp "$FLN" "${DST}/${USR}_${FLN}" 2>> $LOG
+                chmod g+r,o-rwx "${DST}/${USR}_${FLN}" 2>> $LOG
             fi
         done
     fi
+else
+    output_error_log "ERROR: submit directory is not exist!"
+    exit 1 
 fi
+
+exit 0
+
