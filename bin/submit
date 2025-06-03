@@ -2,7 +2,7 @@
 #
 # usage .... submit [file1] [file2] [ifile3] .....
 #
-#  v1.1.0  2025/06/03   add log file
+#  v1.1.1  2025/06/03   add log file
 #
 
 # for log file
@@ -19,8 +19,8 @@ copy_and_log() {
         DFF=`diff "$1" "$2" | head -100`
     fi
     #
-    cp "$1" "$2" 2>> $LOG
-    chmod g+r,o-rwx "$2" 2>> $LOG
+    cp "$1" "$2" 2> >(tee -a $LOG 1>&2)
+    chmod g+r,o-rwx "$2" 2> >(tee -a $LOG 1>&2)
     #
     echo "++ result ++" >> $LOG
     ls -l --time-style=+'%Y-%m-%d %T' "$2" >> $LOG
