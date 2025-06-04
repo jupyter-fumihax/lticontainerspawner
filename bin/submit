@@ -3,6 +3,7 @@
 # usage .... submit [file1] [file2] [ifile3] .....
 #
 #  v1.1.1  2025/06/03   add log file
+#  v1.2.0  2025/06/04   add no_changed message
 #
 
 # for log file
@@ -13,7 +14,7 @@ copy_and_log() {
     echo "---------------------" >> $LOG
     echo "$DTM" >> $LOG
     ls -l --time-style=+'%Y-%m-%d %T' "$1" >> $LOG
-    DFF=""
+    DFF="first"
     if [ "$2" != "" -a -f "$2" ]; then
         ls -l --time-style=+'%Y-%m-%d %T' "$2" >> $LOG
         DFF=`diff "$1" "$2" | head -100`
@@ -22,12 +23,16 @@ copy_and_log() {
     cp "$1" "$2" 2> >(tee -a $LOG 1>&2)
     chmod g+r,o-rwx "$2" 2> >(tee -a $LOG 1>&2)
     #
-    echo "++ result ++" >> $LOG
+    echo "+++ result +++" >> $LOG
     ls -l --time-style=+'%Y-%m-%d %T' "$2" >> $LOG
     #
-    if [ "$DFF" != "" ]; then
-        echo "+++ diff +++" >> $LOG
-        echo "$DFF" >> $LOG
+    if [ "$DFF" == "" ]; then
+        echo "+ no_changed +" >> $LOG
+    else
+        if [ "$DFF" != "first" ]; then
+            echo "++++ diff ++++" >> $LOG
+            echo "$DFF" >> $LOG
+        fi
     fi
 }
 
