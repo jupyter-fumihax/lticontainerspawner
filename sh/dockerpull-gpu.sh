@@ -10,7 +10,8 @@ LST="base-notebook-gpu tensorflow-notebook-gpu scipy-notebook-gpu"
 #
 TAGSTR="latest"
 IDSTR="jupyterhub-ltictr"
-DKRREP="docker.io/fumihax"
+#DKRREP="docker.io/fumihax"
+DKRREP="ghcr.io/jupyter-fumihax"
 
 if [ "$1" != "" ]; then
     TAGSTR=$1

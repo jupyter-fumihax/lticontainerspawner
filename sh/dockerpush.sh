@@ -7,8 +7,10 @@
 #       ./dockerpush.sh 20230503 latest
 #
 
-DKRREP="docker.io"
-DKRUSR="fumihax"
+#DKRREP="docker.io"
+#DKRUSR="fumihax"
+DKRREP="ghcr.io"
+DKRUSR="jupyter-fumihax"
 
 #
 if [ "$1" != "" ]; then
@@ -34,8 +36,8 @@ for IMG in $LST ; do
     echo ----------------------------------------------------------
     echo "Push $IMG to $REP"
     #
-    docker tag  $IMG  $REP
+    docker tag  $IMG  $REP 2> /dev/null
     docker push $REP || (echo "did you login? ...  docker login -u <username> -p <password> $DKRREP" && exit 1)
-    docker rmi  $REP
+    docker rmi  $REP 2> /dev/null
 done
 

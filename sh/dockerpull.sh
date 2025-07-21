@@ -11,7 +11,9 @@ LST="base-notebook singleuser datascience-notebook tensorflow-notebook scipy-not
 #
 TAGSTR="latest"
 IDSTR="jupyterhub-ltictr"
-DKRREP="docker.io/fumihax"
+#DKRREP="docker.io/fumihax"
+DKRREP="ghcr.io/jupyter-fumihax"
+
 
 if [ "$1" != "" ]; then
     TAGSTR=$1

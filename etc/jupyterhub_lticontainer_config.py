@@ -1019,7 +1019,8 @@ c.JupyterHub.shutdown_on_logout = True
 # c.JupyterHub.spawner_class = 'jupyterhub.spawner.LocalProcessSpawner'
 c.JupyterHub.spawner_class = LTIContainerSpawner
 
-c.DockerSpawner.image = 'docker.io/fumihax/jupyterhub-ltictr.singleuser'
+#c.DockerSpawner.image = 'docker.io/fumihax/jupyterhub-ltictr.singleuser'
+c.DockerSpawner.image = 'ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser'
 
 #c.DockerSpawner.notebook_dir = notebook_dir
 #c.DockerSpawner.remove = True
