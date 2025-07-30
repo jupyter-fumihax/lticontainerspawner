@@ -21,7 +21,7 @@ base_id           = 30000                       # ID The underlying ID number in
 
 act_limit         = 6000                        # 100m, Default Activity Limit Time (s)
 cpu_limit         = 1                           # Default CPU Limit
-mem_limit         = 524288000                   # Default Memory Limit: 500MiB
+mem_limit         = 1073741824                  # Default Memory Limit: 1GiB
 default_url       = '/lab'
 http_timeout      = 60                          # 60s
 
