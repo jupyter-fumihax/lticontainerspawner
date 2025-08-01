@@ -4,6 +4,7 @@
 #
 # /usr/local/bin/start.sh   
 #    This is modified by Fumi.Iseki for LTIDockerSpawner/LTIPodmanSpawner
+#       v1.0.8  2025 08/01
 #       v1.0.7  2024 12/09
 #       v1.0.6  2023 05/09
 #       v1.0.5  2023 05/09
@@ -232,12 +233,15 @@ if [ $(id -u) == 0 ] ; then
             if [[ "$DR" != "" && "$LK" != "" ]]; then
                 if [ ! -d "$DR" ]; then
                     mkdir -p $DR || true
+                    chown root $DR || true
                 fi
-                # rwxrwxrwt
-                chmod 1777 $DR || true
+                # rwxrwsrwt
+                chgrp $NB_THRGID $DR || true
+                chmod 3777 $DR || true
 
-                DR_OWN=`ls -ld $DR | awk -F" " '{print $3}'`
-                if [[ "$DR_OWN" == "root" && "$NB_TEACHER" == "$NB_USER" ]]; then
+                #DR_OWN=`ls -ld $DR | awk -F" " '{print $3}'`
+                #if [[ "$DR_OWN" == "root" && "$NB_TEACHER" == "$NB_USER" ]]; then
+                if [[ "$NB_TEACHER" == "$NB_USER" ]]; then
                     #chown $NB_UID:$EGID $DR || true
                     chown $NB_UID:$NB_THRGID $DR || true
                     chmod 3777 $DR || true
