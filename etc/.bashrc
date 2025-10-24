@@ -14,8 +14,7 @@ fi
 
 #
 # set up search path
-LPATH= 
-PATH=$LPATH:/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin:/sbin:/usr/sbin:/opt/conda/bin
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin:/sbin:/usr/sbin:/opt/conda/bin
 
 #
 # set this for all shells
