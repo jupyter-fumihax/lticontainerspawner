@@ -2,33 +2,44 @@
 #
 # Script to exit after a span of the time $NB_ACTLIMIT (s) 
 #
+#    v2.0 20251024
+#
+
+set -euo pipefail
 
 STTMFL="/tmp/.system_uptime"
+GRACE=15   # TERM -> KILL 猶予秒
 
-if [ "$NB_ACTLIMIT" = "" ]; then
-    exit 1
-fi
-# No Limit
-if [ "$NB_ACTLIMIT" = "0" ]; then
-    exit 0
+case "${NB_ACTLIMIT:-}" in
+  ""|"0") exit 0 ;;
+esac
+
+LIMIT=$NB_ACTLIMIT
+[ "$LIMIT" -le 0 ] && exit 0
+
+UPTM=$(awk '{print int($1)}' /proc/uptime 2> /dev/null || echo 0)
+[ "$UPTM" -le 0 ] && exit 0
+
+if [ ! -f "$STTMFL" ]; then
+  echo "$UPTM" > "$STTMFL"
+  exit 0
 fi
 
-UPTM=`awk -F" " '{print $1}' /proc/uptime | awk -F"." '{print $1}'`
-if [ "$UPTM" = "" ]; then
-    exit 1
-fi
-if [ ! -f $STTMFL ]; then
-    echo $UPTM > $STTMFL
-    exit 0
+STTM=$(cat "$STTMFL" 2>/dev/null || echo "$UPTM")
+DIFF=$(( UPTM - STTM ))
+[ "$DIFF" -lt 0 ] && { echo "$UPTM" > "$STTMFL"; exit 0; }
+
+if [ "$DIFF" -ge $(( LIMIT * 9 / 10 )) ] && [ "$DIFF" -lt "$LIMIT" ]; then
+  echo "[actlimit_check] warning: ${DIFF}s/${LIMIT}s elapsed" >&2
 fi
 
-STTM=`cat $STTMFL`
-if [ "$STTM" = "" ]; then
-   exit 1
-fi
-UPTM=`expr $UPTM - $STTM`
-if [ "$UPTM" -gt "$NB_ACTLIMIT" ]; then
-    kill -9 -- -1
+if [ "$DIFF" -gt "$LIMIT" ]; then
+  echo "[actlimit_check] limit exceeded: ${DIFF}s > ${LIMIT}s → stopping" >&2
+  kill -TERM -- -1 || true
+  sleep "$GRACE"
+  kill -KILL -- -1 || true
+  exit 1
 fi
 
 exit 0
+

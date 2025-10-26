@@ -548,6 +548,9 @@ class LTIContainerSpawner(DockerSpawner):
             dirname = mountp.split('/')[-1]
             self.volumes[dirname] = fullpath_dir + '/' + mountp
 
+        # 通知
+        self.volumes['/usr/local/etc/ltictr/notice_active.txt'] = {'bind': fullpath_dir + '.notice_active.txt', 'mode': 'ro'}
+        self.volumes['/usr/local/etc/ltictr/notice_memory.txt'] = {'bind': fullpath_dir + '.notice_memory.txt', 'mode': 'ro'}
         #
         self.remove = True
 

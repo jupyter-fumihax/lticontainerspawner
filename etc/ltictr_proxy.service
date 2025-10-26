@@ -7,16 +7,22 @@ After = network-online.target
 [Service]
 Environment = SVRPORT=443
 Environment = APIPORT=8001
+
 # for Simple Proxy
 #Environment = HOSTURL=https://202.26.150.117:8000
+
 #
 User = root
 PIDFile = /var/run/ltictr_proxy.pid
+
+# for Podman
 #ExecStartPre = /usr/bin/chgrp -R podman /var/run/podman
 #ExecStartPre = /usr/bin/chmod -R g+rwx  /var/run/podman
-ExecStart = /usr/local/bin/ltictr_proxy_server -a ${APIPORT} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf
+
+ExecStart = /usr/local/bin/ltictr_proxy_server -a ${APIPORT} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr/ltictr_proxy.conf
 # Simple Proxy
-#ExecStart = /usr/local/bin/ltictr_proxy_server -h ${HOSTURL} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr_proxy.conf -n
+#ExecStart = /usr/local/bin/ltictr_proxy_server -h ${HOSTURL} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr/ltictr_proxy.conf -n
+
 #
 ExecStartPost = /bin/systemctl restart jupyterhub
 WorkingDirectory = /tmp

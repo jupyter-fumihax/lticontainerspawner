@@ -77,7 +77,8 @@ ENV DEFAULT_KERNEL_NAME "rust"
 
 
 # Lticontainer
-HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
+#HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
+HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
 ADD \
     bin/start.sh \
@@ -96,6 +97,7 @@ ADD \
     bin/ipynb_tocsv \
     bin/tocsv \
     bin/actlimit_check.sh \
+    bin/health_check.sh \
     /usr/local/bin/
 
 ADD \
