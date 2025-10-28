@@ -17,7 +17,7 @@ install:
 	[ -f /usr/lib/systemd/system/jupyterhub.service ]              || install -m 0644 etc/jupyterhub.service                /usr/lib/systemd/system
 	[ -f /usr/lib/systemd/system/ltictr_proxy.service ]            || install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system
 	install -m 0644 etc/podman.socket            /usr/lib/systemd/system
-	install -m 0755 bin/lticontainerspawner.py   /usr/local/bin
+	install -m 0755 etc/lticontainerspawner.py   /usr/local/etc/ltictr
 	install -m 0755 bin/ltictr_proxy_server      /usr/local/bin
 	install -m 0755 bin/ltictr_api_server        /usr/local/bin
 	install -m 0755 sh/chgrppodman.sh            /usr/local/bin
@@ -51,7 +51,6 @@ uninstall: clean
 	rm -f  /usr/local/etc/ltictr_proxy.conf
 	#
 	rm -rf /usr/local/etc/ltictr
-	rm -f  /usr/local/bin/lticontainerspawner.py
 	rm -f  /usr/local/bin/ltictr_proxy_server
 	rm -f  /usr/local/bin/ltictr_api_server
 	rm -f  /usr/local/bin/unlock_podman_containers
