@@ -847,7 +847,7 @@ c.JupyterHub.port = my_port_num
 # LTTDockerSpawner
 #
 import sys
-sys.path.append("/usr/local/etc")
+sys.path.append("/usr/local/etc/ltictr")
 
 from lticontainerspawner import *
 from lticontainerspawner_config import *

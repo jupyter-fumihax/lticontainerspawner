@@ -29,7 +29,7 @@ http_timeout      = 60                          # 60s
 #
 # PROXY
 #
-proxy_should_start = False                      # False means to use ltictr_proxy. True means to use configurable-http-proxy
+proxy_should_start = True                       # False means to use ltictr_proxy. True means to use configurable-http-proxy
 proxy_cleanup      = True
 proxy_api_url      = 'http://localhost:8001'
 proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token in ltictr_proxy.conf

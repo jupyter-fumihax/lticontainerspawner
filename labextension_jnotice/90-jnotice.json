@@ -1,0 +1,15 @@
+{
+  "ServerApp": {
+    "tornado_settings": {
+      "page_config_data": {
+        "federated_extensions": [
+          {
+            "name": "jnotice",
+            "extension": "./extension",
+            "load": "extensions/jnotice/static/remoteEntry.jnotice.js"
+          }
+        ]
+      }
+    }
+  }
+}

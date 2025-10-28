@@ -51,7 +51,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab
 # Lticontainer
 HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
 
-ADD \
+COPY \
     bin/start.sh \
     bin/start-notebook.sh \
     bin/start-singleuser.sh \
@@ -70,19 +70,19 @@ ADD \
     bin/actlimit_check.sh \
     /usr/local/bin/
 
-ADD \
+COPY \
     etc/.bashrc \
     etc/.bash_profile \
     etc/.vimrc \
     /root/
 
-ADD \
+COPY \
     etc/.bash_profile \
     etc/.bashrc \
     etc/.vimrc \
     /etc/skel/
 
-ADD \
+COPY \
     etc/passwd.orig \
     etc/group.orig \
     /etc/

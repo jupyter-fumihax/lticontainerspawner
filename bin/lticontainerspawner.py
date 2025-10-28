@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.3.1 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.4.0 for LTI by Fumi.Iseki
 #
 #                                      BSD License.
 #
@@ -225,6 +225,10 @@ class LTIContainerSpawner(DockerSpawner):
             #get_config().NotebookApp.disable_check_xsrf = True
         #
         args.append('--SingleUserNotebookApp.default_url=' + self.default_url)   # for jupyterhub (<2.00) in images
+        # for notice
+        args.append('--ContentsManager.allow_hidden=True')
+        args.append('--ServerApp.allow_hidden=True')
+
         return args
 
 
@@ -445,12 +449,14 @@ class LTIContainerSpawner(DockerSpawner):
         username  = self.user.name
         groupname = self.get_groupname()
         groupid   = self.group_id
+        homedir   = self.notebook_dir.format(username=username, groupname=groupname)
 
         env.update(NB_UID       = userid)
         env.update(NB_USER      = username)
         env.update(NB_GID       = groupid)
         env.update(NB_GROUP     = groupname)
-        env.update(NB_DIR       = self.notebook_dir.format(username=username, groupname=groupname))
+        env.update(NB_DIR       = homedir)
+        env.update(NB_WRKDIR    = homedir + '/' + self.projects_dir + '/' + self.works_dir)
         env.update(NB_ACTLIMIT  = self.act_limit)
 
         env.update(NB_THRGID    = self.teacher_gid)
@@ -549,8 +555,8 @@ class LTIContainerSpawner(DockerSpawner):
             self.volumes[dirname] = fullpath_dir + '/' + mountp
 
         # 通知
-        self.volumes['/usr/local/etc/ltictr/notice_active.txt'] = {'bind': fullpath_dir + '.notice_active.txt', 'mode': 'ro'}
-        self.volumes['/usr/local/etc/ltictr/notice_memory.txt'] = {'bind': fullpath_dir + '.notice_memory.txt', 'mode': 'ro'}
+        self.volumes['/usr/local/etc/ltictr/notice_active.txt'] = {'bind': fullpath_dir + '/.notice_active.txt', 'mode': 'ro'}
+        self.volumes['/usr/local/etc/ltictr/notice_memory.txt'] = {'bind': fullpath_dir + '/.notice_memory.txt', 'mode': 'ro'}
         #
         self.remove = True
 

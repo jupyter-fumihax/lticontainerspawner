@@ -3,7 +3,7 @@
 # 1. change FROM line
 # 2. execute docker build command
 # ex.) cd ..
-#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:xxxxx
+#      docker build . --format=docker -f dockerfile/Dockerfile.rust -t jupyterhub-ltictr/rust-notebook:xxxxx
 #
 
 #FROM docker.io/jupyter/base-notebook
@@ -19,8 +19,10 @@ USER root
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     curl \
+#    nodejs npm \
     build-essential \
     pkg-config \
+#    plocate \
     libssl-dev \
     language-pack-ja-base \
     language-pack-ja \
@@ -77,10 +79,9 @@ ENV DEFAULT_KERNEL_NAME "rust"
 
 
 # Lticontainer
-#HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
 HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
-ADD \
+COPY \
     bin/start.sh \
     bin/start-notebook.sh \
     bin/start-singleuser.sh \
@@ -96,23 +97,22 @@ ADD \
     bin/extract \
     bin/ipynb_tocsv \
     bin/tocsv \
-    bin/actlimit_check.sh \
     bin/health_check.sh \
     /usr/local/bin/
 
-ADD \
+COPY \
     etc/.bashrc \
     etc/.bash_profile \
     etc/.vimrc \
     /root/
 
-ADD \
+COPY \
     etc/.bash_profile \
     etc/.bashrc \
     etc/.vimrc \
     /etc/skel/
 
-ADD \
+COPY \
     etc/passwd.orig \
     etc/group.orig \
     /etc/
@@ -121,4 +121,33 @@ ADD \
 RUN chmod a+rx /usr/local/bin/* \
  && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
  && true
+
+
+# Jupyter Notice 
+WORKDIR /tmp/jhub-notice
+RUN mkdir -p src
+
+COPY \
+    labextension_jnotice/package.json \
+    labextension_jnotice/tsconfig.json \
+    labextension_jnotice/webpack.config.cjs \
+    ./
+COPY labextension_jnotice/src/index.ts src
+
+RUN npm install --no-audit --no-fund  \
+ && npx webpack --config webpack.config.cjs --mode=production \
+ && true
+
+RUN set -eux; \
+    LABEXT="/opt/conda/share/jupyter/labextensions/jnotice"; \
+    mkdir -p "$LABEXT/static"; \
+    cp -a static/* "$LABEXT/static/"; \ 
+    cp -a package.json "$LABEXT/"; \
+    chmod -R a+rX "$LABEXT" 
+
+COPY labextension_jnotice/90-jnotice.json  /opt/conda/etc/jupyter/jupyter_server_config.d/
+RUN  chmod a+r /opt/conda/etc/jupyter/jupyter_server_config.d/90-*
+
+WORKDIR /
+RUN rm -rf /tmp/jhub-notice
 

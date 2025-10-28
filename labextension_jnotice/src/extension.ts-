@@ -1,0 +1,23 @@
+// src/extension.ts
+import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+
+const PLUGIN_ID = 'jnotice:plugin';
+
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: PLUGIN_ID,
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    console.log(`[${PLUGIN_ID}] loaded (JupyterLab ${app.version})`);
+
+    // 動作確認用にコマンドを1つだけ登録（任意）
+    const CMD_ID = 'jnotice:hello';
+    app.commands.addCommand(CMD_ID, {
+      label: 'JupyterHub Notice: Hello',
+      execute: () => {
+        console.log('[jnotice] hello command executed');
+      }
+    });
+  }
+};
+
+export default plugin; // もしくは `export default [plugin];` でも可

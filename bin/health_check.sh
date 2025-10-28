@@ -15,7 +15,7 @@ ACT_LIMIT="${ACT_LIMIT:-0}"
 ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.active_notice.txt"
 MEMORY_NOTICE_PATH="${NB_WRKDIR}/.memory_notice.txt"
 
-NOTICE_FILE="${NB_DIR}/.jupyterhub_notice.txt"
+NOTICE_FILE="${NB_DIR}/.jnotice.txt"
 SYS_TM_FILE="/tmp/.system_uptime"
 
 ACT_GRACE=15    # TERM → KILL 猶予時間

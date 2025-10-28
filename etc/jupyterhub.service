@@ -5,7 +5,7 @@ Description = JupyterHub
 After = network-online.target 
 
 [Service]
-Environment = CONFIGF=/usr/local/etc/jupyterhub_lticontainer_config.py
+Environment = CONFIGF=/usr/local/etc/ltictr/jupyterhub_lticontainer_config.py
 Environment = NODE_OPTIONS=--max-old-space-size=16384
 #Environment = PATH=/usr/local/anaconda/envs/jupyterhub/bin:/usr/local/anaconda/condabin:${PATH}
 #
