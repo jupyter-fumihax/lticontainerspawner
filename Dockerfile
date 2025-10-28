@@ -18,11 +18,11 @@ USER root
 #
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-    language-pack-ja-base \
-    language-pack-ja \
-    fonts-takao* \
-    fonts-ipafont* \
-    fonts-noto-cjk* \
+    nodejs npm \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && true
@@ -48,8 +48,40 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME nbgrader \
  && true
 
+
+############################################
+
+# Jupyter Notice  (need nodejs, npm)
+WORKDIR /tmp/jhub-notice
+RUN mkdir -p src
+
+COPY \
+    labextension_jnotice/package.json \
+    labextension_jnotice/tsconfig.json \
+    labextension_jnotice/webpack.config.cjs \
+    ./
+COPY labextension_jnotice/src/index.ts src
+
+RUN npm install --no-audit --no-fund  \
+ && npx webpack --config webpack.config.cjs --mode=production \
+ && true
+
+RUN set -eux; \
+    LABEXT="/opt/conda/share/jupyter/labextensions/jnotice"; \
+    mkdir -p "$LABEXT/static"; \
+    cp -a static/* "$LABEXT/static/"; \ 
+    cp -a package.json "$LABEXT/"; \
+    chmod -R a+rX "$LABEXT" 
+
+COPY labextension_jnotice/90-jnotice.json  /opt/conda/etc/jupyter/jupyter_server_config.d/
+RUN  chmod a+r /opt/conda/etc/jupyter/jupyter_server_config.d/90-jnotice.json
+
+WORKDIR /
+RUN rm -rf /tmp/jhub-notice
+
+
 # Lticontainer
-HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
+HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
 COPY \
     bin/start.sh \
@@ -67,7 +99,7 @@ COPY \
     bin/extract \
     bin/ipynb_tocsv \
     bin/tocsv \
-    bin/actlimit_check.sh \
+    bin/health_check.sh \
     /usr/local/bin/
 
 COPY \

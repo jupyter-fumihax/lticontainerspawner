@@ -8,19 +8,21 @@
 
 set -euo pipefail
 
-NB_WRKDIR="${NB_WRKDIR:-$NB_DIR}" 
-ACT_LIMIT="${NB_ACTLIMIT//[^0-9]/}"
-ACT_LIMIT="${ACT_LIMIT:-0}"
+#
+NOTICE_FILE="${NB_DIR}/jupyter/works/.jnotice.txt"
 
-ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.active_notice.txt"
-MEMORY_NOTICE_PATH="${NB_WRKDIR}/.memory_notice.txt"
-
-NOTICE_FILE="${NB_DIR}/.jnotice.txt"
-SYS_TM_FILE="/tmp/.system_uptime"
-
-ACT_GRACE=15    # TERM → KILL 猶予時間
 ACT_ALERT=90    # % 時間警告
 MEM_ALERT=90    # % メモリ警告
+ACT_GRACE=15    # TERM → KILL 猶予時間
+
+
+NB_WRKDIR="${NB_WRKDIR:-$NB_DIR}" 
+ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.active_notice.txt"
+MEMORY_NOTICE_PATH="${NB_WRKDIR}/.memory_notice.txt"
+SYS_TM_FILE="/tmp/.system_uptime"
+
+ACT_LIMIT="${NB_ACTLIMIT//[^0-9]/}"
+ACT_LIMIT="${ACT_LIMIT:-0}"
 
 
 # ========== 関数 ===========
@@ -77,7 +79,7 @@ get_mem_pct() {
 UP_TIME="$(awk '{print int($1)}' /proc/uptime 2>/dev/null || echo 0)"
 
 if (( ACT_LIMIT > 0 && UP_TIME > 0 )); then
-  [ -f $SYS_TM_FILE ] || echo $UP_TIME > $SYS_TM_FILE
+  [ -f $SYS_TM_FILE ] || (echo $UP_TIME > $SYS_TM_FILE; rm -f "$NOTICE_FILE")
   sttm=$(cat $SYS_TM_FILE 2>/dev/null || echo $UP_TIME)
   diff=$(( UP_TIME - sttm ))
 
