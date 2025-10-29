@@ -6,8 +6,8 @@
 #      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251029
 #
 
-FROM docker.io/jupyter/base-notebook
-#FROM docker.io/jupyterhub/singleuser
+#FROM docker.io/jupyter/base-notebook
+FROM docker.io/jupyterhub/singleuser
 #FROM docker.io/jupyter/datascience-notebook
 #FROM docker.io/jupyter/tensorflow-notebook
 #FROM docker.io/jupyter/scipy-notebook
@@ -45,7 +45,7 @@ RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab
  && $CONDA_HOME/bin/conda clean   --all -y \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME jbturtle \
- && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME nbgrader \
+# && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME nbgrader \
  && true
 
 

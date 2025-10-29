@@ -20,7 +20,7 @@ PIDFile = /var/run/ltictr_proxy.pid
 #ExecStartPre = /usr/bin/chmod -R g+rwx  /var/run/podman
 
 ExecStart = /usr/local/bin/ltictr_proxy_server -a ${APIPORT} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr/ltictr_proxy.conf
-# Simple Proxy
+# for Simple Proxy
 #ExecStart = /usr/local/bin/ltictr_proxy_server -h ${HOSTURL} -p ${SVRPORT} -c --conf /usr/local/etc/ltictr/ltictr_proxy.conf -n
 
 #
