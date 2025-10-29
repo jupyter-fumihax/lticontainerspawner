@@ -23,11 +23,10 @@ RUN apt-get update \
 #    vim \
 #    git \
 #    php \
-    language-pack-ja-base \
-    language-pack-ja \
-    fonts-takao* \
-    fonts-ipafont* \
-    fonts-noto-cjk* \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && true

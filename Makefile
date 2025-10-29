@@ -14,6 +14,8 @@ install:
 	[ -f /usr/local/etc/ltictr/ltictr_proxy.conf ]                 || install -m 0640 etc/ltictr_proxy.conf                 /usr/local/etc/ltictr
 	[ -f /usr/local/etc/ltictr/notice_active.txt ]                 || install -m 0644 etc/notice_active.txt                 /usr/local/etc/ltictr
 	[ -f /usr/local/etc/ltictr/notice_memory.txt ]                 || install -m 0644 etc/notice_memory.txt                 /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_active.txt ]                 || install -m 0644 etc/notice_active_jp.txt              /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_memory.txt ]                 || install -m 0644 etc/notice_memory_jp.txt              /usr/local/etc/ltictr
 	[ -f /usr/lib/systemd/system/jupyterhub.service ]              || install -m 0644 etc/jupyterhub.service                /usr/lib/systemd/system
 	[ -f /usr/lib/systemd/system/ltictr_proxy.service ]            || install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system
 	install -m 0644 etc/podman.socket            /usr/lib/systemd/system

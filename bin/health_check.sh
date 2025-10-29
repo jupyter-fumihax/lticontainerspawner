@@ -3,22 +3,20 @@
 # health_check.sh
 #    Script to exit after a span of the active time and over the memory
 #
-#    v1.0 20251025
+#    v1.0 20251029
 #
 
 set -euo pipefail
 
 #
-NOTICE_FILE="${NB_DIR}/jupyter/works/.jnotice.txt"
-
 ACT_ALERT=90    # % 時間警告
 MEM_ALERT=90    # % メモリ警告
 ACT_GRACE=15    # TERM → KILL 猶予時間
 
-
 NB_WRKDIR="${NB_WRKDIR:-$NB_DIR}" 
-ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.active_notice.txt"
-MEMORY_NOTICE_PATH="${NB_WRKDIR}/.memory_notice.txt"
+NOTICE_FILE="${NB_WRKDIR}/.jnotice.txt"
+ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.notice_active.txt"
+MEMORY_NOTICE_PATH="${NB_WRKDIR}/.notice_memory.txt"
 SYS_TM_FILE="/tmp/.system_uptime"
 
 ACT_LIMIT="${NB_ACTLIMIT//[^0-9]/}"
@@ -37,7 +35,7 @@ read_notice_file() {
 
 
 # NOTICE に書き，stderr にも同文を出す．
-emit_notice() {
+output_notice() {
   local msg="$1"
   mkdir -p "$(dirname "$NOTICE_FILE")" 2>/dev/null || true
   if [ -f "$NOTICE_FILE" ]; then
@@ -88,7 +86,7 @@ if (( ACT_LIMIT > 0 && UP_TIME > 0 )); then
   if (( diff >= alert_tm )); then
     act_msg="$(read_notice_file "$ACTIVE_NOTICE_PATH")"
     if [ ! -z "$act_msg" ]; then
-      emit_notice "$act_msg"
+      output_notice "$act_msg"
     fi
     # 超過時は終了．
     if (( diff > ACT_LIMIT )); then
@@ -105,7 +103,7 @@ if (( mem_pct >= 0 )); then
   mem_msg="$(read_notice_file "$MEMORY_NOTICE_PATH")"
   if [ ! -z "$mem_msg" ]; then
     if (( mem_pct >= MEM_ALERT )); then
-      emit_notice "$mem_msg"
+      output_notice "$mem_msg"
     fi
   fi
 fi

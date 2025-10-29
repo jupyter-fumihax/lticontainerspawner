@@ -15,21 +15,33 @@ works_dir         = 'works'
 volumes_dir       = '.volumes'
 notebook_dir      = user_home_dir
 
-default_group     = 'others'                    # A group of users (ID unknown) that does not exist on the host (to be created in advance).
-teacher_gid       = 7000                        # 1000 or more, GID not used in the system.
-base_id           = 30000                       # ID The underlying ID number in case of unknown. The part that is not used in the system.
+# A group of users (ID unknown) that does not exist on the host (to be created in advance).
+# ホストに存在しないユーザ（ID不明）のグループ（予め作って置く）
+default_group     = 'others'
+
+# 1000 or more, GID not used in the system.
+# 1000以上で，システムで使用していない GID
+teacher_gid       = 7000
+
+# ID The underlying ID number in case of unknown. The part that is not used in the system.
+# ID 不明の場合に，基底となる ID番号．システムで使用されていない部分．
+base_id           = 30000
 
 act_limit         = 6000                        # 100m, Default Activity Limit Time (s)
 cpu_limit         = 1                           # Default CPU Limit
 mem_limit         = 1073741824                  # Default Memory Limit: 1GiB
 default_url       = '/lab'
 http_timeout      = 60                          # 60s
+notice_poll       = 60                          # 30s
+
+iframe_url        = 'https://*'                 # iframe Host URL
 
 
 #
 # PROXY
 #
-proxy_should_start = True                       # False means to use ltictr_proxy. True means to use configurable-http-proxy
+#proxy_should_start = False                      # False means to use ltictr_proxy. True means to use configurable-http-proxy
+proxy_should_start = True
 proxy_cleanup      = True
 proxy_api_url      = 'http://localhost:8001'
 proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token in ltictr_proxy.conf
@@ -39,7 +51,7 @@ proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token
 # System Environment
 #
 spawner_environment = {
-    'GRANT_SUDO'      : 'no',                   # 'no' for normal use
+    'GRANT_SUDO'      : 'no',                   # 'no' for normal use. (通常使用では 'no')
     'PRJCT_DIR'       : projects_dir,
     'WORK_DIR'        : works_dir,
     'VOLUME_DIR'      : volumes_dir,

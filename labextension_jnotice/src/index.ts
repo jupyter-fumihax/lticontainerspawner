@@ -2,21 +2,32 @@
 
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 
-const POLL_MS = 60_000;                             // ポーリング間隔（ミリ秒）
-const NOTICE_PATH = 'jupyter/works/.jnotice.txt';   // メッセージファイル
+const DEF_POLL_MS = 60_000;           // ポーリング間隔（ミリ秒）
+const NOTICE_PATH = '.jnotice.txt';   // メッセージファイル
 
 const plugin: JupyterFrontEndPlugin<void> = {
   id: 'jnotice:plugin',
   autoStart: true,
   activate: async (_app: JupyterFrontEnd) => {
-    // JupyterHub/Lab の baseUrl 推定
+    //
     const cfgEl = document.getElementById('jupyter-config-data');
-    const cfg = cfgEl && cfgEl.textContent ? JSON.parse(cfgEl.textContent) : {};
+    const raw   = cfgEl?.textContent ?? '';
+    const cfg   = raw ? JSON.parse(raw) : {};
+
+    const jc = (
+        (cfg as any).jnotice ??
+        (cfg as any).page_config_data?.jnotice ??
+        (cfg as any).pageConfig?.jnotice ??
+        {}
+    ) as { path?: string; pollMs?: number }
+
     const base: string = (cfg.baseUrl || (location.pathname.match(/\/user\/[^/]+\/?/)?.[0] || '/')).replace(/\/?$/, '/');
+    const noticePath   = (typeof jc.path === 'string' && jc.path.trim()) ? jc.path : NOTICE_PATH;
+    const pollMs       = Number.isFinite(jc.pollMs) ? Number(jc.pollMs) : DEF_POLL_MS;
 
     // XSRF 対応
     const xsrf = (document.cookie.match(/(?:^|; )_xsrf=([^;]+)/)?.[1] || '');
-    const url = base + 'files/' + NOTICE_PATH;
+    const url = base + 'files/' + noticePath.replace(/^\/+/, '');
 
     let last = '';
 
@@ -86,9 +97,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
     }
 
     // ポーリング
-    setTimeout(() => { poll(); setInterval(poll, POLL_MS); }, 1000);
+    setTimeout(() => { poll(); setInterval(poll, pollMs); }, 1000);
 
-    console.log(`[jnotice] plugin loaded; polling "${NOTICE_PATH}" every ${POLL_MS} ms`);
+    console.log(`[jnotice] plugin loaded; polling "${noticePath}" every ${pollMs} ms`);
   }
 };
 

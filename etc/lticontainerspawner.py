@@ -20,7 +20,7 @@ from traitlets import (
 
 from urllib.parse import urlparse
 
-import pwd, grp, os, sys, re, random, string
+import pwd, grp, os, sys, re, random, string, json
 
 
 class LTIContainerSpawner(DockerSpawner):
@@ -36,6 +36,7 @@ class LTIContainerSpawner(DockerSpawner):
     teacher_gid    = Int(7000,  config = True)
     base_id        = Int(30000, config = True)
     act_limit      = Int(6000,  config = True)
+    notice_poll    = Int(60,    config = True)
 
     # extension command
     ext_user_id_cmd     = 'user_userid'
@@ -207,6 +208,7 @@ class LTIContainerSpawner(DockerSpawner):
     def homedir(self):
         return self.user_home_dir.format(username=self.user.name, groupname=self.get_groupname())
 
+
     @property
     def groupdir(self):
         return self.group_home_dir.format(groupname=self.get_groupname())
@@ -215,20 +217,36 @@ class LTIContainerSpawner(DockerSpawner):
     def get_args(self):
         #print('=== get_args() ===')
         args = super(LTIContainerSpawner, self).get_args()
+        args = [a for a in args if not a.startswith('--ServerApp.tornado_settings=')]   # delete previous settings
 
-        if self.custom_iframe :
-            if sys.version_info >= (3, 8) : cookie_options = ', "cookie_options": { "SameSite": "None", "Secure": True }'
-            else :                          cookie_options = ''
-            #
-            frame_ancestors = "frame-ancestors 'self' " + self.host_url
-            args.append('--NotebookApp.tornado_settings={ "headers":{"Content-Security-Policy": "'+ frame_ancestors + '" }' + cookie_options + '}')
-            #get_config().NotebookApp.disable_check_xsrf = True
+        tornado_settings = {}
+
+        # not supported
+        #if self.custom_iframe :
+        #    cookie_options = None
+        #    if sys.version_info >= (3, 8): cookie_options = {"SameSite":"None","Secure":"True"}
+        #    frame_ancestors = "frame-ancestors 'self' " + self.host_url
+        #    tornado_settings["headers"] = {"Content-Security-Policy": frame_ancestors}
+        #    if cookie_options is not None: tornado_settings["cookie_options"] = cookie_options
         #
         args.append('--SingleUserNotebookApp.default_url=' + self.default_url)   # for jupyterhub (<2.00) in images
-        # for notice
+
+        # for jnotice
         args.append('--ContentsManager.allow_hidden=True')
         args.append('--ServerApp.allow_hidden=True')
 
+        notice_path = f"{self.projects_dir}/{self.works_dir}/.jnotice.txt"
+        polling_ms  = int(self.notice_poll) * 1000
+        tornado_settings["page_config_data"]  = {
+            "jnotice": {
+                "path":   notice_path,
+                "pollMs": polling_ms
+             }
+        }
+        #
+        args.append('--ServerApp.tornado_settings=' + json.dumps(tornado_settings, separators=(',', ':')))
+
+        self.log.info("[get_args()] final args: %s", args)
         return args
 
 
@@ -554,7 +572,7 @@ class LTIContainerSpawner(DockerSpawner):
             dirname = mountp.split('/')[-1]
             self.volumes[dirname] = fullpath_dir + '/' + mountp
 
-        # 通知
+        # notice text
         self.volumes['/usr/local/etc/ltictr/notice_active.txt'] = {'bind': fullpath_dir + '/.notice_active.txt', 'mode': 'ro'}
         self.volumes['/usr/local/etc/ltictr/notice_memory.txt'] = {'bind': fullpath_dir + '/.notice_memory.txt', 'mode': 'ro'}
         #

@@ -3,11 +3,11 @@
 # 1. change FROM line
 # 2. execute docker build command
 # ex.) cd ..
-#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20240319
+#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251029
 #
 
-#FROM docker.io/jupyter/base-notebook
-FROM docker.io/jupyterhub/singleuser
+FROM docker.io/jupyter/base-notebook
+#FROM docker.io/jupyterhub/singleuser
 #FROM docker.io/jupyter/datascience-notebook
 #FROM docker.io/jupyter/tensorflow-notebook
 #FROM docker.io/jupyter/scipy-notebook
@@ -18,7 +18,7 @@ USER root
 #
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-    nodejs npm \
+#    nodejs npm \
     language-pack-ja-base language-pack-ja \
     fonts-ipafont-gothic fonts-ipafont-mincho \
     fonts-noto-cjk fonts-noto-cjk-extra \
@@ -62,8 +62,14 @@ COPY \
     ./
 COPY labextension_jnotice/src/index.ts src
 
-RUN npm install --no-audit --no-fund  \
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    nodejs npm \
+ && npm install --no-audit --no-fund  \
  && npx webpack --config webpack.config.cjs --mode=production \
+ && apt-get -y remove nodejs npm \
+ && apt-get -y clean \
+ && rm -rf /var/lib/apt/lists/* \
  && true
 
 RUN set -eux; \

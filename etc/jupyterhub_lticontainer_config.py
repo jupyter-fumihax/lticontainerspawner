@@ -2,8 +2,8 @@
 
 #
 # My IP Address
-my_ip_addr = '202.26.150.53'
-my_port_num = 443  # This setting is required if configurable-http-proxy is used.
+my_ip_addr = '202.26.150.69'
+my_port_num = 443
 
 #
 # LTI Params
@@ -12,8 +12,8 @@ ltiauth_secret_key   = 'c0fe2924dbb0f4701d898d36aaf9fd89c7a3ed3a7db6f0003d0e825a
 
 #
 # SSL CERT and KEY
-ssl_server_cert = '/etc/letsencrypt/live/jupyterhub.nsl.tuis.ac.jp/fullchain.pem'
-ssl_private_key = '/etc/letsencrypt/live/jupyterhub.nsl.tuis.ac.jp/privkey.pem'
+ssl_server_cert = '/etc/letsencrypt/live/castor.nsl.tuis.ac.jp/fullchain.pem'
+ssl_private_key = '/etc/letsencrypt/live/castor.nsl.tuis.ac.jp/privkey.pem'
 
 #
 # API
@@ -908,6 +908,7 @@ c.LTIContainerSpawner.works_dir     = works_dir
 c.LTIContainerSpawner.volumes_dir   = volumes_dir
 c.LTIContainerSpawner.teacher_gid   = teacher_gid
 c.LTIContainerSpawner.base_id       = base_id
+c.LTIContainerSpawner.notice_poll   = notice_poll
 #
 c.JupyterHub.services               = jupyterhub_services
 c.JupyterHub.load_roles             = jupyterhub_load_roles
@@ -934,20 +935,17 @@ c.DockerSpawner.remove       = True
 c.DockerSpawner.extra_create_kwargs = {'user': 'root'}          # root mode
 c.DockerSpawner.extra_host_config   = {'privileged': True}
 
-### LTIContainerSpawner END #####################################################
-
-
 #
 # IFrame
 #
-iframe_url = 'https://*'                          # iframe Host URL
+c.JupyterHub.tornado_settings = {
+    "headers": {
+        "Content-Security-Policy": f"frame-ancestors 'self' {iframe_url}"
+    },
+    "cookie_options": {"SameSite": "None", "Secure": True} if sys.version_info >= (3, 8) else None,
+}
 
-c.JupyterHub.tornado_settings = { "headers":{ "Content-Security-Policy": "frame-ancestors 'self' " + iframe_url } }
-
-## if you charenge to show iframe, uncomment bellow 3 lines.
-#if sys.version_info >= (3, 8) :
-#   cookie_options = { "SameSite": "None", "Secure": True }
-#   c.JupyterHub.tornado_settings["cookie_options"] = cookie_options
+### LTIContainerSpawner END #####################################################
 
 
 #
