@@ -5,7 +5,7 @@
 #   docker build -t vhtec/jupyter-notebook .
 # 
 
-FROM docker.io/jupyter/tensorflow-notebook
+FROM quay.io/jupyter/tensorflow-notebook
 #TO  vhtec/jupyter-notebook
 
 USER root
@@ -35,8 +35,10 @@ RUN apt-get update \
     git \
     make \
     g++ \
-#    language-pack-ja-base \
-#    language-pack-ja \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
 # && apt-get -y clean \
 # && rm -rf /var/lib/apt/lists/* \
 # && /usr/bin/pip install ipynb_path \
@@ -44,7 +46,8 @@ RUN apt-get update \
 
 #
 # install composer
-RUN wget https://getcomposer.org/installer -O composer-setup.php \
+RUN set -eux \
+ && wget https://getcomposer.org/installer -O composer-setup.php \
  && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
  && COMPOSER_ALLOW_SUPERUSER=1 composer global require rabrennie/jupyter-php-kernel \
  && true
@@ -52,7 +55,8 @@ RUN wget https://getcomposer.org/installer -O composer-setup.php \
 #
 # install php for system
 ADD Installer.php /home/jovyan/.config/composer/vendor/rabrennie/jupyter-php-kernel/src/Installer
-RUN cp -Rpd /home/jovyan/.config/composer/vendor  /usr/local \
+RUN set -eux \
+ && cp -Rpd /home/jovyan/.config/composer/vendor  /usr/local \
  && ln -s /usr/local/vendor/bin/* /usr/local/bin \
  && jupyter-php-kernel --install \
  && true
@@ -93,7 +97,8 @@ RUN cp -Rpd /home/jovyan/.config/composer/vendor  /usr/local \
 
 #
 # install ijavascript
-RUN apt-get install -yq --no-install-recommends nodejs npm libzmq3-dev \
+RUN set -eux \
+ && apt-get install -yq --no-install-recommends nodejs npm libzmq3-dev \
  && npm install -g ijavascript \
  && ijs --ijs-install=global \
  && true
@@ -105,7 +110,8 @@ RUN apt-get install -yq --no-install-recommends nodejs npm libzmq3-dev \
 #    chmod +x cpt.py && \
 #    ./cpt.py --check-requirements && ./cpt.py --create-dev-env Debug --with-workdir=./cling/
 
-RUN cd .. \
+RUN set -eux \
+ && cd .. \
 # && wget https://root.cern.ch/download/cling/cling_2020-10-14_ROOT-ubuntu2004.tar.bz2 \
 # && tar -xvjf cling_2020-10-14_ROOT-ubuntu2004.tar.bz2 \
  && wget https://root.cern.ch/download/cling/cling_2020-11-05_ROOT-ubuntu2004.tar.bz2 \
@@ -114,7 +120,8 @@ RUN cd .. \
  && mv cling_* cling \
  && true
 
-RUN cd .. \
+RUN set -eux \
+ && cd .. \
  && ln -s $(pwd)/cling/bin/* /usr/bin/ \
  && cd cling/share/cling/Jupyter/kernel \
  && pip install -e . \
@@ -131,7 +138,9 @@ RUN chown -R $NB_USER /home/$NB_USER \
 RUN apt-get install -yq openjdk-8-jre
 
 #
-RUN apt-get clean -y \
+RUN set -eux \
+RUN 
+ && apt-get clean -y \
  && rm -rf /var/lib/apt/lists/* \
  && true
 

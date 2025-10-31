@@ -12,12 +12,12 @@ ltiauth_secret_key   = 'c0fe2924dbb0f4701d898d36aaf9fd89c7a3ed3a7db6f0003d0e825a
 
 #
 # SSL CERT and KEY
-ssl_server_cert = '/etc/letsencrypt/live/castor.nsl.tuis.ac.jp/fullchain.pem'
-ssl_private_key = '/etc/letsencrypt/live/castor.nsl.tuis.ac.jp/privkey.pem'
+ssl_server_cert = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/fullchain.pem'
+ssl_private_key = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/privkey.pem'
 
 #
 # API
-api_token = 'xxxxxxxx'        # set to the same value as the Moodle setting (JupyterHub API Token) at least 8 characters.
+api_token = 'XXXXXXXX'        # set to the same value as the Moodle setting (JupyterHub API Token) at least 8 characters.
 
 #
 # Time Zone
@@ -560,6 +560,12 @@ c.JupyterHub.hub_connect_ip = my_ip_addr
 # c.JupyterHub.hub_ip = '127.0.0.1'
 c.JupyterHub.hub_ip = '0.0.0.0'
 
+c.JupyterHub.cookie_options = {
+    "SameSite": "None",
+    "Secure": True,
+}
+
+## Timeout (in seconds) to wait for spawners to initialize
 ## The internal port for the Hub process.
 #  
 #          This is the internal port of the hub itself. It should never be accessed directly.
@@ -607,7 +613,6 @@ c.JupyterHub.hub_port = 8081
 #  Default: 0
 # c.JupyterHub.implicit_spawn_seconds = 0
 
-## Timeout (in seconds) to wait for spawners to initialize
 #  
 #  Checking if spawners are healthy can take a long time if many spawners are
 #  active at hub start time.

@@ -1,34 +1,29 @@
 #
-# docker build . --format=docker -f Dockerfile.php-notebook -t jupyterhub/php-notebook:temp
+# Usage
+# 1. change FROM line
+# 2. execute docker build command
+# ex.) cd ..
+#      docker build . --format=docker -f Dockerfile.rust-notebook -t jupyterhub/rust-notebook:temp
 #
 
+#FROM quay.io/jupyter/base-notebook
 FROM quay.io/jupyterhub/singleuser
+#FROM quay.io/jupyter/datascience-notebook
+#FROM quay.io/jupyter/tensorflow-notebook
+#FROM quay.io/jupyter/scipy-notebook
+
 
 USER root
 
 #
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-#    curl \
-    zip unzip \
-    libgmp-dev \
-    libmagic-dev \
-    libtinfo-dev \
-    libzmq3-dev \
-    libcairo2-dev \
-    libpango1.0-dev \
-    libblas-dev \
-    liblapack-dev \
-    php php-cli php-dev php-pear php-zmq php-zip \
-#    python3-pip l\
-#    binutils \
-#    apt-utils \
-#    mlocate \
-    wget \
-#    pkg-config \
-    git \
-#    make \
-    g++ \
+    curl \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+#    nodejs npm \
+#    plocate \
     language-pack-ja-base language-pack-ja \
     fonts-ipafont-gothic fonts-ipafont-mincho \
     fonts-noto-cjk fonts-noto-cjk-extra \
@@ -36,7 +31,6 @@ RUN apt-get update \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && true
-
 
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
@@ -68,38 +62,27 @@ RUN set -eux \
  && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
  && true
 
-# install composer
-RUN set -eux \
- && wget https://getcomposer.org/installer -O composer-setup.php \
- && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
- && COMPOSER_ALLOW_SUPERUSER=1 composer global require rabrennie/jupyter-php-kernel \
- && true
 
-# install php for system
-COPY php/Installer.php /home/jovyan/.composer/vendor/rabrennie/jupyter-php-kernel/src/Installer
-RUN set -eux \
- && cp -Rpd /home/jovyan/.composer/vendor  /usr/local \
- && ln -s /usr/local/vendor/bin/* /usr/local/bin \
- && jupyter-php-kernel --install \
- && true
-
-# Node.js, JS/TS カーネル
-RUN set -eux \
- && $CONDA_HOME/bin/mamba install --prefix $CONDA_HOME -c conda-forge nodejs=18 -y \
- && $CONDA_HOME/bin/mamba clean --all -y \
- && true
-
-ENV npm_config_python=/usr/bin/python3
-ENV PYTHON=/usr/bin/python3
-ENV NPM_CONFIG_FUND=false
-ENV npm_config_zmq_external=true
-ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+# Install Rust
+ENV RUSTUP_HOME=/usr/local/rustup
+ENV CARGO_HOME=/usr/local/cargo
+ENV PATH=$CARGO_HOME/bin:$PATH
+ENV JUPYTER_PATH=$CONDA_HOME/share/jupyter
 
 RUN set -eux \
- && $CONDA_HOME/bin/npm install -g npm \
- && $CONDA_HOME/bin/npm install -g --unsafe-perm ijavascript \
- && $CONDA_HOME/bin/ijsinstall --install=global \
- && $CONDA_HOME/bin/npm install -g typescript tslab \
- && $CONDA_HOME/bin/tslab install \
+ && curl -fsSL https://sh.rustup.rs -o /tmp/install_rust.sh  \
+ && bash /tmp/install_rust.sh -y --default-toolchain stable --profile minimal \
+ && rm /tmp/install_rust.sh \
+ && ln -s $CARGO_HOME/bin/* /usr/local/bin/ \
+ && cargo install evcxr_jupyter \
+ && rustup component add rust-src \ 
+ && pip install jupyter-console \
  && true
+
+RUN evcxr_jupyter --install --prefix=/opt/conda \
+ && jupyter kernelspec list \
+ && jupyter console --kernel rust \
+ && true
+
+ENV DEFAULT_KERNEL_NAME "rust"
 

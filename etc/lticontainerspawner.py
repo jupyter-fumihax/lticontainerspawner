@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.4.0 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.4.2 for LTI by Fumi.Iseki
 #
 #                                      BSD License.
 #
@@ -148,7 +148,7 @@ class LTIContainerSpawner(DockerSpawner):
         return
 
 
-    def get_lms_userinfo(self):
+    def _get_lms_userinfo(self):
         grp_name = self.default_group
         userinfo = {}
         #
@@ -162,20 +162,7 @@ class LTIContainerSpawner(DockerSpawner):
         return userinfo
 
 
-    def get_userid(self):
-        if self.user_id < 0:
-            try :
-                self.user_id = pwd.getpwnam(self.user.name).pw_uid  # from system user account
-            except :
-                if self.ext_user_id>=0 :
-                    self.user_id = self.ext_user_id                 # from extension command
-                else :
-                    self.user_id = self.get_lms_userinfo()['uid']   # form LMS user accound
-        #
-        return self.user_id
-
-
-    def get_groupname(self):
+    def _get_groupname(self):
         if self.group_id < 0:
             try :
                 self.group_id = pwd.getpwnam(self.user.name).pw_gid # from system user account
@@ -183,7 +170,7 @@ class LTIContainerSpawner(DockerSpawner):
                 if self.ext_group_id>=0 :
                     self.group_id = self.ext_group_id               # from extension command
                 else :
-                    self.group_id = self.get_lms_userinfo()['gid']  # form LMS user accound
+                    self.group_id = self._get_lms_userinfo()['gid'] # form LMS user accound
         #
         if self.use_group and self.group_id >= 0 :
             if self.grp_name == '' :
@@ -193,25 +180,94 @@ class LTIContainerSpawner(DockerSpawner):
                     if self.ext_grp_name != '' :
                         self.grp_name = self.ext_grp_name                   # from extension command
                     else :
-                        self.grp_name = self.get_lms_userinfo()['gname']    # form LMS user accound
+                        self.grp_name = self._get_lms_userinfo()['gname']   # form LMS user accound
         #
         return self.grp_name
 
 
+    def _create_dir(self, directory, uid, gid, mode) :
+        if not os.path.isdir(directory) :
+            os.makedirs(directory)
+            os.chown(directory, uid, gid)
+            os.chmod(directory, mode)
+
+
+    def _vol_file_bind(self, host_path, target_path, mode="ro"):
+        if os.path.isfile(host_path): self.volumes[host_path] = {"bind": target_path, "mode": mode}
+        #try:
+        #    st = os.stat(host_path)
+        #except FileNotFoundError:
+        #    return
+        #except PermissionError:
+        #    return
+        #else:
+        #    if stat.S_ISREG(st.st_mode): self.volumes[host_path] = {"bind": target_path, "mode": mode}
+
+
+    #
+    # ユーザのアクセス情報をチェックし，マウントする課題ボリュームのパスの配列を返す．
+    #
+    def _get_volumes_info(self, assoc):
+        #print('=== _get_volumes_info() ===')
+        vols = []
+        for key, value in assoc.items():
+            usrs = []
+            disp = ''
+            lst  = value.split(':')
+            num  = len(lst)
+
+            if num > 0 : disp = lst[0]
+            if num > 1 : usrs = lst[1].replace(',',' ').split()
+
+            if disp != '' :
+                mnt = False
+                if len(usrs) != 0 :                                                         # : によるアクセス制限の指定あり
+                    if ('*' in usrs) or (self.user.name in usrs) :
+                        mnt = True
+                elif ('*' in self.custom_users) or (self.user.name in self.custom_users) :  # : によるアクセス制限の指定なし
+                    mnt = True
+                elif (self.user.name in self.custom_teachers) :                             # 教師
+                    mnt = True
+
+                if mnt:
+                    #dirname = key + '_' + self.course_id + '_' + self.custom_ltictr_id + '_' + self.custom_lti_id + '_' + self.host_name
+                    dirname = key + '_' + self.course_id + '_' + self.host_name
+                    vols.append(self.volumes_dir + '/' + dirname + ':' + disp)
+        #
+        return vols
+
+
+    #
+    #
+    #
+    def get_userid(self):
+        if self.user_id < 0:
+            try :
+                self.user_id = pwd.getpwnam(self.user.name).pw_uid  # from system user account
+            except :
+                if self.ext_user_id>=0 :
+                    self.user_id = self.ext_user_id                 # from extension command
+                else :
+                    self.user_id = self._get_lms_userinfo()['uid']  # form LMS user accound
+        #
+        return self.user_id
+
+
+    #
     def template_namespace(self):
         d = super(LTIContainerSpawner, self).template_namespace()
-        d['groupname'] = self.get_groupname()
+        d['groupname'] = self._get_groupname()
         return d
 
 
     @property
     def homedir(self):
-        return self.user_home_dir.format(username=self.user.name, groupname=self.get_groupname())
+        return self.user_home_dir.format(username=self.user.name, groupname=self._get_groupname())
 
 
     @property
     def groupdir(self):
-        return self.group_home_dir.format(groupname=self.get_groupname())
+        return self.group_home_dir.format(groupname=self._get_groupname())
 
 
     def get_args(self):
@@ -236,11 +292,13 @@ class LTIContainerSpawner(DockerSpawner):
         args.append('--ServerApp.allow_hidden=True')
 
         notice_path = f"{self.projects_dir}/{self.works_dir}/.jnotice.txt"
+        sticky_path = f"{self.projects_dir}/{self.works_dir}/.jnotice.sticky.txt"
         polling_ms  = int(self.notice_poll) * 1000
         tornado_settings["page_config_data"]  = {
             "jnotice": {
-                "path":   notice_path,
-                "pollMs": polling_ms
+                "path":       notice_path,
+                "stickyPath": sticky_path,
+                "pollMs":     polling_ms
              }
         }
         #
@@ -248,13 +306,6 @@ class LTIContainerSpawner(DockerSpawner):
 
         self.log.info("[get_args()] final args: %s", args)
         return args
-
-
-    def create_dir(self, directory, uid, gid, mode) :
-        if not os.path.isdir(directory) :
-            os.makedirs(directory)
-            os.chown(directory, uid, gid)
-            os.chmod(directory, mode)
 
 
     #def auth_hook(authenticator, handler, authentication):
@@ -422,39 +473,6 @@ class LTIContainerSpawner(DockerSpawner):
 
 
     #
-    # ユーザのアクセス情報をチェックし，マウントする課題ボリュームのパスの配列を返す．
-    #
-    def get_volumes_info(self, assoc):
-        #print('=== get_volumes_info() ===')
-        vols = []
-        for key, value in assoc.items():
-            usrs = []
-            disp = ''
-            lst  = value.split(':')
-            num  = len(lst)
-
-            if num > 0 : disp = lst[0]
-            if num > 1 : usrs = lst[1].replace(',',' ').split()
-
-            if disp != '' :
-                mnt = False
-                if len(usrs) != 0 :                                                         # : によるアクセス制限の指定あり
-                    if ('*' in usrs) or (self.user.name in usrs) :
-                        mnt = True
-                elif ('*' in self.custom_users) or (self.user.name in self.custom_users) :  # : によるアクセス制限の指定なし
-                    mnt = True
-                elif (self.user.name in self.custom_teachers) :                             # 教師
-                    mnt = True
-
-                if mnt:
-                    #dirname = key + '_' + self.course_id + '_' + self.custom_ltictr_id + '_' + self.custom_lti_id + '_' + self.host_name
-                    dirname = key + '_' + self.course_id + '_' + self.host_name
-                    vols.append(self.volumes_dir + '/' + dirname + ':' + disp)
-        #
-        return vols
-
-
-    #
     # コンテナに渡す環境変数を設定する．
     # NB_UID, NB_GID, NB_USER, NB_GROUP, NB_UMASK, NB_VOLUMES, NB_SUBMITS, NB_PRSNAL,
     # NB_TEACHER, NB_THRGROUP, NB_THRGID, ...
@@ -465,7 +483,7 @@ class LTIContainerSpawner(DockerSpawner):
 
         userid    = self.get_userid()
         username  = self.user.name
-        groupname = self.get_groupname()
+        groupname = self._get_groupname()
         groupid   = self.group_id
         homedir   = self.notebook_dir.format(username=username, groupname=groupname)
 
@@ -488,13 +506,13 @@ class LTIContainerSpawner(DockerSpawner):
             env.update(NB_TEACHER = '')
 
         # volumes
-        volumes = ' '.join(self.get_volumes_info(self.custom_volumes))
+        volumes = ' '.join(self._get_volumes_info(self.custom_volumes))
         env.update(NB_VOLUMES = volumes)
 
-        submits = ' '.join(self.get_volumes_info(self.custom_submits))
+        submits = ' '.join(self._get_volumes_info(self.custom_submits))
         env.update(NB_SUBMITS = submits)
 
-        prsnals = ' '.join(self.get_volumes_info(self.custom_prsnals))
+        prsnals = ' '.join(self._get_volumes_info(self.custom_prsnals))
         env.update(NB_PRSNALS = prsnals)
 
         # for LTI
@@ -512,7 +530,7 @@ class LTIContainerSpawner(DockerSpawner):
     def start(self):
         #print('=== start() ===')
         username  = self.user.name
-        groupname = self.get_groupname()    # get self.group_id, too
+        groupname = self._get_groupname()    # get self.group_id, too
         hosthome  = self.homedir
         grouphome = self.groupdir
         self.notebook_dir = hosthome
@@ -553,14 +571,14 @@ class LTIContainerSpawner(DockerSpawner):
         # volume
         self.volumes[hosthome] = hosthome
 
-        self.create_dir(grouphome, 0, self.group_id, 0o0755)
-        self.create_dir(hosthome,  self.user_id, self.group_id, 0o0700)
-        self.create_dir(hosthome + '/' + self.projects_dir,  self.user_id, self.group_id, 0o0700)
-        self.create_dir(hosthome + '/' + self.projects_dir + '/' + self.works_dir, self.user_id, self.group_id, 0o0700)
+        self._create_dir(grouphome, 0, self.group_id, 0o0755)
+        self._create_dir(hosthome,  self.user_id, self.group_id, 0o0700)
+        self._create_dir(hosthome + '/' + self.projects_dir,  self.user_id, self.group_id, 0o0700)
+        self._create_dir(hosthome + '/' + self.projects_dir + '/' + self.works_dir, self.user_id, self.group_id, 0o0700)
 
         fullpath_dir  = hosthome + '/' + self.projects_dir + '/' + self.works_dir
-        mount_volumes = self.get_volumes_info(self.custom_volumes)
-        mount_submits = self.get_volumes_info(self.custom_submits)
+        mount_volumes = self._get_volumes_info(self.custom_volumes)
+        mount_submits = self._get_volumes_info(self.custom_submits)
 
         for volume in mount_volumes:
             mountp  = volume.rsplit(':')[0]
@@ -573,8 +591,9 @@ class LTIContainerSpawner(DockerSpawner):
             self.volumes[dirname] = fullpath_dir + '/' + mountp
 
         # notice text
-        self.volumes['/usr/local/etc/ltictr/notice_active.txt'] = {'bind': fullpath_dir + '/.notice_active.txt', 'mode': 'ro'}
-        self.volumes['/usr/local/etc/ltictr/notice_memory.txt'] = {'bind': fullpath_dir + '/.notice_memory.txt', 'mode': 'ro'}
+        self._vol_file_bind('/usr/local/etc/ltictr/notice_memory.txt', fullpath_dir + '/.notice_memory.txt')
+        self._vol_file_bind('/usr/local/etc/ltictr/notice_active.txt', fullpath_dir + '/.notice_active.txt')
+        self._vol_file_bind('/usr/local/etc/ltictr/notice_sticky.txt', fullpath_dir + '/.notice_sticky.txt')
         #
         self.remove = True
 

@@ -9,15 +9,18 @@ install:
 	[ -d /var/lib/jupyterhub ]   || mkdir /var/lib/jupyterhub
 	[ -d /usr/local/etc/ltictr ] || mkdir -p /usr/local/etc/ltictr
 	chmod 755 /usr/local/etc/ltictr
+	rmdir /usr/local/etc/ltictr/notice_* 2> /dev/null
 	[ -f /usr/local/etc/ltictr/jupyterhub_lticontainer_config.py ] || install -m 0644 etc/jupyterhub_lticontainer_config.py /usr/local/etc/ltictr
 	[ -f /usr/local/etc/ltictr/lticontainerspawner_config.py ]     || install -m 0644 etc/lticontainerspawner_config.py     /usr/local/etc/ltictr
 	[ -f /usr/local/etc/ltictr/ltictr_proxy.conf ]                 || install -m 0640 etc/ltictr_proxy.conf                 /usr/local/etc/ltictr
-	[ -f /usr/local/etc/ltictr/notice_active.txt ]                 || install -m 0644 etc/notice_active.txt                 /usr/local/etc/ltictr
-	[ -f /usr/local/etc/ltictr/notice_memory.txt ]                 || install -m 0644 etc/notice_memory.txt                 /usr/local/etc/ltictr
-	[ -f /usr/local/etc/ltictr/notice_active.txt ]                 || install -m 0644 etc/notice_active_jp.txt              /usr/local/etc/ltictr
-	[ -f /usr/local/etc/ltictr/notice_memory.txt ]                 || install -m 0644 etc/notice_memory_jp.txt              /usr/local/etc/ltictr
 	[ -f /usr/lib/systemd/system/jupyterhub.service ]              || install -m 0644 etc/jupyterhub.service                /usr/lib/systemd/system
 	[ -f /usr/lib/systemd/system/ltictr_proxy.service ]            || install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system
+	[ -f /usr/local/etc/ltictr/notice_memory.txt ]                 || install -m 0644 etc/notice_memory.txt                 /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_active.txt ]                 || install -m 0644 etc/notice_active.txt                 /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_sticky.txt ]                 || install -m 0644 etc/notice_sticky.txt                 /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_memory_ja.txt ]              || install -m 0644 etc/notice_memory_ja.txt              /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_active_ja.txt ]              || install -m 0644 etc/notice_active_ja.txt              /usr/local/etc/ltictr
+	[ -f /usr/local/etc/ltictr/notice_sticky_ja.txt ]              || install -m 0644 etc/notice_sticky_ja.txt              /usr/local/etc/ltictr
 	install -m 0644 etc/podman.socket            /usr/lib/systemd/system
 	install -m 0755 etc/lticontainerspawner.py   /usr/local/etc/ltictr
 	install -m 0755 bin/ltictr_proxy_server      /usr/local/bin

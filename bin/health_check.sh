@@ -3,7 +3,7 @@
 # health_check.sh
 #    Script to exit after a span of the active time and over the memory
 #
-#    v1.0 20251029
+#    v1.2.0 20251031
 #
 
 set -euo pipefail
@@ -11,12 +11,18 @@ set -euo pipefail
 #
 ACT_ALERT=90    # % 時間警告
 MEM_ALERT=90    # % メモリ警告
-ACT_GRACE=15    # TERM → KILL 猶予時間
+ACT_GRACE=120   # KILL 猶予時間 (s)．長めに取って，確実に終了メッセージを拾わせる
 
+#
 NB_WRKDIR="${NB_WRKDIR:-$NB_DIR}" 
-NOTICE_FILE="${NB_WRKDIR}/.jnotice.txt"
-ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.notice_active.txt"
+
 MEMORY_NOTICE_PATH="${NB_WRKDIR}/.notice_memory.txt"
+ACTIVE_NOTICE_PATH="${NB_WRKDIR}/.notice_active.txt"
+STICKY_NOTICE_PATH="${NB_WRKDIR}/.notice_sticky.txt"
+
+NOTICE_FILE="${NB_WRKDIR}/.jnotice.txt"
+STICKY_FILE="${NB_WRKDIR}/.jnotice.sticky.txt"
+
 SYS_TM_FILE="/tmp/.system_uptime"
 
 ACT_LIMIT="${NB_ACTLIMIT//[^0-9]/}"
@@ -47,11 +53,27 @@ output_notice() {
 }
 
 
+output_sticky() {
+  local msg="$1"
+  mkdir -p "$(dirname "$STICKY_FILE")" 2>/dev/null || true
+  if [ -f "$STICKY_FILE" ]; then
+    local cur; cur="$(cat "$STICKY_FILE" 2>/dev/null || true)"
+    [[ "$cur" == "$msg" ]] && { echo "[healthcheck] $msg" >&2; return 0; }
+  fi
+  echo "$msg" > "$STICKY_FILE" 2>/dev/null || true
+  echo "[healthcheck] $msg" >&2
+}
+
+
 # コンテナの停止
 graceful_stop() {
-  rm -f $NOTICE_FILE
-  kill -TERM -- -1 2>/dev/null || true
+  act_msg="$(read_notice_file "$STICKY_NOTICE_PATH")"
+  if [ ! -z "$act_msg" ]; then
+    output_sticky "$act_msg"
+    rm -f $NOTICE_FILE
+  fi
   sleep $ACT_GRACE
+
   kill -KILL -- -1 2>/dev/null || true
 }
 
@@ -77,7 +99,7 @@ get_mem_pct() {
 UP_TIME="$(awk '{print int($1)}' /proc/uptime 2>/dev/null || echo 0)"
 
 if (( ACT_LIMIT > 0 && UP_TIME > 0 )); then
-  [ -f $SYS_TM_FILE ] || (echo $UP_TIME > $SYS_TM_FILE; rm -f "$NOTICE_FILE")
+  [ -f $SYS_TM_FILE ] || (echo $UP_TIME > $SYS_TM_FILE; rm -f "$NOTICE_FILE"; rm -f "$STICKY_FILE")
   sttm=$(cat $SYS_TM_FILE 2>/dev/null || echo $UP_TIME)
   diff=$(( UP_TIME - sttm ))
 

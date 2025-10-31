@@ -1,0 +1,2 @@
+The time limit has been reached, so the container will be stopped.
+If you wish to continue, you can reconnect.

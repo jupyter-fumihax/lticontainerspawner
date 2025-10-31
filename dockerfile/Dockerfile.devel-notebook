@@ -1,0 +1,53 @@
+#
+# docker build . --format=docker -f Dockerfile.devel-notebook -t jupyterhub/devel-notebook:temp
+#
+
+FROM quay.io/jupyterhub/singleuser
+
+USER root
+
+# ---- OS packages ----
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    git binutils apt-utils vim plocate \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
+ && apt-get -y clean && rm -rf /var/lib/apt/lists/*
+
+ENV CONDA_HOME=/opt/conda
+ENV PATH=$CONDA_HOME/bin:$PATH
+
+# ---- conda 環境（Python 3.12，JupyterLab 4 系）----
+RUN set -eux \
+ && $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y \
+ && $CONDA_HOME/bin/conda config --add channels conda-forge \
+ && $CONDA_HOME/bin/conda config --add channels defaults \
+ && $CONDA_HOME/bin/conda config --set channel_priority strict \
+ && $CONDA_HOME/bin/conda config --remove-key pinned_packages || true \
+ && rm -f $CONDA_HOME/conda-meta/pinned || true \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c defaults "blas=1.0=openblas" -y \
+ && $CONDA_HOME/bin/conda install --yes --prefix $CONDA_HOME -c conda-forge \
+      python=3.12 \
+      jupyterlab=4.* \
+      jupyterlab-language-pack-ja-jp \
+      ipywidgets pillow pandas ipycanvas \
+      numpy matplotlib ipympl seaborn plotly \
+      xeus-python \
+      xeus-lua \
+      pip setuptools wheel \
+ && $CONDA_HOME/bin/conda clean --all -y \
+ && $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir \
+      japanize-matplotlib jbturtle
+
+# ---- Blockly（JL4 対応版をそのまま導入）----
+RUN set -eux \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge -y jupyterlab-blockly \
+ && $CONDA_HOME/bin/conda clean --all -y
+
+# 任意の確認
+# RUN $CONDA_HOME/bin/jupyter labextension list
+
+# ---- 仕上げ ----
+RUN $CONDA_HOME/bin/conda clean --all -y || true

@@ -2,204 +2,120 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) cd .. 
-#      docker build . --format=docker -f dockerfile/Dockerfile.broccoli -t jupyterhub-ltictr/jupyterlab-broccoli:20240320
+# ex.) docker build . --format=docker -f Dockerfile.broccoli -t jupyterhub/jupyterlab-broccoli:temp
 #
 
-#FROM docker.io/jupyter/base-notebook
-#FROM docker.io/jupyterhub/singleuser
-#FROM docker.io/jupyter/datascience-notebook
-FROM docker.io/jupyter/tensorflow-notebook
-#FROM docker.io/jupyter/scipy-notebook
+#FROM quay.io/jupyter/base-notebook
+#FROM quay.io/jupyterhub/singleuser
+#FROM quay.io/jupyter/datascience-notebook
+FROM quay.io/jupyter/tensorflow-notebook
+#FROM quay.io/jupyter/scipy-notebook
 
 USER root
 
-#
 RUN apt-get update \
-# && apt-get upgrade -y \
  && apt-get install -y --no-install-recommends \
     zip unzip \
-    libgmp-dev \
-    libmagic-dev \
-    libtinfo-dev \
+    wget git pkg-config \
+    g++ make \
+    # ijavascript/zeromq 用
     libzmq3-dev \
-    libcairo2-dev \
-    libpango1.0-dev \
-    libblas-dev \
-    liblapack-dev \
-#    python3-pip l\
-#    binutils \
-    apt-utils \
-#    mlocate \
-    wget \
-    pkg-config \
-    git \
-#    make \
-#    g++ \
-#    \
-#    binutils \
-#    apt-utils \
-#    sudo \
-#    tini \
-    g++ \
-    make \
-#    vim \
-#    git \
-#    nodejs \
-#    npm \
-#    jupyter \
+    # 画像・描画系
+    libcairo2-dev libpango1.0-dev \
+    # 数値計算
+    libblas-dev liblapack-dev \
+    # そのほか
+    libgmp-dev libmagic-dev libtinfo-dev \
+    # Python 実行環境
+    python3 python3-venv python3-dev python3-pip \
+    python-is-python3 \
+    # ロケール
+    locales \
+    # 日本語フォント
     language-pack-ja-base language-pack-ja \
     fonts-ipafont-gothic fonts-ipafont-mincho \
     fonts-noto-cjk fonts-noto-cjk-extra \
     fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
+ && sed -i -E 's/^# *ja_JP\.UTF-8 UTF-8/ja_JP.UTF-8 UTF-8/' /etc/locale.gen || true \
+ && grep -q '^ja_JP\.UTF-8 UTF-8' /etc/locale.gen || echo 'ja_JP.UTF-8 UTF-8' >> /etc/locale.gen \
+ && locale-gen \
+ && update-locale LANG=ja_JP.UTF-8 LC_ALL=ja_JP.UTF-8 LANGUAGE=ja_JP:ja \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && true
+
+ENV LANG=ja_JP.UTF-8
+ENV LC_ALL=ja_JP.UTF-8
+ENV LANGUAGE=ja_JP:ja
 
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
 
+RUN set -eux \
+ && $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y \
+ && $CONDA_HOME/bin/conda config --add channels conda-forge \
+ && $CONDA_HOME/bin/conda config --add channels defaults \
+ && $CONDA_HOME/bin/conda config --set channel_priority strict \
+ && $CONDA_HOME/bin/conda config --remove-key pinned_packages || true \
+ && rm -f $CONDA_HOME/conda-meta/pinned || true \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c defaults "blas=1.0=openblas" -y \
+ && true
 
-# Basic Function
-RUN $CONDA_HOME/bin/conda update  -n base conda -y \
+# Conda
+RUN set -eux \
+ && $CONDA_HOME/bin/conda update -n base conda -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pip setuptools wheel -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab==3.6.* -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab_widgets -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub-singleuser -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-blockly -y \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge mamba -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME pip -y \
-# && $CONDA_HOME/bin/conda update  --prefix $CONDA_HOME --all -y \
- && $CONDA_HOME/bin/conda clean   --all -y \
+ && $CONDA_HOME/bin/conda clean --all -y \
  && true
 
-
-# Exit Library
-RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipycanvas -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge Pillow -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge matplotlib -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipympl -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge seaborn -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c plotly plotly -y \
- && $CONDA_HOME/bin/conda clean   --all -y \
- && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
+# 科学系ライブラリ
+RUN set -eux \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge ipywidgets ipycanvas Pillow pandas numpy matplotlib ipympl seaborn -y \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge -c plotly plotly -y \
+ && $CONDA_HOME/bin/conda clean --all -y \
+ && $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-build-isolation japanize-matplotlib \
  && true
 
-
-# Xeus-Lua and Xeus-Python
-RUN $CONDA_HOME/bin/mamba install --prefix $CONDA_HOME -c conda-forge xeus-lua \
-# && $CONDA_HOME/bin/mamba install --prefix $CONDA_HOME -c conda-forge xeus-python \
-# && $CONDA_HOME/bin/mamba install xeus-python notebook -c conda-forge \
- && $CONDA_HOME/bin/mamba clean   --all -y \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda xeus-python \
+# Xeus 系
+RUN set -eux \
+ && $CONDA_HOME/bin/mamba install --prefix $CONDA_HOME -c conda-forge xeus-lua -y \
+ && $CONDA_HOME/bin/mamba install --prefix $CONDA_HOME -c conda-forge xeus-python notebook -y \
+ && $CONDA_HOME/bin/mamba clean --all -y \
  && true
 
+# Node.js, JS/TS カーネル
+RUN set -eux \
+ && $CONDA_HOME/bin/mamba install --prefix $CONDA_HOME -c conda-forge nodejs=18 -y \
+ && $CONDA_HOME/bin/mamba clean --all -y \
+ && true
 
-# Java Script
-RUN $CONDA_HOME/bin/npm install -g npm \
-# && $CONDA_HOME/bin/npm install -g uuidv7 \
+ENV npm_config_python=/usr/bin/python3
+ENV PYTHON=/usr/bin/python3
+ENV NPM_CONFIG_FUND=false
+ENV npm_config_zmq_external=true
+ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+
+RUN set -eux \
+ && $CONDA_HOME/bin/npm install -g npm \
  && $CONDA_HOME/bin/npm install -g --unsafe-perm ijavascript \
  && $CONDA_HOME/bin/ijsinstall --install=global \
- && $CONDA_HOME/bin/npm install -g tslab \
+ && $CONDA_HOME/bin/npm install -g typescript tslab \
  && $CONDA_HOME/bin/tslab install \
  && true
 
 
-## JupyterLab-Broccoli
-RUN $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli==0.4.7 \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-blocks==0.4.6 \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jbturtle \
- && $CONDA_HOME/bin/pip   install --prefix /opt/conda jupyterlab-broccoli-turtle==0.4.7 \
- && true
+# JupyterLab Broccoli 系拡張
+RUN  set -eux \
+ && $CONDA_HOME/bin/pip install --prefix /opt/conda \
+    jupyterlab-broccoli==0.4.7 \
+    jupyterlab-broccoli-blocks==0.4.6 \
+    jbturtle \
+    jupyterlab-broccoli-turtle==0.4.7
 
-
-
-############################################
-
-# Jupyter Notice  (need nodejs, npm)
-WORKDIR /tmp/jhub-notice
-RUN mkdir -p src
-
-COPY \
-    labextension_jnotice/package.json \
-    labextension_jnotice/tsconfig.json \
-    labextension_jnotice/webpack.config.cjs \
-    ./
-COPY labextension_jnotice/src/index.ts src
-
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-    nodejs npm \
- && npm install --no-audit --no-fund  \
- && npx webpack --config webpack.config.cjs --mode=production \
- && apt-get -y remove nodejs npm \
- && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/* \
- && true
-
-RUN set -eux; \
-    LABEXT="/opt/conda/share/jupyter/labextensions/jnotice"; \
-    mkdir -p "$LABEXT/static"; \
-    cp -a static/* "$LABEXT/static/"; \ 
-    cp -a package.json "$LABEXT/"; \
-    chmod -R a+rX "$LABEXT" 
-
-COPY labextension_jnotice/90-jnotice.json  /opt/conda/etc/jupyter/jupyter_server_config.d/
-RUN  chmod a+r /opt/conda/etc/jupyter/jupyter_server_config.d/90-jnotice.json
-
-WORKDIR /
-RUN rm -rf /tmp/jhub-notice
-
-
-# Lticontainer
-HEALTHCHECK CMD /usr/local/bin/health_check.sh
-
-COPY \
-    bin/start.sh \
-    bin/start-notebook.sh \
-    bin/start-singleuser.sh \
-    bin/commit.sh \
-    bin/ipynb_conv \
-    bin/ipynb_conv_alt \
-    bin/ipynb_conv_alt.py \
-    bin/ipynb_deploy \
-    bin/ipynb_setup \
-    bin/ipynb_submit \
-    bin/submit \
-    bin/ipynb_extract \
-    bin/extract \
-    bin/ipynb_tocsv \
-    bin/tocsv \
-    bin/health_check.sh \
-    /usr/local/bin/
-
-COPY \
-    etc/.bashrc \
-    etc/.bash_profile \
-    etc/.vimrc \
-    /root/
-
-COPY \
-    etc/.bash_profile \
-    etc/.bashrc \
-    etc/.vimrc \
-    /etc/skel/
-
-COPY \
-    etc/passwd.orig \
-    etc/group.orig \
-    /etc/
-
-#
-RUN chmod a+rx /usr/local/bin/* \
- && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
- && true
-
-
-#CMD ["start-notebook.sh"]
 

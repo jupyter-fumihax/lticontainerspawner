@@ -1,0 +1,84 @@
+#
+# docker build . --format=docker -f  Dockerfile.xeus-ijs -t jupyterhub/xeus-ijs:temp
+#
+
+FROM quay.io/jupyterhub/singleuser
+
+USER root
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CONDA_HOME=/opt/conda
+ENV PATH=$CONDA_HOME/bin:$PATH
+ENV JUPYTER_DATA_DIR=$CONDA_HOME/share/jupyter
+
+# ---------- OS packages ----------
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    openjdk-11-jdk-headless \
+    zip unzip wget curl ca-certificates \
+    git g++ make pkg-config \
+    libgmp-dev libmagic-dev libtinfo-dev libzmq3-dev \
+    libcairo2-dev libpango1.0-dev \
+    libblas-dev liblapack-dev \
+    php php-cli php-dev php-pear php-zmq php-zip php-xml \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
+ && apt-get clean -y \
+ && rm -rf /var/lib/apt/lists/*
+
+# ---------- conda 初期化（チャンネル設定＋BLAS のピン解決）----------
+RUN set -eux \
+  && $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y \
+  && $CONDA_HOME/bin/conda config --add channels conda-forge \
+  && $CONDA_HOME/bin/conda config --add channels defaults \
+  && $CONDA_HOME/bin/conda config --set channel_priority strict \
+  && $CONDA_HOME/bin/conda config --remove-key pinned_packages || true \
+  && rm -f $CONDA_HOME/conda-meta/pinned || true \
+  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c defaults "blas=1.0=openblas" -y
+
+# ---------- Node.js（conda）----------
+RUN $CONDA_HOME/bin/conda install -y -c conda-forge nodejs=18 \
+ && $CONDA_HOME/bin/conda clean --all -y
+
+# ---------- ijavascript ----------
+RUN set -eux \
+ && $CONDA_HOME/bin/npm -g install npm@10 \
+ && $CONDA_HOME/bin/npm -g install --unsafe-perm ijavascript \
+ && $CONDA_HOME/bin/ijsinstall --install=global
+
+# ---------- IJava（事前ビルド ZIP，--sys-prefix で確実導入）----------
+RUN set -eux \
+ && curl -L -o /tmp/ijava.zip https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip \
+ && unzip -q /tmp/ijava.zip -d /tmp/ijava \
+ && $CONDA_HOME/bin/python /tmp/ijava/install.py --sys-prefix \
+ && $CONDA_HOME/bin/jupyter kernelspec list \
+ && rm -rf /tmp/ijava /tmp/ijava.zip
+
+# ---------- C++（xeus-cling：C++11/14/17 カーネルを一括導入，任意）----------
+RUN $CONDA_HOME/bin/conda install -y -c conda-forge xeus-cling \
+ && $CONDA_HOME/bin/conda clean --all -y
+
+# ---------- PHP composer と PHP kernel ----------
+RUN set -eux \
+ && wget -O /tmp/composer-setup.php https://getcomposer.org/installer \
+ && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+ && COMPOSER_ALLOW_SUPERUSER=1 composer global require -n rabrennie/jupyter-php-kernel:^1.0 \
+ && VENDOR_DIR="$(composer global config vendor-dir --absolute 2>/dev/null || true)" \
+ && if [ -z "$VENDOR_DIR" ] || [ ! -d "$VENDOR_DIR" ]; then VENDOR_DIR="/root/.composer/vendor"; fi \
+ && ln -sf "${VENDOR_DIR}/bin/"* /usr/local/bin/ \
+ && jupyter-php-kernel --install \
+ && rm -f /tmp/composer-setup.php
+
+
+# ---------- bash kernel ----------
+RUN $CONDA_HOME/bin/pip install --no-cache-dir bash_kernel \
+ && $CONDA_HOME/bin/python -m bash_kernel.install
+
+# ---------- h2o, pandas ----------
+RUN $CONDA_HOME/bin/pip install --no-cache-dir --upgrade h2o pandas
+
+RUN apt-get clean -y && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache
+
+#USER $NB_USER

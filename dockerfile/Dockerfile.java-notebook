@@ -1,113 +1,80 @@
 #
-# docker build . --format=docker -f dockerfile/Dockerfile.java-notebook -t jupyterhub-ltictr/java-notebook:xxxxx
+# docker build . --format=docker -f Dockerfile.java-notebook -t jupyterhub/java-notebook:temp
 #
 
-FROM docker.io/jupyterhub/singleuser
+FROM quay.io/jupyterhub/singleuser
 
 USER root
 
 RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get install -y --no-install-recommends \
-    default-jre \
-    default-jdk \
+    openjdk-11-jdk-headless \
     apt-utils \
     binutils \
-#    tini \
     make \
     g++ \
-#    vim \
     git \
-    language-pack-ja-base \
-    language-pack-ja \
+    curl \
+    unzip \
+    pkg-config \
+    libzmq3-dev \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* \
  && true
 
+ENV CONDA_HOME=/opt/conda
+ENV PATH=$CONDA_HOME/bin:$PATH
+ENV JUPYTER_DATA_DIR=$CONDA_HOME/share/jupyter
 
-RUN /opt/conda/bin/conda update  -n base conda \
- && /opt/conda/bin/conda update  --prefix /opt/conda -c conda-forge jupyterhub -y \
- && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab -y \
- && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab_widgets -y \
- && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterlab-language-pack-ja-jp -y \
- && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge jupyterhub-singleuser -y \
-# && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pip -y \
-# && /opt/conda/bin/conda update  --prefix /opt/conda --all -y \
-# && /opt/conda/bin/conda clean   --all -y \
-# && /opt/conda/bin/pip   install --prefix /opt/conda ipynb_path \
-# && /opt/conda/bin/pip   install --prefix /opt/conda jupyter-dash \
+# --- conda 設定（conda-forge と defaults 併用，BLAS を一度だけ満たす）---
+RUN set -eux \
+  && $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y \
+  && $CONDA_HOME/bin/conda config --add channels conda-forge \
+  && $CONDA_HOME/bin/conda config --add channels defaults \
+  && $CONDA_HOME/bin/conda config --set channel_priority strict \
+  && $CONDA_HOME/bin/conda config --remove-key pinned_packages || true \
+  && rm -f $CONDA_HOME/conda-meta/pinned || true \
+  # defaults 側のメタパッケージで BLAS を固定．
+  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c defaults "blas=1.0=openblas" -y \
+  && true
+
+# --- Language & Ext Library ---
+RUN set -eux \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge \
+      jupyterlab jupyterlab_widgets jupyterlab-language-pack-ja-jp \
+      ipywidgets pillow pandas ipycanvas numpy matplotlib ipympl seaborn \
+      plotly nodejs=18 \
+ -y \
+ && $CONDA_HOME/bin/conda clean --all -y \
+ && $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir japanize-matplotlib \
  && true
 
-#
-# install ijava
-RUN git clone https://github.com/SpencerPark/IJava.git ijava \
- && (cd ijava; chmod a+rx gradlew; ./gradlew installKernel --prefix /opt/conda ) \
- && /opt/conda/bin/jupyter kernelspec list \
- && rm -rf ijava \
- && rm -rf /root/.gradle /root/.local \
+# --- iJava kernel（事前ビルド ZIP を --sys-prefix で導入）---
+RUN set -eux \
+ && curl -L -o /tmp/ijava.zip https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip \
+ && unzip -q /tmp/ijava.zip -d /tmp/ijava \
+ && $CONDA_HOME/bin/python /tmp/ijava/install.py --sys-prefix \
+ && $CONDA_HOME/bin/jupyter kernelspec list \
+ && rm -rf /tmp/ijava /tmp/ijava.zip \
  && true
 
-#
-# install plotly
-RUN /opt/conda/bin/conda install --prefix /opt/conda -c plotly plotly -y \
- && /opt/conda/bin/conda install --prefix /opt/conda -c conda-forge pandas -y \
-# && /opt/conda/bin/jupyter labextension install @jupyterlab/rendermime-interfaces jupyterlab-plotly \
-# && /opt/conda/bin/jupyter labextension install @jupyterlab/application plotlywidget \
-# && /opt/conda/bin/jupyter labextension install @jupyterlab/rendermime-interfaces plotlywidget \
- && /opt/conda/bin/conda clean   --all -y \
+# --- Node.js と JS/TS カーネル ---
+ENV npm_config_python=/usr/bin/python3
+ENV PYTHON=/usr/bin/python3
+ENV NPM_CONFIG_FUND=false
+ENV npm_config_zmq_external=true
+ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+
+RUN set -eux \
+ && $CONDA_HOME/bin/npm install -g npm \
+ && $CONDA_HOME/bin/npm install -g --unsafe-perm ijavascript \
+ && $CONDA_HOME/bin/ijsinstall --install=global \
+ && $CONDA_HOME/bin/npm install -g typescript tslab \
+ && $CONDA_HOME/bin/tslab install \
  && true
 
-#
-# install ijavascript
-RUN /opt/conda/bin/npm install -g ijavascript \
- && /opt/conda/bin/ijsinstall --install=global \
- && /opt/conda/bin/jupyter kernelspec list \
- && true
-
-
-# Lticontainer
-HEALTHCHECK CMD /usr/local/bin/actlimit_check.sh
-
-ADD \
-    bin/start.sh \
-    bin/start-notebook.sh \
-    bin/start-singleuser.sh \
-    bin/commit.sh \
-    bin/ipynb_conv \
-    bin/ipynb_conv_alt \
-    bin/ipynb_conv_alt.py \
-    bin/ipynb_deploy \
-    bin/ipynb_setup \
-    bin/ipynb_submit \
-    bin/submit \
-    bin/ipynb_extract \
-    bin/extract \
-    bin/ipynb_tocsv \
-    bin/tocsv \
-    bin/actlimit_check.sh \
-    /usr/local/bin/
-
-ADD \
-    etc/.bashrc \
-    etc/.bash_profile \
-    etc/.vimrc \
-    /root/
-
-ADD \
-    etc/.bash_profile \
-    etc/.bashrc \
-    etc/.vimrc \
-    /etc/skel/
-
-ADD \
-    etc/passwd.orig \
-    etc/group.orig \
-    /etc/
-
-#
-RUN chmod a+rx /usr/local/bin/* \
- && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
- && true
-
-
-#CMD ["start-notebook.sh"]
