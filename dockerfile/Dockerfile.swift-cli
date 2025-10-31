@@ -6,7 +6,6 @@ FROM ubuntu:22.04
 
 USER root
 
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 #
@@ -19,7 +18,7 @@ RUN apt-get update \
     libatomic1 libbsd0 libncurses5 \
  && rm -rf /var/lib/apt/lists/*
 
-
+#
 # Version
 ARG SWIFT_RELEASE=5.10.1
 ARG UBUNTU_DOT=22.04
@@ -28,7 +27,6 @@ ARG SWIFT_BRANCH=swift-${SWIFT_RELEASE}-release
 ARG SWIFT_TAG=swift-${SWIFT_RELEASE}-RELEASE
 ARG SWIFT_URL=https://download.swift.org/${SWIFT_BRANCH}/ubuntu${UBUNTU_NODOT}/${SWIFT_TAG}/${SWIFT_TAG}-ubuntu${UBUNTU_DOT}.tar.gz
 
-#
 #
 RUN set -eux \
  && echo "Fetching: ${SWIFT_URL}" \

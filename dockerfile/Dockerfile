@@ -2,8 +2,7 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) cd ..
-#      docker build . --format=docker -t jupyterhub/singleuser:temp
+# ex.) docker build . --format=docker -t jupyterhub/singleuser:temp
 #
 
 FROM quay.io/jupyterhub/singleuser

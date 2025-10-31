@@ -41,7 +41,7 @@ RUN set -eux \
  && $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir \
       japanize-matplotlib jbturtle
 
-# ---- Blockly（JL4 対応版をそのまま導入）----
+# ---- Blockly（JL4）----
 RUN set -eux \
  && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge -y jupyterlab-blockly \
  && $CONDA_HOME/bin/conda clean --all -y
@@ -49,5 +49,7 @@ RUN set -eux \
 # 任意の確認
 # RUN $CONDA_HOME/bin/jupyter labextension list
 
-# ---- 仕上げ ----
+#
 RUN $CONDA_HOME/bin/conda clean --all -y || true
+
+

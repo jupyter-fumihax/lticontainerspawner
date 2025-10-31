@@ -5,11 +5,8 @@
 # ex.) docker build . --format=docker -f Dockerfile.broccoli -t jupyterhub/jupyterlab-broccoli:temp
 #
 
-#FROM quay.io/jupyter/base-notebook
 #FROM quay.io/jupyterhub/singleuser
-#FROM quay.io/jupyter/datascience-notebook
 FROM quay.io/jupyter/tensorflow-notebook
-#FROM quay.io/jupyter/scipy-notebook
 
 USER root
 

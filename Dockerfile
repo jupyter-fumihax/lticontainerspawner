@@ -2,8 +2,7 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) cd .. 
-#      docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251101
+# ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251101
 #
 
 FROM localhost/jupyterhub/singleuser:temp

@@ -2,12 +2,11 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) cd ..
-#      docker build . --format=docker -f Dockerfile.rust-notebook -t jupyterhub/rust-notebook:temp
+# ex.) docker build . --format=docker -f Dockerfile.rust-notebook -t jupyterhub/rust-notebook:temp
 #
 
-#FROM quay.io/jupyter/base-notebook
 FROM quay.io/jupyterhub/singleuser
+#FROM quay.io/jupyter/base-notebook
 #FROM quay.io/jupyter/datascience-notebook
 #FROM quay.io/jupyter/tensorflow-notebook
 #FROM quay.io/jupyter/scipy-notebook

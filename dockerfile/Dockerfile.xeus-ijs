@@ -28,7 +28,7 @@ RUN apt-get update \
  && apt-get clean -y \
  && rm -rf /var/lib/apt/lists/*
 
-# ---------- conda 初期化（チャンネル設定＋BLAS のピン解決）----------
+# ---------- conda 初期化 ----------
 RUN set -eux \
   && $CONDA_HOME/bin/conda update -n base -c conda-forge conda -y \
   && $CONDA_HOME/bin/conda config --add channels conda-forge \
@@ -38,7 +38,7 @@ RUN set -eux \
   && rm -f $CONDA_HOME/conda-meta/pinned || true \
   && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c defaults "blas=1.0=openblas" -y
 
-# ---------- Node.js（conda）----------
+# ---------- Node.js（conda） ----------
 RUN $CONDA_HOME/bin/conda install -y -c conda-forge nodejs=18 \
  && $CONDA_HOME/bin/conda clean --all -y
 
@@ -48,7 +48,7 @@ RUN set -eux \
  && $CONDA_HOME/bin/npm -g install --unsafe-perm ijavascript \
  && $CONDA_HOME/bin/ijsinstall --install=global
 
-# ---------- IJava（事前ビルド ZIP，--sys-prefix で確実導入）----------
+# ---------- IJava ----------
 RUN set -eux \
  && curl -L -o /tmp/ijava.zip https://github.com/SpencerPark/IJava/releases/download/v1.3.0/ijava-1.3.0.zip \
  && unzip -q /tmp/ijava.zip -d /tmp/ijava \
@@ -56,11 +56,11 @@ RUN set -eux \
  && $CONDA_HOME/bin/jupyter kernelspec list \
  && rm -rf /tmp/ijava /tmp/ijava.zip
 
-# ---------- C++（xeus-cling：C++11/14/17 カーネルを一括導入，任意）----------
+# ---------- C++ ----------
 RUN $CONDA_HOME/bin/conda install -y -c conda-forge xeus-cling \
  && $CONDA_HOME/bin/conda clean --all -y
 
-# ---------- PHP composer と PHP kernel ----------
+# ---------- PHP composer, PHP kernel ----------
 RUN set -eux \
  && wget -O /tmp/composer-setup.php https://getcomposer.org/installer \
  && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
@@ -70,7 +70,6 @@ RUN set -eux \
  && ln -sf "${VENDOR_DIR}/bin/"* /usr/local/bin/ \
  && jupyter-php-kernel --install \
  && rm -f /tmp/composer-setup.php
-
 
 # ---------- bash kernel ----------
 RUN $CONDA_HOME/bin/pip install --no-cache-dir bash_kernel \

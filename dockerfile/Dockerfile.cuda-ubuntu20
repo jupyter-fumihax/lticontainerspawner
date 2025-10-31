@@ -2,98 +2,78 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) cd .. 
-#      docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub/base-notebook-gpu:temp
+# ex.) docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub/base-notebook-gpu:temp
 #
 
-# https://hub.docker.com/r/nvidia/cuda/tags
 FROM docker.io/nvidia/cuda:12.2.0-base-ubuntu20.04
 
 USER root
 
-#
+# ---- OS packages ----
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    wget \
-    sudo \
-    language-pack-ja-base \
-    language-pack-ja \
-    gcc-8 \
-    g++-8 \
+    wget sudo \
+    language-pack-ja-base language-pack-ja \
+    gcc-8 g++-8 \
     nvidia-cuda-dev \
-    fonts-takao* \
-    fonts-ipafont* \
-    fonts-noto-cjk* \
- && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
-# && update-alternatives --config gcc \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
+ && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 \
+       --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
+       --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
  && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/* \
- && true
-
+ && rm -rf /var/lib/apt/lists/*
 
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
 
-## python 3.12 (2024/03/19)
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+
+# ---- Miniconda (py3.12系) ----
+RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
  && bash Miniconda3-latest-Linux-x86_64.sh -b -p $CONDA_HOME \
- && rm Miniconda3-latest-Linux-x86_64.sh 
+ && rm -f Miniconda3-latest-Linux-x86_64.sh
 
-## python 3.11
-#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.1.2-0-Linux-x86_64.sh \
-# && bash Miniconda3-py311_24.1.2-0-Linux-x86_64.sh -b -p $CONDA_HOME \
-# && rm   Miniconda3-py311_24.1.2-0-Linux-x86_64.sh 
-
-## python 3.10
-#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py310_23.5.2-0-Linux-x86_64.sh \
-# && bash Miniconda3-py310_23.5.2-0-Linux-x86_64.sh -b -p $CONDA_HOME \
-# && rm   Miniconda3-py310_23.5.2-0-Linux-x86_64.sh 
-
-# python 3.9
-#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py39_23.5.2-0-Linux-x86_64.sh \
-# && bash Miniconda3-py39_23.5.2-0-Linux-x86_64.sh -b -p $CONDA_HOME \
-# && rm   Miniconda3-py39_23.5.2-0-Linux-x86_64.sh 
+# ---- conda 設定（defaults を使わず TOS 問題を回避）----
+RUN set -eux \
+ && printf '%s\n' \
+    'channels:' \
+    '  - conda-forge' \
+    '  - nvidia' \
+    'channel_priority: strict' \
+    > /root/.condarc \
+ && $CONDA_HOME/bin/conda info
 
 
-RUN $CONDA_HOME/bin/conda update  -n base  conda -y \
-# python 3.11用（2014/03/19）
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libarchive=3.6.2 --force-reinstall -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libmamba=1.5.1 --force-reinstall -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libarchive --force-reinstall -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c main libmamba --force-reinstall -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab_widgets -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterlab-language-pack-ja-jp -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge jupyterhub-singleuser -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pillow -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pandas -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge numpy -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c nvidia cuda-nvcc cuda-nvcc -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME matplotlib -y \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge pip -c main -y \
- && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME PyCUDA  \
- && $CONDA_HOME/bin/pip   install --prefix $CONDA_HOME japanize-matplotlib \
- && true
+# ---- 基本パッケージ ----
+RUN set -eux \
+ && $CONDA_HOME/bin/conda update -n base -y --override-channels -c conda-forge conda \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -y --override-channels -c conda-forge \
+      libarchive \
+      libmamba \
+      jupyterhub \
+      jupyterhub-singleuser \
+      jupyterlab \
+      jupyterlab_widgets \
+      jupyterlab-language-pack-ja-jp \
+      pillow pandas numpy matplotlib \
+      pip setuptools wheel \
+ && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -y --override-channels -c nvidia \
+      cuda-nvcc \
+ && $CONDA_HOME/bin/conda clean --all -y
 
 
-#################################
-#  scipy-notebook-gpu
-#RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scipy -y \
-# && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c conda-forge scikit-learn-intelex -y \
-# && true
+# ---- pip 追加（GPU 関連の軽量なもの）----
+RUN set -eux \
+ && $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir \
+      pycuda \
+      japanize-matplotlib
 
 
-#################################
-# tensorflow-notebook-gpu (python 3.12用はまだない 2024/03/19)
-#RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=*=gpu_* -y \
-##RUN $CONDA_HOME/bin/conda install --prefix $CONDA_HOME tensorflow=2.12.0=gpu_py311h65739b5_0 -y \
-# && mkdir -p $CONDA_HOME/lib/nvvm/libdevice \
-# && cp $CONDA_HOME/lib/libdevice.10.bc  $CONDA_HOME/lib/nvvm/libdevice/ \
-# && true
-
+# TensorFlow GPU を後から入れる場合の補助フラグ（任意）
 ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=$CONDA_HOME/lib/
 
-#
-RUN $CONDA_HOME/bin/conda clean   --all -y 
+
+# 最終クリーン
+RUN $CONDA_HOME/bin/conda clean --all -y || true
 
