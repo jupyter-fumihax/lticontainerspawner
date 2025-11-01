@@ -5,7 +5,22 @@
 # ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251101
 #
 
-FROM localhost/jupyterhub/singleuser:temp
+#FROM localhost/jupyterhub/singleuser:temp
+FROM localhost/jupyterhub/base-notebook:temp
+#FROM localhost/jupyterhub/datascience-notebook:temp
+#FROM localhost/jupyterhub/tensorflow-notebook:temp
+#FROM localhost/jupyterhub/jupyterlab-broccoli:temp
+#FROM localhost/jupyterhub/jupyterlab-broccoli-tensorflow:temp
+#FROM localhost/jupyterhub/scipy-notebook:temp
+#FROM localhost/jupyterhub/java-notebook:temp
+#FROM localhost/jupyterhub/php-notebook:temp
+#FROM localhost/jupyterhub/xeus-cling:temp
+
+#FROM localhost/jupyterhub/rust-notebook:temp
+#FROM localhost/jupyterhub/swift-cli:temp
+#FROM localhost/jupyterhub/xeus-ijs:temp
+#FROM localhost/jupyterhub/devel-notebook:temp
+#FROM localhost/jupyterhub/cuda-ubuntu20:temp
 
 
 USER root
@@ -13,41 +28,10 @@ USER root
 ############################################
 
 # Jupyter Notice  (need nodejs, npm)
-WORKDIR /tmp/jhub-notice
-RUN mkdir -p src
+ENV CONDA_HOME=/opt/conda
+RUN $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice 
 
-COPY \
-    labextension_jnotice/package.json \
-    labextension_jnotice/tsconfig.json \
-    labextension_jnotice/webpack.config.cjs \
-    ./
-COPY labextension_jnotice/src/index.ts src
-
-RUN set -eux \
- && apt-get update \
- && apt-get install -y --no-install-recommends \
-    nodejs npm \
- && npm install --no-audit --no-fund  \
- && npx webpack --config webpack.config.cjs --mode=production \
- && apt-get -y remove nodejs npm \
- && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/* \
- && true
-
-RUN set -eux; \
-    LABEXT="/opt/conda/share/jupyter/labextensions/jnotice"; \
-    mkdir -p "$LABEXT/static"; \
-    cp -a static/* "$LABEXT/static/"; \ 
-    cp -a package.json "$LABEXT/"; \
-    chmod -R a+rX "$LABEXT" 
-
-COPY labextension_jnotice/90-jnotice.json  /opt/conda/etc/jupyter/jupyter_server_config.d/
-RUN  chmod a+r /opt/conda/etc/jupyter/jupyter_server_config.d/90-jnotice.json
-
-WORKDIR /
-RUN rm -rf /tmp/jhub-notice
-
-
+#
 # Lticontainer
 HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
@@ -94,5 +78,5 @@ RUN set -eux \
  && true
 
 
-#CMD ["start-notebook.sh"]
+CMD ["start-notebook.sh"]
 

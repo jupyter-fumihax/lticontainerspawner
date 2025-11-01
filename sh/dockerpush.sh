@@ -17,8 +17,8 @@ if [ "$1" != "" ]; then
     TAG=$1
 else
     echo "usage... $0 <tag_of_updated>  [tag_of_repository]"
-    echo "    ex.) docker login -u alice -p password_of_alice  docker.io"
-    echo "         $0 20230503 latest"
+    echo "    ex.) docker login -u alice -p password_of_alice  ghcr.io"
+    echo "         $0 20251101 latest"
     exit 1
 fi
 

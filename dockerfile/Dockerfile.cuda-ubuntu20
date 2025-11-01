@@ -2,39 +2,38 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub/base-notebook-gpu:temp
+# ex.) docker build . --format=docker -f Dockerfile.cuda-ubuntu20 -t jupyterhub/cuda-ubuntu20:temp
 #
 
-FROM docker.io/nvidia/cuda:12.2.0-base-ubuntu20.04
+FROM docker.io/nvidia/cuda:12.2.0-runtime-ubuntu20.04
 
 USER root
-
-# ---- OS packages ----
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    wget sudo \
-    language-pack-ja-base language-pack-ja \
-    gcc-8 g++-8 \
-    nvidia-cuda-dev \
-    fonts-ipafont-gothic fonts-ipafont-mincho \
-    fonts-noto-cjk fonts-noto-cjk-extra \
-    fonts-takao-pgothic fonts-takao-gothic fonts-takao-mincho \
- && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 80 \
-       --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
-       --slave /usr/bin/gcov gcov /usr/bin/gcov-8 \
- && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/*
-
+ENV DEBIAN_FRONTEND=noninteractive
 ENV CONDA_HOME=/opt/conda
 ENV PATH=$CONDA_HOME/bin:$PATH
 
+# ---- OS packages（最小限．日本語フォントは Noto のみに）----
+RUN set -eux \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+      wget ca-certificates sudo locales \
+      bash curl git \
+      fonts-noto-cjk fonts-noto-cjk-extra \
+ && locale-gen ja_JP.UTF-8 \
+ && update-locale LANG=ja_JP.UTF-8 \
+ && apt-get -y clean \
+ && rm -rf /var/lib/apt/lists/*
 
-# ---- Miniconda (py3.12系) ----
-RUN wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
- && bash Miniconda3-latest-Linux-x86_64.sh -b -p $CONDA_HOME \
+ENV LANG=ja_JP.UTF-8
+ENV LC_ALL=ja_JP.UTF-8
+
+# ---- Miniconda（py3.12 系）----
+RUN set -eux \
+ && wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+ && bash Miniconda3-latest-Linux-x86_64.sh -b -p "$CONDA_HOME" \
  && rm -f Miniconda3-latest-Linux-x86_64.sh
 
-# ---- conda 設定（defaults を使わず TOS 問題を回避）----
+# ---- conda 設定（conda-forge 優先，nvidia 併用）----
 RUN set -eux \
  && printf '%s\n' \
     'channels:' \
@@ -42,38 +41,31 @@ RUN set -eux \
     '  - nvidia' \
     'channel_priority: strict' \
     > /root/.condarc \
- && $CONDA_HOME/bin/conda info
+ && "$CONDA_HOME/bin/conda" info
 
-
-# ---- 基本パッケージ ----
+# ---- 基本パッケージ（JupyterHub／Lab，一般科学計算）----
 RUN set -eux \
- && $CONDA_HOME/bin/conda update -n base -y --override-channels -c conda-forge conda \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -y --override-channels -c conda-forge \
-      libarchive \
-      libmamba \
-      jupyterhub \
-      jupyterhub-singleuser \
-      jupyterlab \
-      jupyterlab_widgets \
-      jupyterlab-language-pack-ja-jp \
-      pillow pandas numpy matplotlib \
+ && "$CONDA_HOME/bin/conda" update -n base -y --override-channels -c conda-forge conda \
+ && "$CONDA_HOME/bin/conda" install --prefix "$CONDA_HOME" -y --override-channels -c conda-forge \
+      jupyterhub jupyterhub-singleuser \
+      jupyterlab jupyterlab_widgets jupyterlab-language-pack-ja-jp \
+      numpy pandas matplotlib pillow \
       pip setuptools wheel \
- && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -y --override-channels -c nvidia \
-      cuda-nvcc \
- && $CONDA_HOME/bin/conda clean --all -y
+ && "$CONDA_HOME/bin/conda" clean --all -y
 
-
-# ---- pip 追加（GPU 関連の軽量なもの）----
+# ---- 追加の pip（軽量なもののみ）----
 RUN set -eux \
- && $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir \
-      pycuda \
+ && "$CONDA_HOME/bin/pip" install --prefix "$CONDA_HOME" --no-cache-dir \
       japanize-matplotlib
 
+# ---- 仕上げクリーン（サイズ削減）----
+RUN set -eux \
+ && "$CONDA_HOME/bin/conda" clean --all -y || true \
+ && rm -rf "$CONDA_HOME/pkgs" || true \
+ && find "$CONDA_HOME" -type d -name "tests" -prune -exec rm -rf {} + || true \
+ && find "$CONDA_HOME" -type f -name "*.a" -delete || true \
+ && find "$CONDA_HOME" -type f -name "*.pyc" -delete || true
 
-# TensorFlow GPU を後から入れる場合の補助フラグ（任意）
-ENV XLA_FLAGS=--xla_gpu_cuda_data_dir=$CONDA_HOME/lib/
-
-
-# 最終クリーン
-RUN $CONDA_HOME/bin/conda clean --all -y || true
+# ---- オプション：TensorFlow GPU ----
+# RUN /opt/conda/bin/pip install --no-cache-dir 'tensorflow==2.16.*'
 

@@ -1,6 +1,6 @@
 //
 // src/index.ts  (jnotice.js)
-//   ver 1.3.2 — sticky 空／削除(404/410)を検知して表示中の無限トーストを自動消去．
+//   ver 1.40  sticky 空／削除(404/410)を検知して表示中の無限トーストを自動消去．
 //
 
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
@@ -60,8 +60,8 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     // 状態
     let timer: number | undefined;
-    let lastSticky = '';                 // sticky の直近内容
-    let stickyEl: HTMLDivElement | null = null;  // 表示中の sticky 要素参照
+    let lastSticky = '';                            // sticky の直近内容
+    let stickyEl: HTMLDivElement | null = null;     // 表示中の sticky 要素参照
 
     // ---- フェード共通 ----
     function fadeAndRemove(el: HTMLElement) {
@@ -272,4 +272,3 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 export default plugin;
-
