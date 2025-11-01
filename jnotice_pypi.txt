@@ -1,0 +1,38 @@
+#!/bin/bash
+
+
+# update
+
+vi labextension_jnotice/src/index.ts
+vi labextension_jnotice/package.json  # check version
+vi jnotice/package.json               # check version
+
+
+# compile
+
+cd labextension_jnotice/
+npm install
+npm run build
+
+cd ..
+cp labextension_jnotice/static/* jnotice/share/jupyter/labextensions/jnotice/static/
+cp labextension_jnotice/package.json jnotice/share/jupyter/labextensions/jnotice/package.json
+
+cd jnotice
+python3 -m build
+
+
+# push to PyPI 
+
+twine upload dist/*
+
+
+# clean
+
+cd labextension_jnotice
+npm run clean
+rm -rf node_modules build lib static .webpack-cache package-lock.json
+
+cd ..
+cd jnotice
+rm -rf build dist src/*.egg-info

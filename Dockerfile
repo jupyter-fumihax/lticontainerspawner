@@ -2,12 +2,12 @@
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251101
+# ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251102
 #
 
 #FROM localhost/jupyterhub/singleuser:temp
-FROM localhost/jupyterhub/base-notebook:temp
-#FROM localhost/jupyterhub/datascience-notebook:temp
+#FROM localhost/jupyterhub/base-notebook:temp
+FROM localhost/jupyterhub/datascience-notebook:temp
 #FROM localhost/jupyterhub/tensorflow-notebook:temp
 #FROM localhost/jupyterhub/jupyterlab-broccoli:temp
 #FROM localhost/jupyterhub/jupyterlab-broccoli-tensorflow:temp
@@ -25,11 +25,9 @@ FROM localhost/jupyterhub/base-notebook:temp
 
 USER root
 
-############################################
-
-# Jupyter Notice  (need nodejs, npm)
-ENV CONDA_HOME=/opt/conda
-RUN $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice 
+#
+# Jupyter Notice 
+RUN /opt/conda/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice 
 
 #
 # Lticontainer

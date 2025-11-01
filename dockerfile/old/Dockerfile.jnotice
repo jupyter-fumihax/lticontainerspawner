@@ -1,0 +1,163 @@
+#
+# Usage
+# 1. change FROM line
+# 2. execute docker build command
+# ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251101
+#
+
+FROM localhost/jupyterhub/singleuser:temp
+#FROM localhost/jupyterhub/base-notebook:temp
+#FROM localhost/jupyterhub/datascience-notebook:temp
+#FROM localhost/jupyterhub/tensorflow-notebook:temp
+#FROM localhost/jupyterhub/jupyterlab-broccoli:temp
+#FROM localhost/jupyterhub/jupyterlab-broccoli-tensorflow:temp
+#FROM localhost/jupyterhub/scipy-notebook:temp
+#FROM localhost/jupyterhub/java-notebook:temp
+#FROM localhost/jupyterhub/php-notebook:temp
+#FROM localhost/jupyterhub/xeus-cling:temp
+
+#FROM localhost/jupyterhub/rust-notebook:temp
+#FROM localhost/jupyterhub/swift-cli:temp
+#FROM localhost/jupyterhub/xeus-ijs:temp
+#FROM localhost/jupyterhub/devel-notebook:temp
+#FROM localhost/jupyterhub/cuda-ubuntu20:temp
+
+
+USER root
+
+############################################
+
+# Jupyter Notice  (need nodejs, npm)
+
+ENV CONDA_HOME=/opt/conda
+ENV PATH=$CONDA_HOME/bin:$PATH
+
+# ---- conda solver -> libmamba  ----
+RUN set -eux \
+ && if [ -x "${CONDA_HOME:-/opt/conda}/bin/conda" ]; then \
+      "${CONDA_HOME:-/opt/conda}/bin/conda" install -y -c conda-forge conda-libmamba-solver && \
+      "${CONDA_HOME:-/opt/conda}/bin/conda" config --set solver libmamba && \
+      "${CONDA_HOME:-/opt/conda}/bin/conda" config --set repodata_threads 8 && \
+      "${CONDA_HOME:-/opt/conda}/bin/conda" config --set report_errors false ; \
+    fi
+
+# build 
+WORKDIR /tmp/jhub-notice
+RUN mkdir -p src
+
+COPY \
+    labextension_jnotice/package.json \
+    labextension_jnotice/tsconfig.json \
+    labextension_jnotice/webpack.config.cjs \
+    ./
+COPY labextension_jnotice/src/index.ts src
+
+RUN set -eux \
+ # install nodejs，npm の方針．
+ #    INSTALLED_NODE 0: FROM イメージに既に存在．
+ #                   1: APT + NodeSource で一時導入．
+ #                   2: conda-forge から一時導入．
+ && INSTALLED_NODE=0 \
+ && NEED_NODE=1 \
+ && if command -v node >/dev/null 2>&1; then \
+      CUR_NODE_MAJ="$(node -v | sed 's/^v//;s/\..*//')" || CUR_NODE_MAJ=0; \
+      if [ "$CUR_NODE_MAJ" -ge 20 ]; then NEED_NODE=0; fi; \
+    fi \
+ && if [ "$NEED_NODE" -eq 1 ] && [ -x "${CONDA_HOME:-/opt/conda}/bin/conda" ]; then \
+      # try conda（libmamba）st 300s 
+      if timeout -k 10 300 "${CONDA_HOME:-/opt/conda}"/bin/conda install -y -c conda-forge \
+           nodejs=20 --freeze-installed --repodata-fn current_repodata.json ; then \
+        INSTALLED_NODE=2; NEED_NODE=0; \
+      fi; \
+    fi \
+ && if [ "$NEED_NODE" -eq 1 ]; then \
+      export DEBIAN_FRONTEND=noninteractive; \
+      apt-get update; \
+      apt-get install -y --no-install-recommends curl ca-certificates gnupg; \
+      curl -fsSL https://deb.nodesource.com/setup_20.x | bash -; \
+      apt-get install -y --no-install-recommends nodejs; \
+      INSTALLED_NODE=1; \
+    fi \
+ # compile
+ && npm install --no-audit --no-fund --no-save typescript ts-loader webpack webpack-cli \
+ && npx tsc -v \
+ && npx webpack --config webpack.config.cjs --mode=production \
+ # uninstall nodejs/npm
+ && if [ "$INSTALLED_NODE" -eq 1 ]; then \
+      apt-get -y purge nodejs && apt-get -y autoremove --purge && apt-get -y clean && \
+      rm -f /etc/apt/sources.list.d/nodesource*.list /etc/apt/trusted.gpg.d/nodesource.gpg; \
+    fi \
+ && if [ "$INSTALLED_NODE" -eq 2 ] && [ -x "${CONDA_HOME:-/opt/conda}/bin/conda" ]; then \
+      "${CONDA_HOME:-/opt/conda}"/bin/conda remove -y nodejs && \
+      "${CONDA_HOME:-/opt/conda}"/bin/conda clean -afy; \
+    fi \
+ # clean artifacts．
+ && rm -rf node_modules \
+ && npm cache clean --force || true \
+ && rm -rf /root/.npm /root/.cache/npm /usr/local/lib/node_modules /usr/lib/node_modules || true \
+ && rm -rf /var/lib/apt/lists/* \
+ && true
+
+# Labextension 配置．
+RUN set -eux; \
+    LABEXT="/opt/conda/share/jupyter/labextensions/jnotice"; \
+    mkdir -p "$LABEXT/static"; \
+    cp -a static/* "$LABEXT/static/"; \
+    cp -a package.json "$LABEXT/"; \
+    chmod -R a+rX "$LABEXT"
+
+COPY labextension_jnotice/90-jnotice.json  /opt/conda/etc/jupyter/jupyter_server_config.d/
+RUN  chmod a+r /opt/conda/etc/jupyter/jupyter_server_config.d/90-jnotice.json
+
+WORKDIR /
+RUN rm -rf /tmp/jhub-notice
+
+#
+# Lticontainer
+HEALTHCHECK CMD /usr/local/bin/health_check.sh
+
+COPY \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    bin/health_check.sh \
+    /usr/local/bin/
+
+COPY \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+COPY \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+COPY \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+#
+RUN set -eux \
+ && chmod a+rx /usr/local/bin/* \
+ && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+
+
+CMD ["start-notebook.sh"]
+

@@ -1,0 +1,5 @@
+{
+  "packageManager": "python",
+  "packageName": "jnotice",
+  "uninstall": "pip uninstall jnotice"
+}

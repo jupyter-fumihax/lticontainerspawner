@@ -1,6 +1,6 @@
 //
 // src/index.ts  (jnotice.js)
-//   ver 1.40  sticky 空／削除(404/410)を検知して表示中の無限トーストを自動消去．
+//   ver 1.4.0  sticky: 空／削除(404/410)を検知して表示中の無限トーストを自動消去．
 //
 
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
@@ -28,12 +28,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
       {}
     ) as JNoticeCfg;
 
-    // baseUrl は PageConfig を優先，無ければパスから推定．
     const baseFromJL  = PageConfig.getBaseUrl?.() ?? '';
     const baseFromLoc = (location.pathname.match(/\/user\/[^/]+\/?/)?.[0] || '/').replace(/\/?$/, '/');
     const base: string = ( (cfg as any).baseUrl || baseFromJL || baseFromLoc ).replace(/\/?$/, '/');
 
-    // /hub/user/<name>/... に迷い込んだ場合は /user/<name>/ に矯正．location が取得できるなら最優先．
+    // /hub/user/<name>/... -> /user/<name>/ に．location が取得できるなら優先．
     let fixedBase = base;
     const hubUserMatch = fixedBase.match(/^\/hub\/(user\/[^/]+\/)/);
     if (hubUserMatch) fixedBase = '/' + hubUserMatch[1];
@@ -53,7 +52,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const filesUrl  = fixedBase + 'files/' + noticePath.replace(/^\/+/, '');
     const stickyUrl = fixedBase + 'files/' + stickyPath.replace(/^\/+/, '');
 
-    // ネイティブ API を捕獲（他スクリプトのモンキーパッチ回避）．
+    // ネイティブ API を捕獲
     const nativeSetTimeout   = window.setTimeout.bind(window);
     const nativeClearTimeout = window.clearTimeout.bind(window);
     const nativeFetch        = window.fetch.bind(window);
@@ -106,7 +105,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
       el.appendChild(btn);
       document.body.appendChild(el);
 
-      // 60 秒後に自動フェード→削除
+      // 60 秒後に自動フェード -> 削除
       nativeSetTimeout(() => fadeAndRemove(el), 60_000);
     }
 
@@ -144,7 +143,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
       el.appendChild(btn);
       document.body.appendChild(el);
-      return el; // 参照を返す
+      return el;
     }
 
     // ---- Helper: 通常通知ファイルの削除（失敗時は空 PUT） ----
@@ -209,12 +208,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
                 lastSticky = '';
               }
             } else if (rs.status === 404 || rs.status === 410) {
-              // ★ ファイル削除を空扱い：表示中なら消す
+              // ファイル削除を空扱い：表示中なら消す
               if (stickyEl) { fadeAndRemove(stickyEl); stickyEl = null; }
               lastSticky = '';
             }
           }
-        } catch { /* sticky 取得失敗は黙って次へ */ }
+        } catch { /* Skip */ }
 
         // === 2) 通常通知（この周期で sticky があれば表示せず削除のみ） ===
         try {
@@ -222,7 +221,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
             cache: 'no-store', credentials: 'same-origin', headers: h
           });
 
-          if (r.status === 424) return; // ユーザサーバ未到達→次 tick
+          if (r.status === 424) return; // ユーザサーバ未到達
 
           const finalURL = r.url || '';
           const ctype = (r.headers.get('Content-Type') || '').toLowerCase();
@@ -236,15 +235,15 @@ const plugin: JupyterFrontEndPlugin<void> = {
               // 両方本文あり：通常は表示せず即削除
               await deleteNoticeFile();
             } else {
-              // 通常どおり表示→削除
+              // 通常どおり表示 -> 削除
               toast(t);
               await deleteNoticeFile();
             }
           }
-        } catch { /* 通常通知取得失敗は黙って次へ */ }
+        } catch { /* Skip */ }
 
       } catch {
-        // ネットワーク失敗時は次の tick で自己復旧
+        // 失敗時は次の tick で復旧
       }
     }
 
