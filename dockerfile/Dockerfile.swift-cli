@@ -1,33 +1,45 @@
 #
 # docker build . --format=docker -f Dockerfile.swift-cli -t jupyterhub/swift-cli:temp
-#
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 USER root
+ENV DEBIAN_FRONTEND=noninteractive \
+    LANG=ja_JP.UTF-8 \
+    LC_ALL=ja_JP.UTF-8
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-#
-RUN apt-get update \
+# --- OS と日本語環境，Swift 依存（24.04 用名称）---
+RUN set -eux \
+ && apt-get update \
  && apt-get install -y --no-install-recommends \
-    binutils git gnupg2 ca-certificates curl unzip tzdata \
-    libc6-dev libstdc++-11-dev libgcc-11-dev \
-    libcurl4-openssl-dev libedit2 libsqlite3-0 libxml2-dev \
-    libz3-dev python3-lldb-13 libpython3-dev zlib1g-dev \
-    libatomic1 libbsd0 libncurses5 \
+    locales sudo ca-certificates curl gnupg2 unzip bzip2 tzdata git binutils \
+    language-pack-ja-base language-pack-ja \
+    fonts-ipafont-gothic fonts-ipafont-mincho \
+    fonts-noto-cjk fonts-noto-cjk-extra \
+    bash coreutils file util-linux tini passwd adduser \
+    libcurl4-openssl-dev libedit2 libsqlite3-0 libxml2 \
+    libz3-dev libatomic1 libbsd0 libncurses6 libtinfo6 libicu74 \
+    lldb python3 python3-pip python3-venv \
+ && sed -i 's/# \(ja_JP.UTF-8 UTF-8\)/\1/' /etc/locale.gen \
+ && locale-gen \
+ && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/*
 
-#
-# Version
+# --- lldb の Python バインディング（noble は 17/18 系）---
+RUN set -eux \
+ && apt-get update \
+ && (apt-get install -y --no-install-recommends python3-lldb-18 || \
+     apt-get install -y --no-install-recommends python3-lldb-17) \
+ && rm -rf /var/lib/apt/lists/*
+
+# --- Swift ツールチェーン（5.10.1 for Ubuntu 24.04）---
 ARG SWIFT_RELEASE=5.10.1
-ARG UBUNTU_DOT=22.04
-ARG UBUNTU_NODOT=2204
+ARG UBUNTU_DOT=24.04
+ARG UBUNTU_NODOT=2404
 ARG SWIFT_BRANCH=swift-${SWIFT_RELEASE}-release
 ARG SWIFT_TAG=swift-${SWIFT_RELEASE}-RELEASE
 ARG SWIFT_URL=https://download.swift.org/${SWIFT_BRANCH}/ubuntu${UBUNTU_NODOT}/${SWIFT_TAG}/${SWIFT_TAG}-ubuntu${UBUNTU_DOT}.tar.gz
 
-#
 RUN set -eux \
  && echo "Fetching: ${SWIFT_URL}" \
  && curl -fL --retry 3 -o /tmp/swift.tgz "${SWIFT_URL}" \
@@ -35,6 +47,125 @@ RUN set -eux \
  && mv /opt/swift-* /opt/swift \
  && rm -f /tmp/swift.tgz
 
-# ---------- PATH ----------
-ENV PATH=/opt/swift/usr/bin:$PATH
+ENV PATH=/opt/swift/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
+# --- Miniforge（conda-forge）---
+ENV CONDA_HOME=/opt/conda
+ENV PATH=$CONDA_HOME/bin:$PATH
+RUN set -eux \
+ && curl -L -o /tmp/Miniforge.sh https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh \
+ && bash /tmp/Miniforge.sh -b -p "${CONDA_HOME}" \
+ && rm -f /tmp/Miniforge.sh \
+ && "${CONDA_HOME}/bin/conda" config --system --add channels conda-forge \
+ && "${CONDA_HOME}/bin/conda" config --system --set channel_priority strict \
+ && "${CONDA_HOME}/bin/conda" config --system --set report_errors false
+
+# --- JupyterHub singleuser 一式（専用 env は作らず base に統合）---
+RUN set -eux \
+ && "${CONDA_HOME}/bin/conda" install -y -p "${CONDA_HOME}" \
+      python=3.11 \
+      jupyterhub jupyterlab jupyterlab-language-pack-ja-jp jupyterlab_widgets \
+      jupyter_server notebook ipykernel pyzmq tornado traitlets \
+      pip setuptools wheel \
+ && "${CONDA_HOME}/bin/conda" clean -afy
+
+# --- swift-jupyter：カーネル実行は system Python（/usr/bin/python3）---
+RUN set -eux \
+ && python3 -m pip install --no-cache-dir --upgrade pip \
+ && python3 -m pip install --no-cache-dir jupyter_client traitlets tornado pyzmq ipykernel \
+ && git clone https://github.com/google/swift-jupyter.git /opt/swift-jupyter
+
+# --- lldb の Python モジュールを swift-jupyter の検証パスへ露出（llvm 配下も探索）---
+RUN set -eux \
+ && mkdir -p /opt/swift/usr/lib/python3/dist-packages \
+ && found="" ; \
+ for d in \
+   /usr/lib/python3*/dist-packages/lldb \
+   /usr/lib/python*/dist-packages/lldb \
+   /usr/lib/llvm-*/lib/python3*/site-packages/lldb \
+   /usr/lib/llvm-*/lib/python3*/dist-packages/lldb \
+ ; do \
+   if [ -d "$d" ]; then ln -s "$d" /opt/swift/usr/lib/python3/dist-packages/lldb; found="yes"; break; \
+   elif [ -f "$d.py" ]; then ln -s "$d.py" /opt/swift/usr/lib/python3/dist-packages/lldb.py; found="yes"; break; \
+   fi; \
+ done \
+ && test -n "$found" || { echo "ERROR: lldb python module not found"; exit 1; }
+
+# --- kernelspec を /opt/conda 側に手動配置（Podman 互換のため printf で出力）---
+ENV JUPYTER_PATH=${CONDA_HOME}/share/jupyter
+RUN set -eux \
+ && KDIR="${JUPYTER_PATH}/kernels/swift" \
+ && mkdir -p "$KDIR" \
+ && printf '%s\n' \
+ '{' \
+ '  "argv": ["/usr/bin/python3", "/opt/swift-jupyter/swift_kernel.py", "-f", "{connection_file}"],' \
+ '  "display_name": "Swift",' \
+ '  "language": "swift",' \
+ '  "env": {' \
+ '    "PYTHONPATH": "/opt/swift/usr/lib/python3/dist-packages",' \
+ '    "LD_LIBRARY_PATH": "/opt/swift/usr/lib/swift/linux",' \
+ '    "REPL_SWIFT_PATH": "/opt/swift/usr/bin/repl_swift",' \
+ '    "SWIFT_BUILD_PATH": "/opt/swift/usr/bin/swift-build",' \
+ '    "SWIFT_PACKAGE_PATH": "/opt/swift/usr/bin/swift-package"' \
+ '  }' \
+ '}' > "$KDIR/kernel.json" \
+ && if [ -f /opt/swift-jupyter/logo-64x64.png ]; then \
+      install -m 0644 /opt/swift-jupyter/logo-64x64.png "$KDIR/logo-64x64.png"; \
+    fi
+
+# --- 早期失敗のための最小チェック（PYTHONPATH を明示）---
+RUN set -eux \
+ && PYTHONPATH=/opt/swift/usr/lib/python3/dist-packages \
+    python3 -c "import lldb,sys; print('lldb ok:', lldb.__file__)" \
+ && test -f ${JUPYTER_PATH}/kernels/swift/kernel.json
+
+# --- Jupyter Notice（任意）---
+RUN $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice
+
+# --- LtiContainer（切り分け中はヘルスチェック無効化）---
+HEALTHCHECK NONE
+
+# --- 付帯スクリプトと設定（必要な場合のみ）---
+COPY \
+    bin/start.sh \
+    bin/start-notebook.sh \
+    bin/start-singleuser.sh \
+    bin/commit.sh \
+    bin/ipynb_conv \
+    bin/ipynb_conv_alt \
+    bin/ipynb_conv_alt.py \
+    bin/ipynb_deploy \
+    bin/ipynb_setup \
+    bin/ipynb_submit \
+    bin/submit \
+    bin/ipynb_extract \
+    bin/extract \
+    bin/ipynb_tocsv \
+    bin/tocsv \
+    bin/health_check.sh \
+    /usr/local/bin/
+
+COPY \
+    etc/.bashrc \
+    etc/.bash_profile \
+    etc/.vimrc \
+    /root/
+
+COPY \
+    etc/.bash_profile \
+    etc/.bashrc \
+    etc/.vimrc \
+    /etc/skel/
+
+COPY \
+    etc/passwd.orig \
+    etc/group.orig \
+    /etc/
+
+RUN set -eux \
+ && find /usr/local/bin -maxdepth 1 -type f -exec chmod a+rx {} \; \
+ && chmod a+r /etc/skel/.vimrc /etc/skel/.bash* \
+ && true
+
+# --- JupyterHub が実行するコマンドに一致させておく ---
+CMD ["start-notebook.sh"]

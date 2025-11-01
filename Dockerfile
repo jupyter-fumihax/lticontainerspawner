@@ -5,13 +5,13 @@
 # ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251102
 #
 
-#FROM localhost/jupyterhub/singleuser:temp
+FROM localhost/jupyterhub/singleuser:temp
 #FROM localhost/jupyterhub/base-notebook:temp
-FROM localhost/jupyterhub/datascience-notebook:temp
+#FROM localhost/jupyterhub/datascience-notebook:temp
 #FROM localhost/jupyterhub/tensorflow-notebook:temp
+#FROM localhost/jupyterhub/scipy-notebook:temp
 #FROM localhost/jupyterhub/jupyterlab-broccoli:temp
 #FROM localhost/jupyterhub/jupyterlab-broccoli-tensorflow:temp
-#FROM localhost/jupyterhub/scipy-notebook:temp
 #FROM localhost/jupyterhub/java-notebook:temp
 #FROM localhost/jupyterhub/php-notebook:temp
 #FROM localhost/jupyterhub/xeus-cling:temp
@@ -27,7 +27,8 @@ USER root
 
 #
 # Jupyter Notice 
-RUN /opt/conda/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice 
+ENV CONDA_HOME=/opt/conda
+RUN $CONDA_HOME/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice 
 
 #
 # Lticontainer

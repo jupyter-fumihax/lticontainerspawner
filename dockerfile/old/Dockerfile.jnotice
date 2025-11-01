@@ -5,7 +5,7 @@
 # ex.) docker build . --format=docker -t jupyterhub-ltictr/singleuser:20251101
 #
 
-FROM localhost/jupyterhub/singleuser:temp
+#FROM localhost/jupyterhub/singleuser:temp
 #FROM localhost/jupyterhub/base-notebook:temp
 #FROM localhost/jupyterhub/datascience-notebook:temp
 #FROM localhost/jupyterhub/tensorflow-notebook:temp
@@ -17,7 +17,7 @@ FROM localhost/jupyterhub/singleuser:temp
 #FROM localhost/jupyterhub/xeus-cling:temp
 
 #FROM localhost/jupyterhub/rust-notebook:temp
-#FROM localhost/jupyterhub/swift-cli:temp
+FROM localhost/jupyterhub/swift-cli:temp
 #FROM localhost/jupyterhub/xeus-ijs:temp
 #FROM localhost/jupyterhub/devel-notebook:temp
 #FROM localhost/jupyterhub/cuda-ubuntu20:temp

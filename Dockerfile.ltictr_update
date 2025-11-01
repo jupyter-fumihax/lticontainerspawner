@@ -18,7 +18,7 @@ USER root
 ############################################
 
 # Jupyter Notice
-RUN /opt/conda/bin/pip install --prefix $CONDA_HOME --no-cache-dir jnotice
+RUN pip install --no-cache-dir jnotice
 
 #
 # Lticontainer

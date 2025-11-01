@@ -1,15 +1,11 @@
-#!/bin/bash
-
 
 # update
-
 vi labextension_jnotice/src/index.ts
 vi labextension_jnotice/package.json  # check version
 vi jnotice/package.json               # check version
 
 
 # compile
-
 cd labextension_jnotice/
 npm install
 npm run build
@@ -23,12 +19,10 @@ python3 -m build
 
 
 # push to PyPI 
-
 twine upload dist/*
 
 
-# clean
-
+# clean up
 cd labextension_jnotice
 npm run clean
 rm -rf node_modules build lib static .webpack-cache package-lock.json
