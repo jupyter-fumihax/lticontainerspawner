@@ -62,14 +62,20 @@ RUN $CONDA_HOME/bin/conda install -y -c conda-forge xeus-cling \
 
 # ---------- PHP composer, PHP kernel ----------
 RUN set -eux \
- && wget -O /tmp/composer-setup.php https://getcomposer.org/installer \
- && php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer \
- && COMPOSER_ALLOW_SUPERUSER=1 composer global require -n rabrennie/jupyter-php-kernel:^1.0 \
- && VENDOR_DIR="$(composer global config vendor-dir --absolute 2>/dev/null || true)" \
- && if [ -z "$VENDOR_DIR" ] || [ ! -d "$VENDOR_DIR" ]; then VENDOR_DIR="/root/.composer/vendor"; fi \
- && ln -sf "${VENDOR_DIR}/bin/"* /usr/local/bin/ \
+# install composer
+RUN set -eux \
+ && wget https://getcomposer.org/installer -O composer-setup.php \
+ && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+ && COMPOSER_ALLOW_SUPERUSER=1 composer global require rabrennie/jupyter-php-kernel \
+ && true
+
+# install php for system
+COPY php/Installer.php /home/jovyan/.composer/vendor/rabrennie/jupyter-php-kernel/src/Installer
+RUN set -eux \
+ && cp -Rpd /home/jovyan/.composer/vendor  /usr/local \
+ && ln -s /usr/local/vendor/bin/* /usr/local/bin \
  && jupyter-php-kernel --install \
- && rm -f /tmp/composer-setup.php
+ && true
 
 # ---------- bash kernel ----------
 RUN $CONDA_HOME/bin/pip install --no-cache-dir bash_kernel \

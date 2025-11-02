@@ -15,11 +15,10 @@ FROM localhost/jupyterhub/singleuser:temp
 #FROM localhost/jupyterhub/java-notebook:temp
 #FROM localhost/jupyterhub/php-notebook:temp
 #FROM localhost/jupyterhub/xeus-cling:temp
-
-#FROM localhost/jupyterhub/rust-notebook:temp
-#FROM localhost/jupyterhub/swift-cli:temp
 #FROM localhost/jupyterhub/xeus-ijs:temp
+#FROM localhost/jupyterhub/rust-notebook:temp
 #FROM localhost/jupyterhub/devel-notebook:temp
+
 #FROM localhost/jupyterhub/cuda-ubuntu20:temp
 
 
@@ -60,8 +59,8 @@ COPY \
     /root/
 
 COPY \
-    etc/.bash_profile \
     etc/.bashrc \
+    etc/.bash_profile \
     etc/.vimrc \
     /etc/skel/
 

@@ -14,7 +14,7 @@ fi
 
 #
 # set up search path
-PATH=/usr/local/bin:/usr/bin:/bin:/usr/X11R6/bin:/sbin:/usr/sbin:/opt/conda/bin
+PATH=/opt/conda/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/X11R6/bin
 
 #
 # set this for all shells

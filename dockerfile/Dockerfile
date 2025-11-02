@@ -17,7 +17,6 @@ USER root
 #
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-#    nodejs npm \
     language-pack-ja-base language-pack-ja \
     fonts-ipafont-gothic fonts-ipafont-mincho \
     fonts-noto-cjk fonts-noto-cjk-extra \

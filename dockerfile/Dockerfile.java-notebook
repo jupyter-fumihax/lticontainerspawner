@@ -39,7 +39,6 @@ RUN set -eux \
   && $CONDA_HOME/bin/conda config --set channel_priority strict \
   && $CONDA_HOME/bin/conda config --remove-key pinned_packages || true \
   && rm -f $CONDA_HOME/conda-meta/pinned || true \
-  # defaults 側のメタパッケージで BLAS を固定．
   && $CONDA_HOME/bin/conda install --prefix $CONDA_HOME -c defaults "blas=1.0=openblas" -y \
   && true
 

@@ -3,8 +3,13 @@
 #  docker login -u <username> -p <password>  [repository_host]
 #  ./dockerpush.sh <tag_of_updated>  [tag_of_reposirory]
 #
-#  ex.) docker login -u alice -p password_of_alice  www.nsl.tuis.ac.jp:5000
-#       ./dockerpush.sh 20230503 latest
+#  ex.) 
+#    docker login -u alice -p password_of_alice  www.nsl.tuis.ac.jp:5000
+#    ./dockerpush.sh 20230503 latest
+#
+#  ex.) ghcr.io
+#    echo token | docker login ghcr.io -u fumihax --password-stdin
+#    docker push ghcr.io/fumihax/jupyterhub-ltictr.singleuser:latest
 #
 
 #DKRREP="docker.io"

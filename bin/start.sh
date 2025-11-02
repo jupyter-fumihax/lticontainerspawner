@@ -4,6 +4,7 @@
 #
 # /usr/local/bin/start.sh   
 #    This is modified by Fumi.Iseki for LTIDockerSpawner/LTIPodmanSpawner
+#       v1.0.9  2025 11/02
 #       v1.0.8  2025 08/01
 #       v1.0.7  2024 12/09
 #       v1.0.6  2023 05/09
@@ -26,40 +27,48 @@ else
     cmd=( "$@" )
 fi
 
+
 run-hooks () {
     # Source scripts or run executable files in a directory
     if [[ ! -d "$1" ]] ; then
         return
     fi
-    echo "$PRG_NAME: running hooks in $1"
+    echo "$PRG_NAME: running hooks in $1" >> $LTICTR_LOGF
     for f in "$1/"*; do
         case "$f" in
             *.sh)
-                echo "$PRG_NAME: running $f"
+                echo "$PRG_NAME: running $f" >> $LTICTR_LOGF
                 source "$f"
                 ;;
             *)
                 if [[ -x "$f" ]] ; then
-                    echo "$PRG_NAME: running $f"
+                    echo "$PRG_NAME: running $f" >> $LTICTR_LOGF
                     "$f"
                 else
-                    echo "$PRG_NAME: ignoring $f"
+                    echo "$PRG_NAME: ignoring $f" >> $LTICTR_LOGF
                 fi
                 ;;
         esac
     done
-    echo "$PRG_NAME: done running hooks in $1"
+    echo "$PRG_NAME: done running hooks in $1" >> $LTICTR_LOGF
 }
 
 #run-hooks /usr/local/bin/start-notebook.d
+
 
 #
 # Handle special flags if we're root
 if [ $(id -u) == 0 ] ; then
     #
+    # log file
+    #
+    LTICTR_LOGF="$NB_DIR/.ltictr.root.log"
+    echo "" >| $LTICTR_LOGF
+
+    #
     # root mode
     #
-    echo "$PRG_NAME: root mode."
+    echo "$PRG_NAME: root mode." >> $LTICTR_LOGF
     
     #
     # make home base directory
@@ -72,7 +81,7 @@ if [ $(id -u) == 0 ] ; then
             chmod 0755 $HOME_DIR
         fi
     fi
-    echo "$PRG_NAME: setup home directory to $HOME_DIR"
+    echo "$PRG_NAME: setup home directory to $HOME_DIR" >> $LTICTR_LOGF
 
     #
     # create new user account
@@ -80,25 +89,25 @@ if [ $(id -u) == 0 ] ; then
     if [ ! $(id -u $NB_USER 2>/dev/null) ]; then
         JVYN_UID=`id -u jovyan` || true
         if [ "$JVYN_UID" == "$NB_UID" ]; then
-            echo "$PRG_NAME: set username from jovyan to $NB_USER"
+            echo "$PRG_NAME: set username from jovyan to $NB_USER" >> $LTICTR_LOGF
             usermod -d $HOME_DIR/$NB_USER -g $NB_GID -l $NB_USER jovyan
         else
-            echo "$PRG_NAME: create user: $NB_USER"
+            echo "$PRG_NAME: create user: $NB_USER" >> $LTICTR_LOGF
             useradd --home $HOME_DIR/$NB_USER -u $NB_UID -g $NB_GID -l $NB_USER -s /bin/bash 
         fi
     fi
     #
-    echo "$PRG_NAME: setup user to $NB_USER"
-    #echo "$PRG_NAME: /etc/passwd is ..."
+    echo "$PRG_NAME: setup user to $NB_USER" >> $LTICTR_LOGF
+    #echo "$PRG_NAME: /etc/passwd is ..." >> $LTICTR_LOGF
     #cat /etc/passwd | tail -3
 
     #
     # setup home directory
-    echo "$PRG_NAME: start to relocate home dir"
+    echo "$PRG_NAME: start to relocate home dir" >> $LTICTR_LOGF
     if [ "$NB_USER" != "jovyan" ]; then
         #
         if [ ! -e "$HOME_DIR/$NB_USER" ]; then
-            echo "$PRG_NAME: make user home dir: $HOME_DIR/$NB_USER"
+            echo "$PRG_NAME: make user home dir: $HOME_DIR/$NB_USER" >> $LTICTR_LOGF
             mkdir -p $HOME_DIR/$NB_USER
             chown $NB_UID:$NB_GID $HOME_DIR/$NB_USER 
             chmod 0700 $HOME_DIR/$NB_USER
@@ -106,7 +115,7 @@ if [ $(id -u) == 0 ] ; then
 
         DR_OWN=`ls -ld $HOME_DIR/$NB_USER | grep ^d | awk -F" " '{print $3}'`
         if [ "$DR_OWN" != "$NB_USER" ]; then
-            echo "$PRG_NAME: change owner of home dir: $HOME_DIR/$NB_USER"
+            echo "$PRG_NAME: change owner of home dir: $HOME_DIR/$NB_USER" >> $LTICTR_LOGF
             chown $NB_UID:$NB_GID $HOME_DIR/$NB_USER 
             chown $NB_UID:$NB_GID $HOME_DIR/$NB_USER/* || true
             chmod 0700 $HOME_DIR/$NB_USER
@@ -126,7 +135,7 @@ if [ $(id -u) == 0 ] ; then
         # /home/jovyan is used at "docker exec"
         #rm -rf /home/jovyan || true
         # 
-        echo "$PRG_NAME: relocated home dir to $HOME_DIR/$NB_USER"
+        echo "$PRG_NAME: relocated home dir to $HOME_DIR/$NB_USER" >> $LTICTR_LOGF
     fi 
 
     #
@@ -143,7 +152,7 @@ if [ $(id -u) == 0 ] ; then
             chown $CHOWN_EXTRA_OPTS $NB_UID:$NB_GID $extra_dir || true
         done
     fi
-    echo "$PRG_NAME: setup Jupyter work directory to $HOME_DIR/$NB_USER/$PRJCT_DIR/$WORK_DIR ($NB_UID:$NB_GID)"
+    echo "$PRG_NAME: setup Jupyter work directory to $HOME_DIR/$NB_USER/$PRJCT_DIR/$WORK_DIR ($NB_UID:$NB_GID)" >> $LTICTR_LOGF
 
     # clean up symbolic link
     cd $HOME_DIR/$NB_USER/$PRJCT_DIR/$WORK_DIR/$VOLUME_DIR
@@ -156,11 +165,11 @@ if [ $(id -u) == 0 ] ; then
     if [ "$LKS" != "" ]; then
         rm -f $LKS || true
     fi
-    echo "$PRG_NAME: cleaned up symbolic link"
+    echo "$PRG_NAME: cleaned up symbolic link" >> $LTICTR_LOGF
 
     #
     # setup new teacher group for docker volumes
-    echo "$PRG_NAME: setup new teacher group for docker volumes"
+    echo "$PRG_NAME: setup new teacher group for docker volumes" >> $LTICTR_LOGF
     EGID=$NB_GID
     if [ "$NB_TEACHER" == "$NB_USER" ]; then
         if [ "$NB_THRGID" != "" ]; then
@@ -175,8 +184,8 @@ if [ $(id -u) == 0 ] ; then
             EGID=$NB_GID
         fi 
         #
-        echo "$PRG_NAME: setup new teacher group ($EGID) for docker volumes"
-        #echo "$PRG_NAME: /etc/group is ..."
+        echo "$PRG_NAME: setup new teacher group ($EGID) for docker volumes" >> $LTICTR_LOGF
+        #echo "$PRG_NAME: /etc/group is ..." >> $LTICTR_LOGF
         #cat /etc/group | tail -3
     fi
 
@@ -186,13 +195,13 @@ if [ $(id -u) == 0 ] ; then
     NB_SUBMITS=`echo $NB_SUBMITS | sed -e "s/[*;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~]//g"`
     NB_PRSNALS=`echo $NB_PRSNALS | sed -e "s/[*;$\!\"\'&|\\<>?^%\(\)\{\}\n\r~]//g"`
     #
-    echo "$PRG_NAME: task volumes are     : $NB_VOLUMES"
-    echo "$PRG_NAME: submit volumes are   : $NB_SUBMITS"
-    echo "$PRG_NAME: personal volumes are : $NB_PRSNALS"
+    echo "$PRG_NAME: task volumes are     : $NB_VOLUMES" >> $LTICTR_LOGF
+    echo "$PRG_NAME: submit volumes are   : $NB_SUBMITS" >> $LTICTR_LOGF
+    echo "$PRG_NAME: personal volumes are : $NB_PRSNALS" >> $LTICTR_LOGF
 
     cd $HOME_DIR/$NB_USER/$PRJCT_DIR/$WORK_DIR
 
-    echo "$PRG_NAME: start to link to task volumes"
+    echo "$PRG_NAME: start to link to task volumes" >> $LTICTR_LOGF
     if [ "$NB_VOLUMES" != "" ]; then
         for VOLUME in $NB_VOLUMES; do
             DR=`echo $VOLUME | cut -d ':' -f 1`
@@ -220,11 +229,11 @@ if [ $(id -u) == 0 ] ; then
                 fi
             fi
         done
-        echo "$PRG_NAME: linked to task volumes"
+        echo "$PRG_NAME: linked to task volumes" >> $LTICTR_LOGF
     fi
 
     #
-    echo "$PRG_NAME: start to link to submit volumes"
+    echo "$PRG_NAME: start to link to submit volumes" >> $LTICTR_LOGF
     if [ "$NB_SUBMITS" != "" ]; then
         for SUBMIT in $NB_SUBMITS; do
             DR=`echo $SUBMIT | cut -d ':' -f 1`
@@ -265,11 +274,11 @@ if [ $(id -u) == 0 ] ; then
                 fi
             fi
         done
-        echo "$PRG_NAME: linked to submit volumes"
+        echo "$PRG_NAME: linked to submit volumes" >> $LTICTR_LOGF
     fi
 
     #
-    echo "$PRG_NAME: start to link to personal volumes"
+    echo "$PRG_NAME: start to link to personal volumes" >> $LTICTR_LOGF
     if [ "$NB_PRSNALS" != "" ]; then
         for PRSNAL in $NB_PRSNALS; do
             DR=`echo $PRSNAL | cut -d ':' -f 1`
@@ -305,12 +314,12 @@ if [ $(id -u) == 0 ] ; then
                 fi
             fi
         done
-        echo "$PRG_NAME: linked to personal volumes"
+        echo "$PRG_NAME: linked to personal volumes" >> $LTICTR_LOGF
     fi
    
     #
     # fix user information
-    echo "$PRG_NAME: start to fix user information."
+    echo "$PRG_NAME: start to fix user information." >> $LTICTR_LOGF
     if [[ "$NB_UID" != "$(id -u $NB_USER)" || "$NB_GID" != "$(id -g $NB_USER)" ]]; then
         if [ "$NB_GID" != "$(id -g $NB_USER)" ]; then
             groupadd -f -g $NB_GID -o ${NB_GROUP:-${NB_USER}}
@@ -321,17 +330,17 @@ if [ $(id -u) == 0 ] ; then
             usermod -aG $NB_THRGROUP $NB_USER
         fi
         # 
-        echo "$PRG_NAME: fixed user information."
-        #echo "$PRG_NAME: /etc/passwd is ..."
+        echo "$PRG_NAME: fixed user information." >> $LTICTR_LOGF
+        #echo "$PRG_NAME: /etc/passwd is ..." >> $LTICTR_LOGF
         #cat /etc/passwd | tail -3
     fi
 
     #
     # Enable sudo if requested
-    echo "$PRG_NAME: start to grant sudo access"
+    echo "$PRG_NAME: start to grant sudo access" >> $LTICTR_LOGF
 
     if [ -x /usr/bin/sudo ] ;then
-        echo "$PRG_NAME: granting $NB_USER sudo access and appending $CONDA_DIR/bin to sudo path"
+        echo "$PRG_NAME: granting $NB_USER sudo access and appending $CONDA_DIR/bin to sudo path" >> $LTICTR_LOGF
         if [ ! -d /etc/sudoers.d ]; then
             mkdir /etc/sudoers.d
         fi
@@ -344,7 +353,7 @@ if [ $(id -u) == 0 ] ; then
             echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook 
         fi
     else
-        echo "$PRG_NAME: /usr/bin/sudo command is not available!!"
+        echo "$PRG_NAME: /usr/bin/sudo command is not available!!" >> $LTICTR_LOGF
     fi
     
     #
@@ -360,8 +369,10 @@ if [ $(id -u) == 0 ] ; then
     run-hooks /usr/local/bin/before-notebook.d
     CMD=`echo "${cmd[@]}" | sed -e 's/ /\n/g' |grep -v ^-`
     OPT=`echo "${cmd[@]}" | sed -e 's/ /\n/g' |grep ^- | sort | uniq`
-    echo "$PRG_NAME: executing the command: $CMD $OPT"
-    exec sudo -E -H -u $NB_USER PATH=$PATH XDG_CACHE_HOME=$HOME_DIR/$NB_USER/.cache PYTHONPATH=$PYTHONPATH $CMD $OPT
+    echo "==================================================================" >> $LTICTR_LOGF
+    echo "Executing the command: exec sudo -E -H -u $NB_USER PATH=$PATH XDG_CACHE_HOME=$HOME_DIR/$NB_USER/.cache PYTHONPATH=$PYTHONPATH $CMD $OPT" >> $LTICTR_LOGF
+    echo "==================================================================" >> $LTICTR_LOGF
+    exec sudo -E -H -u $NB_USER PATH=$PATH XDG_CACHE_HOME=$HOME_DIR/$NB_USER/.cache PYTHONPATH=$PYTHONPATH $CMD $OPT 2>> $LTICTR_LOGF
     #
 else
     #
@@ -369,7 +380,14 @@ else
     #
     # LTIDockerSpawner/LTIPodmanSpawner don't support rootless mode
     #
-    echo "$PRG_NAME: rootless mode."
+
+    #
+    # log file
+    #
+    LTICTR_LOGF="$NB_DIR/.ltictr.rootless.log"
+    echo "" >| $LTICTR_LOGF
+
+    echo "$PRG_NAME: rootless mode." >> $LTICTR_LOGF
 
     #
     if [[ "$NB_UID" == "$(id -u jovyan 2>/dev/null)" && "$NB_GID" == "$(id -g jovyan 2>/dev/null)" ]]; then
@@ -380,39 +398,41 @@ else
         STATUS=0 && whoami &> /dev/null || STATUS=$? && true
         if [[ "$STATUS" != "0" ]]; then
             if [[ -w /etc/passwd ]]; then
-                echo "Adding passwd file entry for $(id -u)"
+                echo "Adding passwd file entry for $(id -u)" >> $LTICTR_LOGF
                 cat /etc/passwd | sed -e "s/^jovyan:/nayvoj:/" > /tmp/passwd
                 echo "jovyan:x:$(id -u):$(id -g):,,,:/home/jovyan:/bin/bash" >> /tmp/passwd
                 cat /tmp/passwd > /etc/passwd
                 rm /tmp/passwd
             else
-                echo 'Container must be run with group "root" to update passwd file'
+                echo 'Container must be run with group "root" to update passwd file' >> $LTICTR_LOGF
             fi
         fi
 
         # Warn if the user isn't going to be able to write files to $HOME.
         if [[ ! -w /home/jovyan ]]; then
-            echo 'Container must be run with group "users" to update files'
+            echo 'Container must be run with group "users" to update files' >> $LTICTR_LOGF
         fi
     else
         # Warn if looks like user want to override uid/gid but hasn't
         # run the container as root.
         if [[ ! -z "$NB_UID" && "$NB_UID" != "$(id -u)" ]]; then
-            echo 'Container must be run as root to set $NB_UID'
+            echo 'Container must be run as root to set $NB_UID' >> $LTICTR_LOGF
         fi
         if [[ ! -z "$NB_GID" && "$NB_GID" != "$(id -g)" ]]; then
-            echo 'Container must be run as root to set $NB_GID'
+            echo 'Container must be run as root to set $NB_GID' >> $LTICTR_LOGF
         fi
     fi
 
     # Warn if looks like user want to run in sudo mode but hasn't run
     # the container as root.
     if [[ "$GRANT_SUDO" == "1" || "$GRANT_SUDO" == 'yes' ]]; then
-        echo 'Container must be run as root to grant sudo permissions'
+        echo 'Container must be run as root to grant sudo permissions' >> $LTICTR_LOGF
     fi
 
     # Execute the command
     run-hooks /usr/local/bin/before-notebook.d
-    echo "Executing the command: ${cmd[@]}"
-    exec "${cmd[@]}"
+    echo "==================================================================" >> $LTICTR_LOGF
+    echo "Executing the command: exec ${cmd[@]}" >> $LTICTR_LOGF
+    echo "==================================================================" >> $LTICTR_LOGF
+    exec "${cmd[@]}" 2>> $LTICTR_LOGF
 fi

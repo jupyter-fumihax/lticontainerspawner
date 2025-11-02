@@ -5,9 +5,12 @@
 #  ex.) ./dockerpull.sh latest jupyterhub-ltictr
 #
 
-LST="base-notebook singleuser datascience-notebook tensorflow-notebook scipy-notebook vhtec-notebook \
-     xeus-cling java-notebook php-notebook swift-tensorflow jupyterlab-broccoli jupyterlab-broccoli-tensorflow"
+LST="base-notebook singleuser datascience-notebook tensorflow-notebook scipy-notebook \
+     xeus-cling xeus-ijs java-notebook php-notebook rust-notebook \
+     swift-tensorflow vhtec-notebook \
+     jupyterlab-broccoli jupyterlab-broccoli-tensorflow"
 
+#devel-notebook \
 #
 TAGSTR="latest"
 IDSTR="jupyterhub-ltictr"

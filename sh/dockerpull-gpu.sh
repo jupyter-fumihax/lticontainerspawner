@@ -5,7 +5,7 @@
 #  ex.) ./dockerpull-gpu.sh latest jupyterhub-ltictr
 #
 
-LST="base-notebook-gpu tensorflow-notebook-gpu scipy-notebook-gpu"
+LST="base-notebook-gpu tensorflow-notebook-gpu scipy-notebook-gpu cuda-ubuntu20"
 
 #
 TAGSTR="latest"
