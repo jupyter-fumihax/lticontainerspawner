@@ -9,7 +9,7 @@ install:
 	[ -d /var/lib/jupyterhub ]   || mkdir /var/lib/jupyterhub
 	[ -d /usr/local/etc/ltictr ] || mkdir -p /usr/local/etc/ltictr
 	chmod 755 /usr/local/etc/ltictr
-	rmdir /usr/local/etc/ltictr/notice_* 2> /dev/null
+	rmdir /usr/local/etc/ltictr/notice_* 2> /dev/null || true
 	[ -f /usr/local/etc/ltictr/jupyterhub_lticontainer_config.py ] || install -m 0644 etc/jupyterhub_lticontainer_config.py /usr/local/etc/ltictr
 	[ -f /usr/local/etc/ltictr/lticontainerspawner_config.py ]     || install -m 0644 etc/lticontainerspawner_config.py     /usr/local/etc/ltictr
 	[ -f /usr/local/etc/ltictr/ltictr_proxy.conf ]                 || install -m 0640 etc/ltictr_proxy.conf                 /usr/local/etc/ltictr
