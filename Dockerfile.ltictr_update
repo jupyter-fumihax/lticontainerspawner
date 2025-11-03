@@ -7,7 +7,7 @@
 # ex.) docker build . --format=docker -f Dockerfile.ltictr_update -t jupyterhub-ltictr/singleuser:2025xxxx
 #
 
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
+FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook
