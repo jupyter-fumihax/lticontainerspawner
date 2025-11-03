@@ -18,6 +18,10 @@ copy_and_log() {
     if [ "$2" != "" -a -f "$2" ]; then
         ls -l --time-style=+'%Y-%m-%d %T' "$2" >> $LOG
         DFF=`diff "$1" "$2" | head -100`
+        # 追加：同一ファイルなら警告を表示
+        if [ "$DFF" = "" ]; then
+            output_warn "no changes detected for \"$1\" -> \"$2\" !!!"
+        fi
     fi
     #
     cp "$1" "$2" 2> >(tee -a $LOG 1>&2)
@@ -38,9 +42,14 @@ copy_and_log() {
 
 output_error_log() {
     echo "---------------------" >> $LOG
-    echo "$DTM" >> $LOG
-    echo "$1" >> $LOG
-    echo "$1"
+    echo "ERROR: $DTM" >> $LOG
+    echo "ERROR: $1" >> $LOG
+    echo "ERROR: $1" 1>&2
+}
+
+output_warn() {
+    echo "WARNING: $1" >> "$LOG"
+    echo "WARNING: $1" 1>&2
 }
 
 #
@@ -59,7 +68,7 @@ SBT=`echo $NB_SUBMITS | awk -F" " '{print $1}'`
 DST=`echo $SBT | awk -F":" '{print $1}'`
 LNK=`echo $SBT | awk -F":" '{print $2}'`
 if [ "$DST" == "" ] ; then 
-    output_error_log "ERROR: the NB_SUBMITS environment variable is wrong! ("$NB_SUBMITS")"
+    output_error_log "the NB_SUBMITS environment variable is wrong! ("$NB_SUBMITS")"
     exit 1
 fi
 DST=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${DST}
@@ -88,7 +97,7 @@ if [ -d $DST ]; then
         done
     fi
 else
-    output_error_log "ERROR: submit directory is not exist!"
+    output_error_log "submit directory is not exist!"
     exit 1 
 fi
 

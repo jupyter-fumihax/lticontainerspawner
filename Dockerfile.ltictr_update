@@ -1,16 +1,32 @@
 #
+#  LTICTR imgaes update to 1.4.1
+#
 # Usage
 # 1. change FROM line
 # 2. execute docker build command
-# ex.) docker build . --format=docker -f Dockerfile.ltictr_update -t jupyterhub-ltictr/swift-tensorflow:20251102
+# ex.) docker build . --format=docker -f Dockerfile.ltictr_update -t jupyterhub-ltictr/singleuser:2025xxxx
 #
 
-FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.swift-tensorflow:latest
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.vhtec-notebook:latest
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.datascience-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.php-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.java-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.rust-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.xeus-ijs
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.xeus-cling
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.vhtec-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.swift-tensorflow
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.devel-notebook
 
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.cuda-ubuntu20
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook-gpu
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook-gpu:latest
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook-gpu:latest
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook-gpu
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook-gpu
 
 
 USER root
@@ -18,28 +34,29 @@ USER root
 ############################################
 
 # Jupyter Notice
-RUN pip install --no-cache-dir jnotice
+#RUN pip install --no-cache-dir jnotice
 
 #
 # Lticontainer
-HEALTHCHECK CMD /usr/local/bin/health_check.sh
+#HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
 COPY \
-    bin/start.sh \
-    bin/health_check.sh \
+#    bin/start.sh \
+    bin/submit \
+#    bin/health_check.sh \
     /usr/local/bin/
 
-COPY \
-    etc/.bashrc \
-    /root/
+#COPY \
+#    etc/.bashrc \
+#    /root/
 
-COPY \
-    etc/.bashrc \
-    /etc/skel/
+#COPY \
+#    etc/.bashrc \
+#    /etc/skel/
 
 #
 RUN set -eux \
- && rm -f /usr/local/bin/actlimit_check.sh \
+## && rm -f /usr/local/bin/actlimit_check.sh \
  && chmod a+rx /usr/local/bin/* \
  && true
 
