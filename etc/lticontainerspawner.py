@@ -5,7 +5,7 @@
 #
 # LTIContainerSpawner v1.4.2 for LTI by Fumi.Iseki
 #
-#                                      BSD License.
+#                                     BSD 3-Clause License
 #
 
 from dockerspawner import DockerSpawner
