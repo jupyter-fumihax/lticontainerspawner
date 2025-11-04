@@ -1,10 +1,12 @@
 #!/bin/bash
 #
 # usage .... submit [file1] [file2] [ifile3] .....
+#   log file is ${HOME}/${PRJCT_DIR}/${WORK_DIR}/${LOG}
 #
 #  v1.2.1  2025/11/04   output no_changed message to console
 #  v1.2.0  2025/06/04   add no_changed message
 #  v1.1.1  2025/06/03   add log file
+#
 #
 
 # for log file
@@ -41,7 +43,7 @@ copy_and_log() {
 output_error_log() {
     echo "---------------------" >> $LOG
     echo "ERROR: $DTM" >> $LOG
-    echo "ERROR: $1" >> $LOG
+    echo "ERROR: $1"   >> $LOG
     echo "ERROR: $1" 1>&2
 }
 
@@ -55,6 +57,7 @@ output_warn() {
 PRS=`echo $NB_PRSNALS | awk -F" " '{print $1}' | awk -F":" '{print $1}'`
 if [ "$PRS" != "" ] ; then
     PRS=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${PRS}
+    LOG=${HOME}/${PRJCT_DIR}/${WORK_DIR}/${LOG}
     cd $PRS
 fi
 if [ ! -f $LOG ]; then
