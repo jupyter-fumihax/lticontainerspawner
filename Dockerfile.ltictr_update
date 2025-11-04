@@ -12,8 +12,8 @@ FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.datascience-notebook
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.php-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.java-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.rust-notebook
