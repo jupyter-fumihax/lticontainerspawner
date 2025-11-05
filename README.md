@@ -2,6 +2,10 @@
 
 ## Spawners for Integration System of Moodle(LMS) and JupyterHub
 
+### Version 
+
+Latest Versioni of Systsem is 1.4.2
+
 ### Install
 ```
 # git clone https://github.com/jupyter-fumihax/lticontainerspawner.git
