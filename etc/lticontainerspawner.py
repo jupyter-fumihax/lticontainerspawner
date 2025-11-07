@@ -273,11 +273,11 @@ class LTIContainerSpawner(DockerSpawner):
     def get_args(self):
         #print('=== get_args() ===')
         args = super(LTIContainerSpawner, self).get_args()
+        #
         args = [a for a in args if not a.startswith('--ServerApp.tornado_settings=')]   # delete previous settings
-
         tornado_settings = {}
 
-        # not supported
+        # not supporte frame (pending）
         #if self.custom_iframe :
         #    cookie_options = None
         #    if sys.version_info >= (3, 8): cookie_options = {"SameSite":"None","Secure":"True"}
@@ -302,6 +302,7 @@ class LTIContainerSpawner(DockerSpawner):
              }
         }
         #
+        # パラメータに空白があると，なぜか tornado が落ちる（バグ？）
         args.append('--ServerApp.tornado_settings=' + json.dumps(tornado_settings, separators=(',', ':')))
 
         self.log.info("[get_args()] final args: %s", args)
