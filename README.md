@@ -35,7 +35,6 @@ or (case of lticontainerspawner-X.Y.Z)
 
 ##### for JupyterHub 
 ``` 
-
 # vi /usr/local/etc/jupyterhub_lticontainer_config.py
 # vi /usr/lib/systemd/system/jupyterhub.service
 # systemctl enable jupyterhub.service
