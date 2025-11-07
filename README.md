@@ -4,7 +4,7 @@
 
 ### Version 
 
-Latest Versioni of Systsem is 1.4.2
+Latest Version : 1.4.2
 
 ### Install
 ```
