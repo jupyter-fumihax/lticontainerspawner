@@ -44,8 +44,7 @@ iframe_url        = 'https://*'                 # iframe Host URL
 proxy_should_start = True
 proxy_cleanup      = True
 proxy_api_url      = 'http://localhost:8001'
-
-#proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token in ltictr_proxy.conf
+proxy_api_token    = "ABCDEFG"                  # If you use ltictr_proxy, set this value to LTICTR_API_Token in ltictr_proxy.conf
 
 
 #
