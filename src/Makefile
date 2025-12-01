@@ -73,29 +73,35 @@ clean:
 unlock_podman_containers: $(LIB_BSC) unlock_podman_containers.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@   
 	strip $(@)
+	rm $(@).o
 	cp $(@) ../bin
 
 ipynb_conv: $(LIB_BSC) ipynb_conv.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@   
 	strip $(@)
+	rm $(@).o
 	cp $(@) ../bin
 
 json_file: $(LIB_BSC) json_file.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@ 
 	strip $(@)
+	rm $(@).o
 	cp $(@) ../bin
 
 json2: $(LIB_BSC) json2.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@ 
 	strip $(@)
+	rm $(@).o
 
 ipynb_extract: $(LIB_BSC) ipynb_extract.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@ 
 	strip $(@)
+	rm $(@).o
 	cp $(@) ../bin
 
 ipynb_tocsv: $(LIB_BSC) ipynb_tocsv.o
 	$(CC) $(@).o $(ELIB) $(SLIB) -O2 -o $@ 
 	strip $(@)
+	rm $(@).o
 	cp $(@) ../bin
 
