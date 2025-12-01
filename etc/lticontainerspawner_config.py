@@ -44,7 +44,8 @@ iframe_url        = 'https://*'                 # iframe Host URL
 proxy_should_start = True
 proxy_cleanup      = True
 proxy_api_url      = 'http://localhost:8001'
-proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token in ltictr_proxy.conf
+
+#proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token in ltictr_proxy.conf
 
 
 #
@@ -52,7 +53,6 @@ proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token
 #
 spawner_environment = {
     'GRANT_SUDO'         : 'no',                # 'no' for normal use. (通常使用では 'no')
-    'USER_HOME'          : user_home_dir,
     'PRJCT_DIR'          : projects_dir,
     'WORK_DIR'           : works_dir,
     'VOLUME_DIR'         : volumes_dir,
@@ -60,12 +60,6 @@ spawner_environment = {
     'CONDA_DIR'          : '/opt/conda',
     'CHOWN_HOME'         : 'yes',
     'CHOWN_HOME_OPTS'    : '-R',
-    "JUPYTER_RUNTIME_DIR": "{user_home_dir}/.local/share/jupyter/runtime",
-    "JUPYTER_RUNTIME_DIR": "{user_home_dir}/.local/share/jupyter/runtime",
-    "JUPYTER_DATA_DIR"   : "{user_home_dir}/.local/share/jupyter",
-    "JUPYTER_CONFIG_DIR" : "{user_home_dir}/.jupyter",
-    "XDG_CACHE_HOME"     : "{user_home_dir}/.cache",
-    "XDG_RUNTIME_DIR"    : "{user_home_dir}/.local/share/jupyter/runtime",
 }
 # CHOWN_EXTRA, CHOWN_EXTRA_OPTS
 
