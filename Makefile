@@ -31,16 +31,21 @@ install:
 	[ -f /usr/local/etc/ltictr/notice_memory_ja.txt ] || install -m 0644 etc/notice_memory_ja.txt  /usr/local/etc/ltictr/
 	[ -f /usr/local/etc/ltictr/notice_active_ja.txt ] || install -m 0644 etc/notice_active_ja.txt  /usr/local/etc/ltictr/
 	[ -f /usr/local/etc/ltictr/notice_sticky_ja.txt ] || install -m 0644 etc/notice_sticky_ja.txt  /usr/local/etc/ltictr/
+	#
 	install -m 0644 etc/podman.socket            /usr/lib/systemd/system/
 	install -m 0755 etc/lticontainerspawner.py   /usr/local/etc/ltictr/
-	install -m 0755 bin/ltictr_proxy_server      /usr/local/bin/
-	install -m 0755 bin/ltictr_api_server        /usr/local/bin/
 	install -m 0755 sh/chgrppodman.sh            /usr/local/bin/
 	install -m 0755 sh/dockerpull.sh             /usr/local/bin/
 	install -m 0755 sh/dockerpush.sh             /usr/local/bin/
 	install -m 0755 sh/dockerrmi.sh              /usr/local/bin/
 	systemctl daemon-reload
 	systemctl enable jupyterhub   || true
+	#
+	cd src && make || true
+	cd ../
+	cd ltictr_proxy && make || true
+	install -m 0755 ltictr_proxy/ltictr_proxy_server    /usr/local/bin/ || true
+	install -m 0755 ltictr_proxy/ltictr_api_server      /usr/local/bin/ || true
 	#systemctl enable ltictr_proxy || true
 ifeq ($(PDMN), podman)
 	install -m 0750 bin/unlock_podman_containers /usr/local/bin/
