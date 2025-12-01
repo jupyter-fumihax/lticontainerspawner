@@ -1,0 +1,21 @@
+# /usr/lib/systemd/system/jupyterhub.service
+# for Docker
+
+[Unit]
+Description = JupyterHub
+After = network-online.target 
+
+[Service]
+Environment = CONFIGF=/usr/local/etc/ltictr/jupyterhub_lticontainer_config.py
+Environment = NODE_OPTIONS=--max-old-space-size=16384
+#Environment = PATH=/usr/local/anaconda/envs/jupyterhub/bin:/usr/local/anaconda/condabin:${PATH}
+#
+User = root
+PIDFile = /run/jupyterhub.pid
+#ExecStart = /usr/local/anaconda/envs/jupyterhub/bin/jupyterhub -f ${CONFIGF}
+ExecStart = /usr/local/bin/jupyterhub -f ${CONFIGF}
+WorkingDirectory = /var/lib/jupyterhub
+Restart = always
+
+[Install]
+WantedBy = multi-user.target
