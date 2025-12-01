@@ -13,7 +13,7 @@ Environment = APIPORT=8001
 
 #
 User = root
-PIDFile = /var/run/ltictr_proxy.pid
+PIDFile = /run/ltictr_proxy.pid
 
 # for Podman
 #ExecStartPre = /usr/bin/chgrp -R podman /var/run/podman

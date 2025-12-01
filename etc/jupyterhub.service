@@ -10,7 +10,7 @@ Environment = NODE_OPTIONS=--max-old-space-size=16384
 #Environment = PATH=/usr/local/anaconda/envs/jupyterhub/bin:/usr/local/anaconda/condabin:${PATH}
 #
 User = root
-PIDFile = /var/run/jupyterhub.pid
+PIDFile = /run/jupyterhub.pid
 ExecStartPre = /usr/bin/chgrp -R podman /var/run/podman
 ExecStartPre = /usr/bin/chmod -R g+rwx  /var/run/podman
 #ExecStart = /usr/local/anaconda/envs/jupyterhub/bin/jupyterhub -f ${CONFIGF}
