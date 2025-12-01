@@ -2,7 +2,7 @@
 
 #
 # My IP Address
-my_ip_addr = '202.26.150.69'
+my_ip_addr = '192.168.107.128'
 my_port_num = 443
 
 #
@@ -11,9 +11,11 @@ ltiauth_consumer_key = 'b18e82ec683724743236fade71350720029a29144a585c66f6741d8e
 ltiauth_secret_key   = 'c0fe2924dbb0f4701d898d36aaf9fd89c7a3ed3a7db6f0003d0e825a7eccb41c'
 
 #
-# SSL CERT and KEY
-ssl_server_cert = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/fullchain.pem'
-ssl_private_key = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/privkey.pem'
+# TLS CERT and KEY
+ssl_server_cert="/etc/pki/tls/certs/jh_test.crt"
+ssl_private_key="/etc/pki/tls/private/jh_test.key"
+#ssl_server_cert = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/fullchain.pem'
+#ssl_private_key = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/privkey.pem'
 
 #
 # API
@@ -226,11 +228,12 @@ c = get_config()  #noqa
 #    - null: jupyterhub.auth.NullAuthenticator
 #    - pam: jupyterhub.auth.PAMAuthenticator
 #  Default: 'jupyterhub.auth.PAMAuthenticator'
-# c.JupyterHub.authenticator_class = 'jupyterhub.auth.PAMAuthenticator'
 
-#
+## for TEST
+c.JupyterHub.authenticator_class = 'jupyterhub.auth.PAMAuthenticator'
+
 ## for LTI
-c.JupyterHub.authenticator_class = 'ltiauthenticator.LTIAuthenticator'
+#c.JupyterHub.authenticator_class = 'ltiauthenticator.LTIAuthenticator'
 #
 c.LTI11Authenticator.consumers = {
     ltiauth_consumer_key : ltiauth_secret_key
@@ -862,15 +865,15 @@ from lticontainerspawner_config import *
 #
 jupyterhub_services = [
     # culler
-    {
-        'name': 'idle-culler',
-        'admin': True,
-        'command': [
-            sys.executable,
-            '/usr/local/bin/cull_idle_servers.py',
-            '--timeout=1200'
-        ],
-    },
+    #{
+    #    'name': 'idle-culler',
+    #    'admin': True,
+    #    'command': [
+    #        sys.executable,
+    #        '/usr/local/bin/cull_idle_servers.py',
+    #        '--timeout=1200'
+    #    ],
+    #},
 
     # admin-service
     {
