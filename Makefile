@@ -53,7 +53,7 @@ ifeq ($(PDMN), podman)
 else
 	[ -f /usr/lib/systemd/system/jupyterhub.service ] \
 	  && install -m 0644 etc/jupyterhub.docker.service  /usr/lib/systemd/system/jupyterhub.service.new \
-	  || install -m 0644 etc/jupyterhub.docker.service  /usr/lib/systemd/system/
+	  || install -m 0644 etc/jupyterhub.docker.service  /usr/lib/systemd/system/jupyterhub.service
 endif
 	systemctl daemon-reload
 	systemctl enable jupyterhub   || true
