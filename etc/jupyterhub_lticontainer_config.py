@@ -12,10 +12,17 @@ ltiauth_secret_key   = 'c0fe2924dbb0f4701d898d36aaf9fd89c7a3ed3a7db6f0003d0e825a
 
 #
 # TLS CERT and KEY
-ssl_server_cert="/etc/pki/tls/certs/jh_test.crt"
-ssl_private_key="/etc/pki/tls/private/jh_test.key"
+##
 #ssl_server_cert = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/fullchain.pem'
 #ssl_private_key = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/privkey.pem'
+
+## TEST at Ubuntu
+#ssl_server_cert="/etc/ssl/certs/jupyterhub.crt"
+#ssl_private_key="/etc/ssl/private/jupyterhub.key"
+
+## TEST with Rocky
+ssl_server_cert="/etc/pki/tls/certs/jh_test.crt"
+ssl_private_key="/etc/pki/tls/private/jh_test.key"
 
 #
 # API
