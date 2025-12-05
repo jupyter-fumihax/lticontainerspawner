@@ -1,6 +1,12 @@
 # vi: set tabstop=4 noautoindent:
 
 #
+LNG = C
+jp:
+	LNG = JP
+	all
+
+
 all: install
 
 PDMN = $(shell grep "^podman:" /etc/group | sed -e 's/:.*//')
@@ -22,12 +28,16 @@ install:
 	[ -f /usr/lib/systemd/system/ltictr_proxy.service ] \
 	  && install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system/ltictr_proxy.service.new \
 	  || install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system/
-	[ -f /usr/local/etc/ltictr/notice_memory.txt ]    || install -m 0644 etc/notice_memory.txt     /usr/local/etc/ltictr/
-	[ -f /usr/local/etc/ltictr/notice_active.txt ]    || install -m 0644 etc/notice_active.txt     /usr/local/etc/ltictr/
-	[ -f /usr/local/etc/ltictr/notice_sticky.txt ]    || install -m 0644 etc/notice_sticky.txt     /usr/local/etc/ltictr/
-	[ -f /usr/local/etc/ltictr/notice_memory_ja.txt ] || install -m 0644 etc/notice_memory_ja.txt  /usr/local/etc/ltictr/
-	[ -f /usr/local/etc/ltictr/notice_active_ja.txt ] || install -m 0644 etc/notice_active_ja.txt  /usr/local/etc/ltictr/
-	[ -f /usr/local/etc/ltictr/notice_sticky_ja.txt ] || install -m 0644 etc/notice_sticky_ja.txt  /usr/local/etc/ltictr/
+	#
+ifeq ($(LNG), JP)
+	[ -f /usr/local/etc/ltictr/notice_memory.txt ] || install -m 0644 etc/notice_memory_jp.txt  /usr/local/etc/ltictr/notice_memory.txt
+	[ -f /usr/local/etc/ltictr/notice_active.txt ] || install -m 0644 etc/notice_active_jp.txt  /usr/local/etc/ltictr/notice_active.txt
+	[ -f /usr/local/etc/ltictr/notice_sticky.txt ] || install -m 0644 etc/notice_sticky_jp.txt  /usr/local/etc/ltictr/notice_sticky.txt
+else
+	[ -f /usr/local/etc/ltictr/notice_memory.txt ] || install -m 0644 etc/notice_memory.txt     /usr/local/etc/ltictr/notice_memory.txt
+	[ -f /usr/local/etc/ltictr/notice_active.txt ] || install -m 0644 etc/notice_active.txt     /usr/local/etc/ltictr/notice_active.txt
+	[ -f /usr/local/etc/ltictr/notice_sticky.txt ] || install -m 0644 etc/notice_sticky.txt     /usr/local/etc/ltictr/notice_sticky.txt
+endif
 	#
 	install -m 0755 etc/lticontainerspawner.py /usr/local/etc/ltictr/
 	install -m 0755 sh/dockerpull.sh           /usr/local/bin/
@@ -39,6 +49,7 @@ install:
 	install -m 0755 bin/ltictr_proxy_server    /usr/local/bin/ || true
 	install -m 0755 bin/ltictr_api_server      /usr/local/bin/ || true
 	#systemctl enable ltictr_proxy || true
+	#
 ifeq ($(PDMN), podman)
 	[ -f /usr/lib/systemd/system/jupyterhub.service ] \
 	  && install -m 0644 etc/jupyterhub.service  /usr/lib/systemd/system/jupyterhub.service.new \
@@ -55,18 +66,21 @@ else
 	  && install -m 0644 etc/jupyterhub.docker.service  /usr/lib/systemd/system/jupyterhub.service.new \
 	  || install -m 0644 etc/jupyterhub.docker.service  /usr/lib/systemd/system/jupyterhub.service
 endif
+	#
 	systemctl daemon-reload
 	systemctl enable jupyterhub   || true
+
 
 clean:
 	rm -f /var/lib/jupyterhub/*
 
 
 uninstall: clean
-	systemctl stop jupyterhub      || true
+	systemctl stop    jupyterhub   || true
 	systemctl disable jupyterhub   || true
-	systemctl stop ltictr_proxy    || true
+	systemctl stop    ltictr_proxy || true
 	systemctl disable ltictr_proxy || true
+	#
 	rm -f  /var/lib/jupyterhub/*
 	rm -f  /usr/local/etc/jupyterhub_lticontainer_config.py
 	rm -f  /usr/local/etc/lticontainerspawner.py
