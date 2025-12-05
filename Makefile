@@ -1,13 +1,21 @@
 # vi: set tabstop=4 noautoindent:
 
 #
-LNG = C
+LNG ?= C
+
+ifeq ($(LNG), JP)
+NOTICE_SUFFIX = _jp
+else
+NOTICE_SUFFIX =
+endif
+
+
 jp:
-	LNG = JP
-	all
+	$(MAKE) LNG=JP all
 
 
 all: install
+
 
 PDMN = $(shell grep "^podman:" /etc/group | sed -e 's/:.*//')
 
@@ -29,15 +37,9 @@ install:
 	  && install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system/ltictr_proxy.service.new \
 	  || install -m 0644 etc/ltictr_proxy.service              /usr/lib/systemd/system/
 	#
-ifeq ($(LNG), JP)
-	[ -f /usr/local/etc/ltictr/notice_memory.txt ] || install -m 0644 etc/notice_memory_jp.txt  /usr/local/etc/ltictr/notice_memory.txt
-	[ -f /usr/local/etc/ltictr/notice_active.txt ] || install -m 0644 etc/notice_active_jp.txt  /usr/local/etc/ltictr/notice_active.txt
-	[ -f /usr/local/etc/ltictr/notice_sticky.txt ] || install -m 0644 etc/notice_sticky_jp.txt  /usr/local/etc/ltictr/notice_sticky.txt
-else
-	[ -f /usr/local/etc/ltictr/notice_memory.txt ] || install -m 0644 etc/notice_memory.txt     /usr/local/etc/ltictr/notice_memory.txt
-	[ -f /usr/local/etc/ltictr/notice_active.txt ] || install -m 0644 etc/notice_active.txt     /usr/local/etc/ltictr/notice_active.txt
-	[ -f /usr/local/etc/ltictr/notice_sticky.txt ] || install -m 0644 etc/notice_sticky.txt     /usr/local/etc/ltictr/notice_sticky.txt
-endif
+	[ -f /usr/local/etc/ltictr/notice_memory.txt ] || install -m 0644 etc/notice_memory$(NOTICE_SUFFIX).txt  /usr/local/etc/ltictr/notice_memory.txt
+	[ -f /usr/local/etc/ltictr/notice_active.txt ] || install -m 0644 etc/notice_active$(NOTICE_SUFFIX).txt  /usr/local/etc/ltictr/notice_active.txt
+	[ -f /usr/local/etc/ltictr/notice_sticky.txt ] || install -m 0644 etc/notice_sticky$(NOTICE_SUFFIX).txt  /usr/local/etc/ltictr/notice_sticky.txt
 	#
 	install -m 0755 etc/lticontainerspawner.py /usr/local/etc/ltictr/
 	install -m 0755 sh/dockerpull.sh           /usr/local/bin/
