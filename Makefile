@@ -1,23 +1,24 @@
 # vi: set tabstop=4 noautoindent:
 
 #
-LNG ?= C
+_LNG ?= C
 
-ifeq ($(LNG), JP)
+ifeq ($(_LNG), JP)
 NOTICE_SUFFIX = _jp
 else
 NOTICE_SUFFIX =
 endif
 
 
-jp:
-	$(MAKE) LNG=JP all
+PDMN = $(shell grep "^podman:" /etc/group | sed -e 's/:.*//')
 
 
 all: install
 
 
-PDMN = $(shell grep "^podman:" /etc/group | sed -e 's/:.*//')
+jp:
+	$(MAKE) _LNG=JP all
+
 
 install: 
 	[ -d /var/lib/jupyterhub ]   || mkdir /var/lib/jupyterhub
