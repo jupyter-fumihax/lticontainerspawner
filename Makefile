@@ -69,7 +69,7 @@ else
 	  || install -m 0644 etc/jupyterhub.docker.service  /usr/lib/systemd/system/jupyterhub.service
 endif
 	#
-	systemctl daemon-reload
+	systemctl daemon-reload       || true
 	systemctl enable jupyterhub   || true
 
 
