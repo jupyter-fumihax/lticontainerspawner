@@ -16,8 +16,8 @@ ltiauth_secret_key   = 'c0fe2924dbb0f4701d898d36aaf9fd89c7a3ed3a7db6f0003d0e825a
 #ssl_private_key = '/etc/letsencrypt/live/castor5.nsl.tuis.ac.jp/privkey.pem'
 #
 ## TEST or Private
-ssl_server_cert="/etc/ssl/certs/jh_test.crt"
-ssl_private_key="/etc/ssl/private/jh_test.key"
+ssl_server_cert = "/etc/ssl/certs/jh_test.crt"
+ssl_private_key = "/etc/ssl/private/jh_test.key"
 #
 
 #
