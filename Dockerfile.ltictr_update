@@ -11,9 +11,7 @@
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook
-FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.datascience-notebook
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.datascience-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.php-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.java-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.rust-notebook
@@ -22,6 +20,8 @@ FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.datascience-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.vhtec-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.swift-tensorflow
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.devel-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli
+FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
 
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.cuda-ubuntu20
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook-gpu
@@ -34,17 +34,17 @@ USER root
 ############################################
 
 # Jupyter Notice
-#RUN pip install --no-cache-dir jnotice
+RUN pip install --no-cache-dir jnotice
 
 #
 # Lticontainer
-#HEALTHCHECK CMD /usr/local/bin/health_check.sh
+HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
 #COPY \
-##    bin/start.sh \
-#    bin/submit \
-##    bin/health_check.sh \
-#    /usr/local/bin/
+#    bin/start.sh \
+    bin/submit \
+#    bin/health_check.sh \
+    /usr/local/bin/
 
 #COPY \
 #    etc/.bashrc \
@@ -54,15 +54,23 @@ USER root
 #    etc/.bashrc \
 #    /etc/skel/
 
-COPY \
-    etc/jupyter_server_config.py \
-    /etc/jupyter
+# for Pluto
+#COPY \
+#    etc/jupyter_server_config.py \
+#    /etc/jupyter
+
+# for Broccoli
+# とりあえず使わないし xPython とか混乱するので，今は削除しておく．
+RUN  set -eux \
+ && rm -rf  /opt/conda/share/jupyter/kernels/xpython \
+ && rm -rf  /opt/conda/share/jupyter/kernels/xpython-raw \
+ && true
 
 #
 RUN set -eux \
 ## && rm -f /usr/local/bin/actlimit_check.sh \
-# && chmod a+rx /usr/local/bin/* \
- && chmod a+r  /etc/jupyter/* \
+ && chmod a+rx /usr/local/bin/* \
+# && chmod a+r  /etc/jupyter/* \
  && true
 
 

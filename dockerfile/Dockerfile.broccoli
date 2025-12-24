@@ -99,6 +99,13 @@ RUN set -eux \
  && true
 
 
+# とりあえず使わないし 混乱するので，今は削除しておく．
+RUN  set -eux \
+ && rm -rf  /opt/conda/share/jupyter/kernels/xpython \
+ && rm -rf  /opt/conda/share/jupyter/kernels/xpython-raw \
+ && true
+
+
 # JupyterLab Broccoli 系拡張
 RUN  set -eux \
  && $CONDA_HOME/bin/pip install --prefix /opt/conda \
