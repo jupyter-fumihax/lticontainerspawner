@@ -69,10 +69,15 @@ COPY \
     etc/group.orig \
     /etc/
 
+COPY \
+    etc/jupyter_server_config.py \
+    /etc/jupyter
+
 #
 RUN set -eux \
  && chmod a+rx /usr/local/bin/* \
  && chmod a+r  /etc/skel/.vimrc /etc/skel/.bash* \
+ && chmod a+r  /etc/jupyter/* \
  && true
 
 
