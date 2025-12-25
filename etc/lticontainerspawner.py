@@ -106,7 +106,7 @@ class LTIContainerSpawner(DockerSpawner):
 
 
     def init_parameters(self):
-        #print('=== init_parameters() ===')
+        #self.log.debug('=== init_parameters() ===')
         self.user_id          = -1
         self.group_id         = -1
         self.grp_name         = ''
@@ -208,7 +208,7 @@ class LTIContainerSpawner(DockerSpawner):
     # ユーザのアクセス情報をチェックし，マウントする課題ボリュームのパスの配列を返す．
     #
     def _get_volumes_info(self, assoc):
-        #print('=== _get_volumes_info() ===')
+        #self.log.debug('=== _get_volumes_info() ===')
         vols = []
         for key, value in assoc.items():
             usrs = []
@@ -271,7 +271,7 @@ class LTIContainerSpawner(DockerSpawner):
 
 
     def get_args(self):
-        #print('=== get_args() ===')
+        #self.log.debug('=== get_args() ===')
         args = super(LTIContainerSpawner, self).get_args()
         #
         args = [a for a in args if not a.startswith('--ServerApp.tornado_settings=')]   # delete previous settings
@@ -310,12 +310,12 @@ class LTIContainerSpawner(DockerSpawner):
 
 
     #def auth_hook(authenticator, handler, authentication):
-    #    print('=== auth_hook() ===')
+    #    self.log.debug('=== auth_hook() ===')
     #    return authentication
 
 
     #def spawn_hook(self):
-    #    print('=== spawn_hook() ===')
+    #    self.log.debug('=== spawn_hook() ===')
 
 
     #
@@ -323,7 +323,7 @@ class LTIContainerSpawner(DockerSpawner):
     # パラメータから情報を得る
     #
     def userdata_hook(self, auth_state):
-        #print('=== userdata_hook() ===')
+        #self.log.debug('=== userdata_hook() ===')
         if auth_state is None : return
         if not hasattr(self, 'init_parameters') : return
 
@@ -479,7 +479,7 @@ class LTIContainerSpawner(DockerSpawner):
     # NB_TEACHER, NB_THRGROUP, NB_THRGID, ...
     #
     def get_env(self):
-        #print('=== get_env() ===')
+        #self.log.debug('=== get_env() ===')
         env = super(LTIContainerSpawner, self).get_env()
 
         userid    = self.get_userid()
@@ -529,7 +529,7 @@ class LTIContainerSpawner(DockerSpawner):
     # START LTIContainerSpawner
     #
     def start(self):
-        #print('=== start() ===')
+        #self.log.debug('=== start() ===')
         username  = self.user.name
         groupname = self._get_groupname()    # get self.group_id, too
         hosthome  = self.homedir
@@ -598,7 +598,7 @@ class LTIContainerSpawner(DockerSpawner):
         #
         self.remove = True
 
-        #print('=== START LTIContainerSpawner ===')
+        #self.log.debug('=== START LTIContainerSpawner ===')
         return super(LTIContainerSpawner, self).start()
 
 

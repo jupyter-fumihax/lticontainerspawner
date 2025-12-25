@@ -7,7 +7,7 @@
 # ex.) docker build . --format=docker -f Dockerfile.ltictr_update -t jupyterhub-ltictr/singleuser:2025xxxx
 #
 
-#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
+FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook
@@ -21,7 +21,7 @@
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.swift-tensorflow
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.devel-notebook
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli
-FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
 
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.cuda-ubuntu20
 #FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook-gpu
@@ -61,10 +61,10 @@ HEALTHCHECK CMD /usr/local/bin/health_check.sh
 
 # for Broccoli
 # とりあえず使わないし xPython とか混乱するので，今は削除しておく．
-RUN  set -eux \
- && rm -rf  /opt/conda/share/jupyter/kernels/xpython \
- && rm -rf  /opt/conda/share/jupyter/kernels/xpython-raw \
- && true
+#RUN  set -eux \
+# && rm -rf  /opt/conda/share/jupyter/kernels/xpython \
+# && rm -rf  /opt/conda/share/jupyter/kernels/xpython-raw \
+# && true
 
 #
 RUN set -eux \
