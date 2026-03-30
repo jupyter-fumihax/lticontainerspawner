@@ -44,7 +44,7 @@ iframe_url        = 'https://*'                 # iframe Host URL
 proxy_should_start = True
 proxy_cleanup      = True
 proxy_api_url      = 'http://localhost:8001'
-proxy_api_token    = "ABCDEFG"                  # If you use ltictr_proxy, set this value to LTICTR_API_Token in ltictr_proxy.conf
+proxy_api_token    = "ABCDEFG"                  # Same value as LTICTR_API_Token in ltictr_proxy.conf
 
 
 #
@@ -59,6 +59,21 @@ spawner_environment = {
     'CONDA_DIR'          : '/opt/conda',
     'CHOWN_HOME'         : 'yes',
     'CHOWN_HOME_OPTS'    : '-R',
+
+    #'USER_HOME'          : user_home_dir,
+    #"JUPYTER_RUNTIME_DIR": "{user_home_dir}/.local/share/jupyter/runtime",
+    #"JUPYTER_RUNTIME_DIR": "{user_home_dir}/.local/share/jupyter/runtime",
+    #"JUPYTER_DATA_DIR"   : "{user_home_dir}/.local/share/jupyter",
+    #"JUPYTER_CONFIG_DIR" : "{user_home_dir}/.jupyter",
+    #"XDG_CACHE_HOME"     : "{user_home_dir}/.cache",
+    #"XDG_RUNTIME_DIR"    : "{user_home_dir}/.local/share/jupyter/runtime",
+
+    'USER_HOME': lambda sp: sp.homedir,
+    'JUPYTER_CONFIG_DIR': lambda sp: f"{sp.homedir}/.jupyter",
+    'JUPYTER_DATA_DIR':   lambda sp: f"{sp.homedir}/.local/share/jupyter",
+    'JUPYTER_RUNTIME_DIR':lambda sp: f"{sp.homedir}/.local/share/jupyter/runtime",
+    'XDG_CACHE_HOME':     lambda sp: f"{sp.homedir}/.cache",
+    'XDG_RUNTIME_DIR':    lambda sp: f"{sp.homedir}/.local/share/jupyter/runtime"
 }
 # CHOWN_EXTRA, CHOWN_EXTRA_OPTS
 

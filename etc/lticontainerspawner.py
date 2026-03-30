@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.4.2 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.4.3 for LTI by Fumi.Iseki
 #
 #                                     BSD 3-Clause License
 #
@@ -115,7 +115,7 @@ class LTIContainerSpawner(DockerSpawner):
         self.host_name        = 'localhost'
         self.host_url         = 'http://localhost'
         self.host_port        = 80
-        self.userdara         = {}
+        self.userdata         = {}
         #
         self.ext_user_id      = -1
         self.ext_group_id     = -1
@@ -480,13 +480,17 @@ class LTIContainerSpawner(DockerSpawner):
     #
     def get_env(self):
         #self.log.debug('=== get_env() ===')
+
         env = super(LTIContainerSpawner, self).get_env()
+        self.log.warning("[DEBUG] get_env(): notebook_dir(raw)=%r", self.notebook_dir)
+        self.log.warning("[DEBUG] get_env(): homedir=%r", self.homedir)
 
         userid    = self.get_userid()
         username  = self.user.name
         groupname = self._get_groupname()
         groupid   = self.group_id
-        homedir   = self.notebook_dir.format(username=username, groupname=groupname)
+        homedir   = self.homedir
+        #homedir   = self.notebook_dir.format(username=username, groupname=groupname)
 
         env.update(NB_UID       = userid)
         env.update(NB_USER      = username)
@@ -532,10 +536,14 @@ class LTIContainerSpawner(DockerSpawner):
         #self.log.debug('=== start() ===')
         username  = self.user.name
         groupname = self._get_groupname()    # get self.group_id, too
+        self.get_userid()
         hosthome  = self.homedir
         grouphome = self.groupdir
         self.notebook_dir = hosthome
         self.volumes = {}
+
+        self.log.warning("[DEBUG] start(): notebook_dir(raw)=%r", self.notebook_dir)
+        self.log.warning("[DEBUG] start(): homedir=%r", self.homedir)
 
         course_id = self.course_id
         lti_id    = self.custom_lti_id
