@@ -3,7 +3,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 #
-# LTIContainerSpawner v1.4.3 for LTI by Fumi.Iseki
+# LTIContainerSpawner v1.4.4 for LTI by Fumi.Iseki
 #
 #                                     BSD 3-Clause License
 #
@@ -326,10 +326,9 @@ class LTIContainerSpawner(DockerSpawner):
         #self.log.debug('=== userdata_hook() ===')
         if auth_state is None : return
         if not hasattr(self, 'init_parameters') : return
+        self.init_parameters()                  # 初期化
 
-        self.userdata = auth_state              # raw data
-        self.init_parameters()
-
+        self.userdata = auth_state
         for key, value in self.userdata.items():
 
             if key == 'context_id' : self.course_id = value         # LMS Course ID (string)
