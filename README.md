@@ -4,7 +4,7 @@
 
 ### Version 
 
-Latest Version : 1.4.2
+Latest Version : 1.4.3
 
 ### Install
 ```
