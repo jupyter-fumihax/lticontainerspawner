@@ -6,6 +6,12 @@
 
 Latest Version : 1.4.3
 
+##### Change Log
+- 1.4.3 Make read-only cells uneditable
+- 1.4.2 Add notice function
+  
+
+
 ### Install
 ```
 # git clone https://github.com/jupyter-fumihax/lticontainerspawner.git
