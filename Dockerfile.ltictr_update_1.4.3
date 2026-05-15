@@ -1,0 +1,43 @@
+#
+#  LTICTR imgaes update to 1.4.3
+#
+# Usage
+# 1. change FROM line
+# 2. execute docker build command
+# ex.) docker build . --format=docker -f Dockerfile.ltictr_update_1.4.3 -t jupyterhub-ltictr/singleuser:20260515
+#
+
+FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.singleuser
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.datascience-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.php-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.java-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.rust-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.xeus-ijs
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.xeus-cling
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.vhtec-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.swift-tensorflow
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.devel-notebook
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.jupyterlab-broccoli-tensorflow
+
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.cuda-ubuntu20
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.base-notebook-gpu
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.tensorflow-notebook-gpu
+#FROM ghcr.io/jupyter-fumihax/jupyterhub-ltictr.scipy-notebook-gpu
+
+
+USER root
+
+############################################
+
+RUN install -d -o jovyan -g users -m 2775 /opt/conda/share/jupyter/lab/settings
+
+COPY --chown=jovyan:users --chmod=0644 \
+    etc/overrides.json \
+    /opt/conda/share/jupyter/lab/settings/overrides.json
+
+
+#CMD ["start-notebook.sh"]
