@@ -8,3 +8,11 @@ src/*.o
 ltictr_proxy/ltictr_proxy_server
 ltictr_proxy/ltictr_api_server
 ltictr_proxy/*.o
+#
+jnotice/share/jupyter/labextensions/jnotice/static/
+jnotice/share/jupyter/labextensions/jnotice/package.json
+jnotice/build/
+jnotice/dist/
+jnotice/src/*.egg-info/
+jnotice/.webpack-cache/
+
