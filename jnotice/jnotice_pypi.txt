@@ -10,15 +10,12 @@ npm install
 npm run build
 python3 -m build
 
+
 # push to PyPI 
 twine upload dist/*
 
 
 # clean up
-cd labextension_jnotice
-npm run clean
-rm -rf node_modules build lib static .webpack-cache package-lock.json
-
-cd ..
-cd jnotice
-rm -rf build dist src/*.egg-info
+npm run clean:all
+rm -rf dist src/*.egg-info
+rm -rf node_modules .webpack-cache
