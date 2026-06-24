@@ -1,6 +1,6 @@
 {
   "name": "jnotice",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
   "jupyterlab": {
     "extension": true,
@@ -11,8 +11,9 @@
     }
   },
   "scripts": {
-    "build": "webpack --config webpack.config.cjs --mode=production",
-    "clean": "rimraf lib build"
+    "copy:package": "node scripts/copy-package.cjs",
+    "build": "webpack --config webpack.config.cjs --mode=production && npm run copy:package",
+    "clean": "rimraf lib build static .webpack-cache share/jupyter/labextensions/jnotice/static"
   },
   "dependencies": {
     "@jupyterlab/application": "^4.0.0"

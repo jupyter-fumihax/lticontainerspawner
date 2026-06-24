@@ -1,6 +1,6 @@
 //
 // src/index.ts  (jnotice.js)
-//   ver 1.4.0  sticky: 空／削除(404/410)を検知して表示中の無限トーストを自動消去．
+//   ver 1.4.1  sticky: 空／削除(404/410)を検知して表示中の無限トーストを自動消去．
 //
 
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
